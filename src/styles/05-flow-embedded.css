@@ -1,0 +1,4 @@
+
+@media(min-width:1081px){.flow-layer.embedded{inset:0 auto 0 294px;width:640px;background:transparent;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}.flow-layer.embedded .flow-wrap{width:100%;margin:0;border-right:1px solid var(--line);border-left:1px solid var(--line)}}
+@media(min-width:621px) and (max-width:1080px){.flow-layer.embedded{inset:0 auto 0 108px;width:min(640px,calc(100vw - 108px));background:transparent;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}.flow-layer.embedded .flow-wrap{width:100%;margin:0}}
+@media(max-width:620px){.flow-layer.embedded{inset:0;width:auto;background:var(--bg)}.flow-layer.embedded .flow-wrap{width:100%}}

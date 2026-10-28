@@ -1,0 +1,2 @@
+
+document.addEventListener('click',e=>{const follow=e.target.closest('[data-follow-profile]');if(follow){const active=follow.classList.toggle('following');follow.textContent=active?'✓ Mengikuti':'＋ Ikuti';toast(active?`Kamu mengikuti ${selectedProfile().name}`:`Berhenti mengikuti ${selectedProfile().name}`);return}if(e.target.closest('[data-message-profile]')){const name=selectedProfile().name,index=Math.max(0,chats.findIndex(c=>c[0]===name));closeFlow();show('chat');selectChat(index)}});

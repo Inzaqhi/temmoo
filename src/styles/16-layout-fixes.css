@@ -1,0 +1,14 @@
+
+/* Label "Tersimpan" tertimpa aturan ikon panah kartu grup (24px) */
+.event-group-list .info-card>span.archive-readonly{font-size:12px}
+/* Ruang scrollbar selalu disediakan: tanpa ini, membuka layar detail (body overflow:hidden)
+   menghilangkan scrollbar sehingga seluruh tata letak bergeser ke kanan. */
+html{scrollbar-gutter:stable}
+/* Layar detail yang dibuka dari mode Chat mengisi kolom percakapan, bukan menimpa daftar chat */
+.flow-layer.in-chat{background:var(--card)}
+.flow-layer.in-chat .flow-wrap{width:min(720px,100%);max-width:none;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+/* Kolom chat lama minimal 390px + 520px, sehingga di ~1000px halaman bisa digeser ke samping */
+@media(min-width:851px){.layout.chat-mode{grid-template-columns:minmax(280px,390px) minmax(0,1fr)}}
+/* Layout lama butuh >=1158px (270+500+30+310+48); di 1081–1170px rail kanan terpotong.
+   Kolom utama & rail boleh menyempit sedikit agar selalu muat. */
+@media(min-width:851px) and (max-width:1399px){.layout:not(.chat-mode){grid-template-columns:minmax(440px,640px) minmax(250px,310px)}}

@@ -1,0 +1,1 @@
+document.addEventListener('click',e=>{const b=e.target.closest('.event-save');if(!b)return;e.preventDefault();e.stopImmediatePropagation();b.classList.toggle('saved');b.textContent=b.classList.contains('saved')?'♥':'♡';toast(b.classList.contains('saved')?'Event disimpan':'Event dihapus dari simpanan')},true);

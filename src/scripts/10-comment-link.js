@@ -1,0 +1,1 @@
+document.addEventListener('click',e=>{const comment=e.target.closest('[data-comment]'),card=comment?.closest('.post');if(!card)return;const name=card.querySelector('.post-head b')?.textContent.trim();activePost=Math.max(0,posts.findIndex(p=>p[0]===name));activePostData=posts[activePost]||null},true);

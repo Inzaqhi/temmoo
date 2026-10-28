@@ -1,0 +1,2 @@
+
+document.addEventListener('click',e=>{const like=e.target.closest('[data-like]');if(like&&!like.onclick){like.classList.toggle('liked');const count=like.querySelector('i');if(count)count.textContent=Number(count.textContent)+(like.classList.contains('liked')?1:-1)}const comment=e.target.closest('[data-comment]');if(comment){const card=comment.closest('.post');if(card){const name=card.querySelector('.post-head b')?.textContent.trim();activePost=Math.max(0,posts.findIndex(p=>p[0]===name));activePostData=posts[activePost]||null}}});

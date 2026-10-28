@@ -1,0 +1,2 @@
+
+@media(min-width:621px){.flow-layer.embedded{scrollbar-width:none}.flow-layer.embedded::-webkit-scrollbar{display:none}.edge-scroll{display:none;position:fixed;z-index:80;top:8px;right:2px;bottom:8px;width:12px;border-radius:8px}.edge-scroll.visible{display:block}.edge-scroll-thumb{position:absolute;right:2px;top:0;width:8px;min-height:42px;border-radius:8px;background:#8d8d8d;opacity:.85;cursor:grab;transition:background .15s}.edge-scroll-thumb:hover{background:#b0b0b0}.edge-scroll-thumb.dragging{cursor:grabbing;background:#b8b8b8}}

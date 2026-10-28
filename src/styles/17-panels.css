@@ -1,0 +1,50 @@
+
+/* ===== Panel grup (persetujuan, laporan, buat/info/pratinjau/pengaturan grup) =====
+   Sebelumnya masih memakai latar gelap #121017 dari tema lama. */
+.approval-center-panel,.safety-report-panel,.group-create-panel,.group-info-panel,.group-preview-panel,.group-settings-panel{
+  background:#fff!important;border:1px solid var(--line)!important;border-radius:22px;box-shadow:0 26px 80px rgba(37,29,78,.22);color:var(--text)}
+.approval-center-panel>header,.safety-report-panel>header,.group-create-panel header,.group-info-panel>header,.group-preview-panel>header,.group-settings-panel>header{
+  background:rgba(255,255,255,.96)!important;border-bottom:1px solid var(--line)!important;color:var(--text)}
+.approval-center-panel>header button,.safety-report-panel>header button,.group-create-panel header button,.group-info-panel>header button,.group-preview-panel>header button{
+  width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--soft)!important;color:var(--indigo-dark)!important;font-size:18px;cursor:pointer;transition:background .15s}
+.approval-center-panel>header button:hover,.safety-report-panel>header button:hover,.group-create-panel header button:hover,.group-info-panel>header button:hover,.group-preview-panel>header button:hover{background:var(--indigo-light)!important}
+.approval-center-panel>header b,.safety-report-panel>header b,.group-info-panel>header b,.group-preview-panel>header b,.group-create-panel header b{color:var(--text);font-size:16px}
+
+/* Persetujuan anggota */
+.approval-center-panel>header{height:72px}
+.approval-center-panel>header div{text-align:center}
+.approval-center-body{padding:18px;background:var(--bg)}
+.approval-card{padding:18px!important;border:1px solid var(--line)!important;border-radius:18px!important;background:#fff!important;box-shadow:0 8px 24px rgba(44,35,95,.06)}
+.approval-person .avatar{width:52px!important;height:52px!important;font-size:15px!important}
+.approval-person b{font-size:16px}
+.approval-person strong{padding:5px 10px;border-radius:99px;background:#43e6c21f;color:var(--teal-text)!important;font-size:12px!important;white-space:nowrap}
+.approval-context{margin-top:14px!important;padding:12px 14px!important;border-radius:12px!important;background:var(--indigo-light)!important}
+.approval-context span{color:var(--indigo-dark)!important;font-size:10px!important;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.approval-context b{font-size:15px}
+.approval-card>p{margin:14px 0 16px;color:var(--muted)!important;line-height:1.55}
+.approval-card>div:last-child{gap:10px!important}
+.approval-card>div:last-child button{height:44px;border-radius:12px!important;font-weight:800;cursor:pointer;transition:filter .15s,background .15s}
+.approval-card>div:last-child button:first-child{background:#fff!important;border:1px solid var(--line)!important;color:var(--text)!important}
+.approval-card>div:last-child button:first-child:hover{border-color:#f4b9bf!important;color:#c0303c!important;background:#fff7f7!important}
+.approval-card>div:last-child button:last-child{background:var(--indigo)!important;border-color:var(--indigo)!important;color:#fff!important;box-shadow:0 8px 20px rgba(91,75,255,.22)}
+.approval-card>div:last-child button:last-child:hover{filter:brightness(.95)}
+.approval-empty{background:#fff;border:1px dashed #cbc6ee;border-radius:18px}
+.approval-empty i{width:56px;height:56px;margin:0 auto 10px;display:grid;place-items:center;border-radius:50%;background:#43e6c21f;color:var(--teal-text)!important}
+.approval-empty p{color:var(--muted)}
+
+.photo-editor span:not([style]){background:linear-gradient(135deg,var(--indigo),var(--coral));color:#fff!important;font-size:18px}
+.photo-editor span.gold:not([style]){background:linear-gradient(135deg,var(--gold),var(--coral));color:#2b1b22!important}
+.photo-editor span.teal:not([style]){background:linear-gradient(135deg,var(--teal),var(--indigo))}
+.photo-editor b{color:var(--indigo)}
+.group-settings-panel>header button:first-child{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--indigo-dark)}
+.group-settings-panel>header button:last-child{color:var(--indigo)!important}
+:root{--orange:var(--coral-text)} /* --orange (aksen tema lama) dipakai sebagai warna teks di puluhan tempat */
+.auth-link,.auth-form-row button,.official-back-home,.dm-profile small,.group-profile-link small{color:var(--coral-text)!important}
+.verified-create-note b,.group-cycle-summary span.done,.verification-row em.done,.status-good,.account-summary em.verified,.group-cycle-banner.active b{color:var(--teal-text)!important}
+.group-cycle-banner.postevent b{color:var(--gold-text)!important}
+.verification-hero.verified>span{background:var(--teal-text)!important;color:#fff!important}
+.circle-quick button.active{background:var(--indigo)!important;border-color:var(--indigo)!important;color:#fff!important}
+/* Laporan & pratinjau grup: teks bantu & opsi tetap terbaca di latar terang */
+.report-target{background:var(--indigo-light)!important}
+.safety-report-body fieldset label{border-color:var(--line)!important}
+.preview-lock{background:var(--soft)!important;color:var(--indigo-dark)!important}
