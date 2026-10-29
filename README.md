@@ -22,8 +22,8 @@ index.html        Hasil build (satu file). Buka file ini di browser. Jangan died
 build.py          Menggabungkan src/ menjadi index.html
 src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
-  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 20-…css)
-  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 24-…js)
+  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 21-…css)
+  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 25-…js)
 ```
 
 Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebelumnya (misalnya `show`, `openFlow`, dan `template`), dan CSS yang dimuat belakangan menimpa yang sebelumnya. Jangan mengubah urutan nomor tanpa alasan yang jelas.
@@ -37,6 +37,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/22-search-notifications.js` | Pencarian, notifikasi, serta penyimpanan Temui/follow/chat |
 | `scripts/23-call.js` | Panggilan suara dan video |
 | `scripts/24-promoter-flow.js` | Pendaftaran dan akses promotor |
+| `scripts/25-promoter-insights.js` | Ringkasan Promotor Studio: rencana kehadiran, alasan, tren, asal peserta, pengumuman |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja
