@@ -19,6 +19,9 @@
     set(v){const i=promoterState.events.findIndex(e=>e.id===promoterState.activeEventId);const next={...v,id:promoterState.activeEventId};if(i<0)promoterState.events.push(next);else promoterState.events[i]=next}});
   savePromoter();
 
+  const can=act=>window.promoterTeam?window.promoterTeam.can(act):true;
+  const visible=()=>window.promoterTeam?window.promoterTeam.visibleEvents():promoterState.events;
+  const log=t=>window.promoterTeam?.log(t);
   const select=id=>{if(promoterState.events.some(e=>e.id===id)){promoterState.activeEventId=id;savePromoter()}};
   window.selectPromoterEvent=select;
 
@@ -36,26 +39,26 @@
     const st=STATUS[e.status]||STATUS.draft,g=groupOf(e),ph=window.promoterInsights?.phase(e),s=e.status==='published'?window.promoterInsights.stats(e):null;
     const when=!e.date?'Tanggal belum diisi':ph?.days==null?e.date:ph.key==='finished'?`${e.date} · selesai`:ph.key==='today'?`${e.date} · hari ini`:`${e.date} · ${ph.days} hari lagi`;
     const metrics=s?`<div class="pe-metrics"><span><b>${nf(s.people)}</b> peminat</span><span><b>${nf(g==='finished'?s.attended:s.going)}</b> ${g==='finished'?'hadir':'mau datang'}</span></div>`:`<div class="pe-metrics muted">${e.status==='changes'?esc(e.reviewNote||'Perlu perbaikan'):['submitted','review'].includes(e.status)?'Menunggu Tim Temmoo':'Belum diajukan'}</div>`;
-    const go=e.status==='draft'||e.status==='changes'?65:71,label=e.status==='draft'?'Lanjutkan':e.status==='changes'?'Perbaiki':'Buka';
-    const del=e.status==='draft'?`<button type="button" class="pe-del" data-pe-delete="${e.id}">${confirmDelete===e.id?'Yakin hapus?':'Hapus'}</button>`:'';
+    const editable=can('edit'),go=(e.status==='draft'||e.status==='changes')&&editable?65:71,label=!editable?'Lihat':e.status==='draft'?'Lanjutkan':e.status==='changes'?'Perbaiki':'Buka';
+    const del=e.status==='draft'&&can('delete')?`<button type="button" class="pe-del" data-pe-delete="${e.id}">${confirmDelete===e.id?'Yakin hapus?':'Hapus'}</button>`:'';
     return `<article class="pe-row"><div class="pe-date">${esc(e.dateShort||'—').replace(' ','<br>')}</div><div class="pe-main"><b>${esc(e.name||'Event tanpa nama')}</b><span>${esc(when)}${e.venue?' · '+esc(e.venue):''}</span>${metrics}</div><em class="status-chip ${st[1]}">${st[0]}</em><div class="pe-actions">${del}<button type="button" class="pe-open" data-pe-open="${e.id}" data-pe-go="${go}">${label}</button></div></article>`;
   }
   function portfolio(){
-    const list=[...promoterState.events].sort((a,b)=>sortKey(a)-sortKey(b));
+    const list=[...visible()].sort((a,b)=>sortKey(a)-sortKey(b));
     const counts={all:list.length,active:0,waiting:0,draft:0,finished:0};list.forEach(e=>counts[groupOf(e)]++);
     const published=list.filter(e=>e.status==='published').map(e=>window.promoterInsights.stats(e));
     const people=published.reduce((a,s)=>a+s.people,0),going=published.reduce((a,s)=>a+s.going,0);
     const shown=list.filter(e=>filter==='all'||groupOf(e)===filter);
     const tabs=[['all','Semua'],['active','Aktif'],['waiting','Menunggu'],['draft','Draft & revisi'],['finished','Selesai']];
     return `<div class="ins-kpis"><article><span>Event aktif</span><b>${counts.active}</b><small>Terbit & belum berlangsung</small></article><article><span>Menunggu tinjauan</span><b>${counts.waiting}</b><small>Diperiksa Tim Temmoo</small></article><article><span>Total peminat</span><b>${nf(people)}</b><small>Dari ${published.length} event terbit</small></article><article><span>Mau datang</span><b>${nf(going)}</b><small>Event yang akan datang</small></article></div>
-      <section class="pe-list"><header><div><h2>Event saya</h2><p>${counts.all} event · ${esc(promoterState.organization)}</p></div><button type="button" class="pe-new" data-pe-new>＋ Buat event baru</button></header>
+      <section class="pe-list"><header><div><h2>Event saya</h2><p>${counts.all} event · ${esc(promoterState.organization)}</p></div>${can('create')?'<button type="button" class="pe-new" data-pe-new>＋ Buat event baru</button>':''}</header>
       <div class="pe-tabs">${tabs.map(([k,l])=>`<button type="button" class="${filter===k?'active':''}" data-pe-filter="${k}">${l} <span>${counts[k]}</span></button>`).join('')}</div>
-      ${shown.length?shown.map(row).join(''):`<div class="ins-empty"><b>${counts.all?'Tidak ada event di kategori ini':'Belum ada event'}</b><span>${counts.all?'Pilih tab lain atau buat event baru.':'Buat event pertamamu untuk mulai mengumpulkan peserta.'}</span></div>`}
+      ${shown.length?shown.map(row).join(''):`<div class="ins-empty"><b>${counts.all?'Tidak ada event di kategori ini':'Belum ada event'}</b><span>${counts.all?'Pilih tab lain atau buat event baru.':can('create')?'Buat event pertamamu untuk mulai mengumpulkan peserta.':'Belum ada event yang dibagikan kepadamu.'}</span></div>`}
       <p class="pe-note">Angka peserta pada event terbit adalah data contoh prototipe.</p></section>`;
   }
   // Pemilih event di atas halaman per event (dashboard, kelola, status).
   function switcher(){
-    const opts=promoterState.events.map(e=>`<option value="${e.id}" ${e.id===promoterState.activeEventId?'selected':''}>${esc(e.name||'Event tanpa nama')} · ${(STATUS[e.status]||STATUS.draft)[0]}</option>`).join('');
+    const opts=visible().map(e=>`<option value="${e.id}" ${e.id===promoterState.activeEventId?'selected':''}>${esc(e.name||'Event tanpa nama')} · ${(STATUS[e.status]||STATUS.draft)[0]}</option>`).join('');
     return `<div class="pe-switch"><button type="button" data-go="64">← Semua event</button><label><span>Event</span><select data-pe-select aria-label="Pilih event">${opts}</select></label></div>`;
   }
 
@@ -78,10 +81,12 @@
   function nav(html,n){
     html=html.replace(/<button class="(?:active)?" data-go="64">Ringkasan<\/button>/,`<button class="${[64,71].includes(n)?'active':''}" data-go="64">Ringkasan</button>`);
     html=html.replace(/<button class="(?:active)?" data-go="65">Kelola event<\/button>/,`<button class="${n===65&&!promoterState.event.name?'active':''}" data-pe-new>＋ Buat event</button>`);
-    if(n===64)html=html.replace('<button data-promoter-preview>Pratinjau publik</button>','');
+    if(n===64||n===72)html=html.replace('<button data-promoter-preview>Pratinjau publik</button>','');
+    html=html.replace(/(<button class="(?:active)?" data-pe-new>＋ Buat event<\/button>)/,`$1<button class="${n===72?'active':''}" data-go="72">Tim</button>`);
     return html;
   }
 
+  window.promoterNav=nav;
   /* ---------- Admin: tinjau semua event yang menunggu ---------- */
   function adminQueue(html){
     const pending=promoterState.events.filter(e=>['submitted','review','changes'].includes(e.status));
@@ -95,12 +100,13 @@
   /* ---------- Event ---------- */
   document.addEventListener('click',e=>{
     const pick=e.target.closest('[data-admin-review-event][data-pe-id]');if(pick){select(pick.dataset.peId);return}
-    if(e.target.closest('[data-pe-new]')){e.preventDefault();e.stopPropagation();const ev=blank();promoterState.events.push(ev);select(ev.id);openFlow(65);toast('Draft event baru dibuat');return}
+    if(e.target.closest('[data-pe-new]')){e.preventDefault();e.stopPropagation();if(!can('create')){toast('Peranmu tidak bisa membuat event');return}const ev=blank();promoterState.events.push(ev);select(ev.id);window.promoterTeam?.grantNewEvent(ev.id);log('membuat draft event baru');openFlow(65);toast('Draft event baru dibuat');return}
     const open=e.target.closest('[data-pe-open]');if(open){e.stopPropagation();confirmDelete=null;select(open.dataset.peOpen);openFlow(+open.dataset.peGo);return}
     const f=e.target.closest('[data-pe-filter]');if(f){filter=f.dataset.peFilter;confirmDelete=null;openFlow(64,false);return}
     const del=e.target.closest('[data-pe-delete]');if(del){e.stopPropagation();const id=del.dataset.peDelete;
       if(confirmDelete!==id){confirmDelete=id;openFlow(64,false);return}
-      confirmDelete=null;promoterState.events=promoterState.events.filter(x=>x.id!==id||x.status!=='draft');
+      if(!can('delete')){toast('Peranmu tidak bisa menghapus event');return}
+      const gone=promoterState.events.find(x=>x.id===id);confirmDelete=null;promoterState.events=promoterState.events.filter(x=>x.id!==id||x.status!=='draft');log(`menghapus draft “${gone?.name||'Event tanpa nama'}”`);
       if(!promoterState.events.length){const ev=blank();promoterState.events.push(ev)}
       if(!promoterState.events.some(x=>x.id===promoterState.activeEventId))promoterState.activeEventId=promoterState.events[0].id;
       savePromoter();toast('Draft dihapus');openFlow(64,false);return}

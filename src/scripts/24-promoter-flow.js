@@ -7,7 +7,7 @@
   let app=read();
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}};
   window.isPromoter=()=>app.status==='approved';
-  const STUDIO=[64,65,66,67,71],APPLY=69,STATUS=70;
+  const STUDIO=[64,65,66,67,71,72],APPLY=69,STATUS=70;
   const statusText={none:'Belum mendaftar',review:'Sedang ditinjau',changes:'Perlu perbaikan',approved:'Disetujui'};
 
   function setStatus(status,note=''){

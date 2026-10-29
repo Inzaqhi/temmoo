@@ -1863,7 +1863,7 @@ html{scrollbar-gutter:stable}
   let app=read();
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}};
   window.isPromoter=()=>app.status==='approved';
-  const STUDIO=[64,65,66,67,71],APPLY=69,STATUS=70;
+  const STUDIO=[64,65,66,67,71,72],APPLY=69,STATUS=70;
   const statusText={none:'Belum mendaftar',review:'Sedang ditinjau',changes:'Perlu perbaikan',approved:'Disetujui'};
 
   function setStatus(status,note=''){
@@ -2162,7 +2162,7 @@ html{scrollbar-gutter:stable}
     if(n===71&&typeof isPromoter==='function'&&isPromoter()){
       const ev=promoterState.event;
       html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats(ev)):'')+'<section class="promoter-panel">');
-      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
+      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${window.promoterTeam&&!window.promoterTeam.can('announce')?'':announceCard()}</div>`})()
         :`<div class="ins-grid"><section class="ins-card ins-wide"><div class="ins-empty"><b>Data peserta muncul setelah event terbit</b><span>Rencana kehadiran, alasan peserta, asal kota, dan pengumuman tersedia begitu event disetujui Tim Temmoo.</span></div></section></div>`;
       const i=html.lastIndexOf('</main>');if(i>0)html=html.slice(0,i)+extra+html.slice(i);
     }
@@ -2245,6 +2245,9 @@ html{scrollbar-gutter:stable}
     set(v){const i=promoterState.events.findIndex(e=>e.id===promoterState.activeEventId);const next={...v,id:promoterState.activeEventId};if(i<0)promoterState.events.push(next);else promoterState.events[i]=next}});
   savePromoter();
 
+  const can=act=>window.promoterTeam?window.promoterTeam.can(act):true;
+  const visible=()=>window.promoterTeam?window.promoterTeam.visibleEvents():promoterState.events;
+  const log=t=>window.promoterTeam?.log(t);
   const select=id=>{if(promoterState.events.some(e=>e.id===id)){promoterState.activeEventId=id;savePromoter()}};
   window.selectPromoterEvent=select;
 
@@ -2262,26 +2265,26 @@ html{scrollbar-gutter:stable}
     const st=STATUS[e.status]||STATUS.draft,g=groupOf(e),ph=window.promoterInsights?.phase(e),s=e.status==='published'?window.promoterInsights.stats(e):null;
     const when=!e.date?'Tanggal belum diisi':ph?.days==null?e.date:ph.key==='finished'?`${e.date} · selesai`:ph.key==='today'?`${e.date} · hari ini`:`${e.date} · ${ph.days} hari lagi`;
     const metrics=s?`<div class="pe-metrics"><span><b>${nf(s.people)}</b> peminat</span><span><b>${nf(g==='finished'?s.attended:s.going)}</b> ${g==='finished'?'hadir':'mau datang'}</span></div>`:`<div class="pe-metrics muted">${e.status==='changes'?esc(e.reviewNote||'Perlu perbaikan'):['submitted','review'].includes(e.status)?'Menunggu Tim Temmoo':'Belum diajukan'}</div>`;
-    const go=e.status==='draft'||e.status==='changes'?65:71,label=e.status==='draft'?'Lanjutkan':e.status==='changes'?'Perbaiki':'Buka';
-    const del=e.status==='draft'?`<button type="button" class="pe-del" data-pe-delete="${e.id}">${confirmDelete===e.id?'Yakin hapus?':'Hapus'}</button>`:'';
+    const editable=can('edit'),go=(e.status==='draft'||e.status==='changes')&&editable?65:71,label=!editable?'Lihat':e.status==='draft'?'Lanjutkan':e.status==='changes'?'Perbaiki':'Buka';
+    const del=e.status==='draft'&&can('delete')?`<button type="button" class="pe-del" data-pe-delete="${e.id}">${confirmDelete===e.id?'Yakin hapus?':'Hapus'}</button>`:'';
     return `<article class="pe-row"><div class="pe-date">${esc(e.dateShort||'—').replace(' ','<br>')}</div><div class="pe-main"><b>${esc(e.name||'Event tanpa nama')}</b><span>${esc(when)}${e.venue?' · '+esc(e.venue):''}</span>${metrics}</div><em class="status-chip ${st[1]}">${st[0]}</em><div class="pe-actions">${del}<button type="button" class="pe-open" data-pe-open="${e.id}" data-pe-go="${go}">${label}</button></div></article>`;
   }
   function portfolio(){
-    const list=[...promoterState.events].sort((a,b)=>sortKey(a)-sortKey(b));
+    const list=[...visible()].sort((a,b)=>sortKey(a)-sortKey(b));
     const counts={all:list.length,active:0,waiting:0,draft:0,finished:0};list.forEach(e=>counts[groupOf(e)]++);
     const published=list.filter(e=>e.status==='published').map(e=>window.promoterInsights.stats(e));
     const people=published.reduce((a,s)=>a+s.people,0),going=published.reduce((a,s)=>a+s.going,0);
     const shown=list.filter(e=>filter==='all'||groupOf(e)===filter);
     const tabs=[['all','Semua'],['active','Aktif'],['waiting','Menunggu'],['draft','Draft & revisi'],['finished','Selesai']];
     return `<div class="ins-kpis"><article><span>Event aktif</span><b>${counts.active}</b><small>Terbit & belum berlangsung</small></article><article><span>Menunggu tinjauan</span><b>${counts.waiting}</b><small>Diperiksa Tim Temmoo</small></article><article><span>Total peminat</span><b>${nf(people)}</b><small>Dari ${published.length} event terbit</small></article><article><span>Mau datang</span><b>${nf(going)}</b><small>Event yang akan datang</small></article></div>
-      <section class="pe-list"><header><div><h2>Event saya</h2><p>${counts.all} event · ${esc(promoterState.organization)}</p></div><button type="button" class="pe-new" data-pe-new>＋ Buat event baru</button></header>
+      <section class="pe-list"><header><div><h2>Event saya</h2><p>${counts.all} event · ${esc(promoterState.organization)}</p></div>${can('create')?'<button type="button" class="pe-new" data-pe-new>＋ Buat event baru</button>':''}</header>
       <div class="pe-tabs">${tabs.map(([k,l])=>`<button type="button" class="${filter===k?'active':''}" data-pe-filter="${k}">${l} <span>${counts[k]}</span></button>`).join('')}</div>
-      ${shown.length?shown.map(row).join(''):`<div class="ins-empty"><b>${counts.all?'Tidak ada event di kategori ini':'Belum ada event'}</b><span>${counts.all?'Pilih tab lain atau buat event baru.':'Buat event pertamamu untuk mulai mengumpulkan peserta.'}</span></div>`}
+      ${shown.length?shown.map(row).join(''):`<div class="ins-empty"><b>${counts.all?'Tidak ada event di kategori ini':'Belum ada event'}</b><span>${counts.all?'Pilih tab lain atau buat event baru.':can('create')?'Buat event pertamamu untuk mulai mengumpulkan peserta.':'Belum ada event yang dibagikan kepadamu.'}</span></div>`}
       <p class="pe-note">Angka peserta pada event terbit adalah data contoh prototipe.</p></section>`;
   }
   // Pemilih event di atas halaman per event (dashboard, kelola, status).
   function switcher(){
-    const opts=promoterState.events.map(e=>`<option value="${e.id}" ${e.id===promoterState.activeEventId?'selected':''}>${esc(e.name||'Event tanpa nama')} · ${(STATUS[e.status]||STATUS.draft)[0]}</option>`).join('');
+    const opts=visible().map(e=>`<option value="${e.id}" ${e.id===promoterState.activeEventId?'selected':''}>${esc(e.name||'Event tanpa nama')} · ${(STATUS[e.status]||STATUS.draft)[0]}</option>`).join('');
     return `<div class="pe-switch"><button type="button" data-go="64">← Semua event</button><label><span>Event</span><select data-pe-select aria-label="Pilih event">${opts}</select></label></div>`;
   }
 
@@ -2304,10 +2307,12 @@ html{scrollbar-gutter:stable}
   function nav(html,n){
     html=html.replace(/<button class="(?:active)?" data-go="64">Ringkasan<\/button>/,`<button class="${[64,71].includes(n)?'active':''}" data-go="64">Ringkasan</button>`);
     html=html.replace(/<button class="(?:active)?" data-go="65">Kelola event<\/button>/,`<button class="${n===65&&!promoterState.event.name?'active':''}" data-pe-new>＋ Buat event</button>`);
-    if(n===64)html=html.replace('<button data-promoter-preview>Pratinjau publik</button>','');
+    if(n===64||n===72)html=html.replace('<button data-promoter-preview>Pratinjau publik</button>','');
+    html=html.replace(/(<button class="(?:active)?" data-pe-new>＋ Buat event<\/button>)/,`$1<button class="${n===72?'active':''}" data-go="72">Tim</button>`);
     return html;
   }
 
+  window.promoterNav=nav;
   /* ---------- Admin: tinjau semua event yang menunggu ---------- */
   function adminQueue(html){
     const pending=promoterState.events.filter(e=>['submitted','review','changes'].includes(e.status));
@@ -2321,18 +2326,228 @@ html{scrollbar-gutter:stable}
   /* ---------- Event ---------- */
   document.addEventListener('click',e=>{
     const pick=e.target.closest('[data-admin-review-event][data-pe-id]');if(pick){select(pick.dataset.peId);return}
-    if(e.target.closest('[data-pe-new]')){e.preventDefault();e.stopPropagation();const ev=blank();promoterState.events.push(ev);select(ev.id);openFlow(65);toast('Draft event baru dibuat');return}
+    if(e.target.closest('[data-pe-new]')){e.preventDefault();e.stopPropagation();if(!can('create')){toast('Peranmu tidak bisa membuat event');return}const ev=blank();promoterState.events.push(ev);select(ev.id);window.promoterTeam?.grantNewEvent(ev.id);log('membuat draft event baru');openFlow(65);toast('Draft event baru dibuat');return}
     const open=e.target.closest('[data-pe-open]');if(open){e.stopPropagation();confirmDelete=null;select(open.dataset.peOpen);openFlow(+open.dataset.peGo);return}
     const f=e.target.closest('[data-pe-filter]');if(f){filter=f.dataset.peFilter;confirmDelete=null;openFlow(64,false);return}
     const del=e.target.closest('[data-pe-delete]');if(del){e.stopPropagation();const id=del.dataset.peDelete;
       if(confirmDelete!==id){confirmDelete=id;openFlow(64,false);return}
-      confirmDelete=null;promoterState.events=promoterState.events.filter(x=>x.id!==id||x.status!=='draft');
+      if(!can('delete')){toast('Peranmu tidak bisa menghapus event');return}
+      const gone=promoterState.events.find(x=>x.id===id);confirmDelete=null;promoterState.events=promoterState.events.filter(x=>x.id!==id||x.status!=='draft');log(`menghapus draft “${gone?.name||'Event tanpa nama'}”`);
       if(!promoterState.events.length){const ev=blank();promoterState.events.push(ev)}
       if(!promoterState.events.some(x=>x.id===promoterState.activeEventId))promoterState.activeEventId=promoterState.events[0].id;
       savePromoter();toast('Draft dihapus');openFlow(64,false);return}
   },true);
   document.addEventListener('change',e=>{const s=e.target.closest('[data-pe-select]');if(!s)return;select(s.value);
     const ev=promoterState.event,target=flowCurrent===65&&!['draft','changes'].includes(ev.status)?71:flowCurrent;openFlow(target,false)});
+})();
+</script>
+<style id="promoter-team-css">/* ===== Promotor Studio: anggota tim ===== */
+.team-card{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:16px}
+.team-card h3{margin:0 0 4px;font-size:16px}
+.team-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.team-head p{margin:0;color:var(--muted);font-size:13px}
+.team-primary,.team-invite button[type=submit]{padding:10px 14px;border:0;border-radius:11px;background:var(--temmoo-gradient);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.team-invite{display:grid;gap:14px;margin:4px 0 16px;padding:16px;border:1px solid #d5d0ff;border-radius:14px;background:#faf9ff}
+.team-invite h3{margin:0}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.team-invite label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.team-invite small{color:var(--muted);font-weight:500}
+.team-invite input[type=email],.team-invite input[name=name]{padding:11px 12px;border:1px solid #ddd9e7;border-radius:11px;background:#fff;font:inherit;font-weight:500}
+.team-invite fieldset{display:grid;gap:8px;margin:0;padding:0;border:0}
+.team-invite legend{margin-bottom:8px;font-size:13px;font-weight:800}
+.team-roles{grid-template-columns:repeat(3,minmax(0,1fr))}
+.team-roles label{display:flex!important;align-items:flex-start;gap:8px;padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.team-roles label:has(input:checked){border-color:var(--indigo);background:var(--indigo-light)}
+.team-roles span{display:grid;gap:2px}.team-roles b{font-size:14px}
+.team-access label{display:flex!important;align-items:center;gap:8px;font-weight:500!important}
+.team-events{display:none;gap:6px;margin-left:24px;padding:10px;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.team-events.on{display:grid}
+.team-form-actions{display:flex;justify-content:flex-end;gap:8px}
+.team-form-actions .ghost{padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit;font-weight:700;cursor:pointer}
+.team-list{display:grid}
+.team-row{display:grid;grid-template-columns:44px minmax(0,1.6fr) minmax(0,.8fr) minmax(0,.8fr) auto;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.team-row.pending .avatar{opacity:.55}
+.team-row .avatar{width:42px;height:42px;font-size:13px}
+.team-who{display:grid;gap:2px;min-width:0}
+.team-who b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team-who em{color:var(--muted);font-style:normal;font-weight:500}
+.team-who span,.team-who small{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team-cell select{width:100%;padding:8px 9px;border:1px solid #ddd9e7;border-radius:10px;background:#fff;font:inherit;font-size:13px;font-weight:700}
+.team-role{display:inline-block;padding:4px 9px;border-radius:99px;background:var(--soft);color:var(--indigo-dark);font-size:12px;font-weight:800}
+.team-role.owner{background:var(--indigo);color:#fff}
+.team-role.mini{padding:1px 6px;font-size:10px}
+.team-muted{color:var(--muted);font-size:13px}
+.team-link{border:0;background:none;color:var(--indigo);font:inherit;font-size:13px;font-weight:800;cursor:pointer;padding:0}
+.team-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.team-actions button{padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--text);font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.team-actions .danger{color:#c0303c}
+.team-actions .team-demo{border-style:dashed;border-color:#c8c2ff;color:var(--indigo-dark);background:#faf9ff}
+.team-access-edit{grid-column:2/-1;display:grid;gap:7px;padding:12px;border-radius:12px;background:var(--bg);font-size:13px}
+.team-access-edit label{display:flex;align-items:center;gap:8px}
+.team-access-edit button{justify-self:start;padding:7px 12px;border:0;border-radius:9px;background:var(--indigo);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.team-two{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px}
+.team-two .team-card{margin-bottom:0}
+.team-matrix{display:grid;margin:10px 0}
+.team-matrix>div{display:grid;grid-template-columns:minmax(0,1.8fr) repeat(4,minmax(0,.7fr));align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.team-matrix>div:first-child{border-top:0;color:var(--muted);font-size:12px;font-weight:800}
+.team-matrix span:not(:first-child){text-align:center}
+.team-matrix .yes{color:var(--teal-text);font-weight:900}.team-matrix .no{color:var(--muted)}
+.team-activity{display:grid;gap:9px;margin:10px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.45}
+.team-activity small{display:block;color:var(--muted);font-size:11px}
+.team-acting{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 18px;padding:11px 14px;border-radius:12px;background:#fff3d6;border:1px solid #f1d58b;color:#7a5608;font-size:13px}
+.team-acting button{flex:none;padding:7px 12px;border:0;border-radius:9px;background:#7a5608;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.team-note{margin:0;color:var(--muted);font-size:13px}
+.team-note.inline{align-self:center;margin-right:auto;font-size:12px}
+@media(max-width:900px){.team-two{grid-template-columns:1fr}.team-roles{grid-template-columns:1fr}}
+@media(max-width:760px){.team-row{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr)}.team-who{grid-column:2/-1}.team-row .team-cell:nth-of-type(1){grid-column:2}.team-actions{grid-column:1/-1;justify-content:flex-start}.team-access-edit{grid-column:1/-1}.team-grid{grid-template-columns:1fr}.team-acting{flex-direction:column;align-items:stretch}.team-head{flex-direction:column}.team-matrix>div{grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(0,.6fr));font-size:12px}}
+</style>
+<script id="promoter-team-js">// Anggota tim akun promotor: undangan, peran (Pemilik/Admin/Editor/Pengamat), akses per event,
+// "Lihat sebagai" untuk menguji hak akses, dan log aktivitas. Tanpa server, undangan diterima lewat simulasi
+// dan hak akses hanya ditegakkan di tampilan.
+(()=>{
+  const esc=escapeText,TEAM=72;
+  const ROLES={
+    owner:{label:'Pemilik',desc:'Semua akses, termasuk mengelola tim'},
+    admin:{label:'Admin',desc:'Kelola semua event, ajukan ke Temmoo, dan atur anggota'},
+    editor:{label:'Editor',desc:'Buat & ubah event serta kirim pengumuman'},
+    viewer:{label:'Pengamat',desc:'Hanya melihat dashboard dan data peserta'}};
+  const PERMS={
+    owner:{create:1,edit:1,submit:1,delete:1,announce:1,team:1},
+    admin:{create:1,edit:1,submit:1,delete:1,announce:1,team:1},
+    editor:{create:1,edit:1,submit:0,delete:0,announce:1,team:0},
+    viewer:{create:0,edit:0,submit:0,delete:0,announce:0,team:0}};
+  const ACTIONS=[['Melihat dashboard & data peserta',null],['Membuat event baru','create'],['Mengubah event','edit'],['Mengirim pengumuman','announce'],['Mengajukan event ke Tim Temmoo','submit'],['Menghapus draft event','delete'],['Mengundang & mengatur anggota','team']];
+
+  /* ---------- Data ---------- */
+  const uid=()=>'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  if(!promoterState.team){promoterState.team={members:[],activity:[]};}
+  const team=promoterState.team;
+  // Pemilik = akun yang mendaftar sebagai promotor.
+  if(!team.members.some(m=>m.role==='owner'))team.members.unshift({id:'owner',name:accountState.name,email:accountState.email,role:'owner',access:'all',status:'active',joinedAt:Date.now()});
+  savePromoter();
+  let actingId=null; // "Lihat sebagai" (tidak disimpan: kembali ke Pemilik setelah refresh)
+  let showInvite=false,confirmRemove=null,editAccess=null;
+
+  const me=()=>team.members.find(m=>m.id===(actingId||'owner'))||team.members[0];
+  const can=act=>!!PERMS[me().role]?.[act];
+  const fullAccess=m=>m.role==='owner'||m.role==='admin'||m.access==='all';
+  const visibleEvents=()=>{const m=me();return fullAccess(m)?promoterState.events:promoterState.events.filter(e=>(m.access||[]).includes(e.id))};
+  function log(text){team.activity.unshift({by:me().name,role:me().role,text,at:Date.now()});team.activity=team.activity.slice(0,40);savePromoter()}
+  // Event baru yang dibuat Editor dengan akses terbatas otomatis masuk aksesnya.
+  function grantNewEvent(id){const m=me();if(!fullAccess(m)){m.access=[...(m.access||[]),id];savePromoter()}}
+  window.promoterTeam={can,visibleEvents,log,grantNewEvent,me};
+
+  const initials=s=>String(s||'?').split(/[\s@.]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const ago=t=>{if(!t)return '';const m=Math.floor((Date.now()-t)/60000);return m<1?'baru saja':m<60?m+' mnt lalu':m<1440?Math.floor(m/60)+' jam lalu':Math.floor(m/1440)+' hari lalu'};
+  const accessText=m=>fullAccess(m)?'Semua event':`${(m.access||[]).length} event`;
+  const canManage=m=>can('team')&&m.role!=='owner'&&m.id!==me().id;
+
+  /* ---------- Halaman Tim (layar 72) ---------- */
+  function inviteForm(){
+    const evs=promoterState.events;
+    return `<form class="team-invite" data-team-invite><h3>Undang anggota</h3>
+      <div class="team-grid"><label>Email<input name="email" type="email" required placeholder="nama@email.com"></label><label>Nama <small>opsional</small><input name="name" maxlength="40" placeholder="Nama anggota"></label></div>
+      <fieldset class="team-roles"><legend>Peran</legend>${['admin','editor','viewer'].map((r,i)=>`<label><input type="radio" name="role" value="${r}" ${i===1?'checked':''}><span><b>${ROLES[r].label}</b><small>${ROLES[r].desc}</small></span></label>`).join('')}</fieldset>
+      <fieldset class="team-access" data-team-access><legend>Akses event <small>(Admin selalu bisa mengakses semua event)</small></legend>
+        <label><input type="radio" name="scope" value="all" checked> Semua event, termasuk event baru</label>
+        <label><input type="radio" name="scope" value="some"> Event tertentu</label>
+        <div class="team-events">${evs.map(e=>`<label><input type="checkbox" name="events" value="${e.id}"> ${esc(e.name||'Event tanpa nama')}</label>`).join('')}</div></fieldset>
+      <div class="team-form-actions"><button type="button" class="ghost" data-team-invite-toggle>Batal</button><button type="submit">Kirim undangan</button></div></form>`;
+  }
+  function memberRow(m){
+    const isMe=m.id===me().id,manage=canManage(m),pending=m.status==='invited';
+    const role=manage?`<select data-team-role="${m.id}" aria-label="Peran ${esc(m.name||m.email)}">${['admin','editor','viewer'].map(r=>`<option value="${r}" ${m.role===r?'selected':''}>${ROLES[r].label}</option>`).join('')}</select>`:`<span class="team-role ${m.role}">${ROLES[m.role].label}</span>`;
+    const access=m.role==='owner'||m.role==='admin'?'<span class="team-muted">Semua event</span>':manage?`<button type="button" class="team-link" data-team-access-edit="${m.id}">${accessText(m)} ✎</button>`:`<span class="team-muted">${accessText(m)}</span>`;
+    const actions=[];
+    if(pending&&can('team'))actions.push(`<button type="button" class="team-demo" data-team-accept="${m.id}">Simulasikan diterima</button>`);
+    if(!pending&&m.role!=='owner'&&actingId!==m.id&&me().role==='owner')actions.push(`<button type="button" data-team-act="${m.id}">Lihat sebagai</button>`);
+    if(manage)actions.push(`<button type="button" class="danger" data-team-remove="${m.id}">${confirmRemove===m.id?(pending?'Yakin batalkan?':'Yakin hapus?'):(pending?'Batalkan':'Hapus')}</button>`);
+    const editor=editAccess===m.id?`<div class="team-access-edit"><b>Akses ${esc(m.name||m.email)}</b><label><input type="radio" name="scope-${m.id}" value="all" ${m.access==='all'?'checked':''} data-team-scope="${m.id}"> Semua event</label>${promoterState.events.map(e=>`<label><input type="checkbox" value="${e.id}" data-team-event="${m.id}" ${m.access!=='all'&&(m.access||[]).includes(e.id)?'checked':''}> ${esc(e.name||'Event tanpa nama')}</label>`).join('')}<button type="button" data-team-access-done>Selesai</button></div>`:'';
+    return `<article class="team-row ${pending?'pending':''}"><div class="avatar ${m.role==='owner'?'':'teal'}">${esc(initials(m.name||m.email))}</div>
+      <div class="team-who"><b>${esc(m.name||m.email)}${isMe?' <em>(kamu)</em>':''}</b><span>${esc(m.email||'')}</span><small>${pending?`Undangan terkirim ${ago(m.invitedAt)}`:m.role==='owner'?'Pemilik akun promotor':`Bergabung ${ago(m.joinedAt)}`}</small></div>
+      <div class="team-cell">${role}</div><div class="team-cell">${access}</div><div class="team-actions">${actions.join('')}</div>${editor}</article>`;
+  }
+  function teamPage(){
+    const active=team.members.filter(m=>m.status==='active').length,pending=team.members.length-active;
+    const matrix=`<section class="team-card"><h3>Hak akses per peran</h3><div class="team-matrix" role="table"><div role="row"><span role="columnheader">Tindakan</span>${Object.values(ROLES).map(r=>`<span role="columnheader">${r.label}</span>`).join('')}</div>${ACTIONS.map(([label,key])=>`<div role="row"><span role="cell">${label}</span>${Object.keys(ROLES).map(r=>`<span role="cell" class="${!key||PERMS[r][key]?'yes':'no'}" aria-label="${!key||PERMS[r][key]?'Bisa':'Tidak bisa'}">${!key||PERMS[r][key]?'✓':'—'}</span>`).join('')}</div>`).join('')}</div><p class="team-muted">Editor dan Pengamat bisa dibatasi ke event tertentu.</p></section>`;
+    const activity=`<section class="team-card"><h3>Aktivitas tim</h3>${team.activity.length?`<ul class="team-activity">${team.activity.slice(0,10).map(a=>`<li><b>${esc(a.by)}</b> <span class="team-role mini ${a.role}">${ROLES[a.role]?.label||''}</span> ${esc(a.text)}<small>${ago(a.at)}</small></li>`).join('')}</ul>`:'<p class="team-muted">Belum ada aktivitas.</p>'}</section>`;
+    const body=can('team')?`<section class="team-card"><header class="team-head"><div><h3>Anggota tim</h3><p>${active} aktif${pending?` · ${pending} undangan menunggu`:''}</p></div>${showInvite?'':'<button type="button" class="team-primary" data-team-invite-toggle>＋ Undang anggota</button>'}</header>${showInvite?inviteForm():''}<div class="team-list">${team.members.map(memberRow).join('')}</div></section><div class="team-two">${matrix}${activity}</div>`
+      :`<section class="team-card"><div class="ins-empty"><b>Hanya Pemilik dan Admin yang bisa mengelola tim</b><span>Kamu masuk sebagai ${ROLES[me().role].label}.</span></div></section>${matrix}`;
+    return promoterPage('Tim',`Kelola siapa saja yang bisa mengakses Promotor Studio ${esc(promoterState.organization)}`,body);
+  }
+
+  /* ---------- Penegakan hak akses di halaman lain ---------- */
+  function banner(){const m=me();return actingId?`<div class="team-acting"><span>👁 Kamu melihat Promotor Studio sebagai <b>${esc(m.name||m.email)}</b> (${ROLES[m.role].label})</span><button type="button" data-team-exit>Kembali sebagai Pemilik</button></div>`:''}
+  function restrict(html,n){
+    if(!can('create'))html=html.replace(/<button class="(?:active)?" data-pe-new>＋ Buat event<\/button>/,'');
+    if(!can('team'))html=html.replace(/<button class="(?:active)?" data-go="72">Tim<\/button>/,'');
+    if(n===65&&!can('edit')){
+      // Hanya kolom di dalam form; pemilih event di atas halaman tetap bisa dipakai.
+      html=html.replace(/<form class="promoter-form"[\s\S]*?<\/form>/,form=>form.replace(/<(input|select|textarea)(?![^>]*\sdisabled)/g,'<$1 disabled').replace(/<div class="form-actions">[\s\S]*?<\/div>/,'<p class="team-note">Peranmu hanya bisa melihat event ini.</p>'));
+    }else if(n===65&&!can('submit')){
+      html=html.replace(/<button class="primary" type="submit" name="intent" value="submit">[^<]*<\/button>/,'').replace('<div class="form-actions">','<div class="form-actions"><span class="team-note inline">Pengajuan ke Tim Temmoo dilakukan oleh Admin atau Pemilik.</span>');
+    }
+    if(n===71){
+      if(!can('edit'))html=html.replace(/<button data-go="65">Edit event<\/button>/,'');
+      if(!can('submit'))html=html.replace(/<button class="primary" data-submit-event>[^<]*<\/button>/,'<span class="team-note inline">Menunggu Admin/Pemilik mengajukan</span>');
+      if(!can('announce'))html=html.replace(/<button type="button" data-ins-action="announce">[\s\S]*?<\/button>/,'');
+    }
+    return html.replace('<main class="promoter-main">','<main class="promoter-main">'+banner());
+  }
+  // Event yang tidak termasuk akses anggota tidak boleh dibuka lewat pemilih/URL.
+  function guardActive(){const vis=visibleEvents();if(vis.length&&!vis.some(e=>e.id===promoterState.activeEventId)){promoterState.activeEventId=vis[0].id}}
+
+  const baseTemplate=template;
+  template=function(n){
+    const promoter=typeof isPromoter==='function'&&isPromoter();
+    if(n===TEAM&&promoter)return restrict(window.promoterNav(teamPage(),TEAM),TEAM);
+    if(promoter&&[64,65,66,67,71].includes(n)){
+      if(n!==64){guardActive();if(!visibleEvents().length)return restrict(window.promoterNav(promoterPage('Event','Tidak ada event yang bisa diakses','<section class="team-card"><div class="ins-empty"><b>Belum ada event yang dibagikan kepadamu</b><span>Minta Pemilik atau Admin memberi akses event.</span></div></section>'),n),n)}
+      return restrict(baseTemplate(n),n);
+    }
+    return baseTemplate(n);
+  };
+  const rerender=()=>openFlow(flowCurrent,false);
+
+  /* ---------- Event ---------- */
+  document.addEventListener('click',e=>{
+    const t=e.target;
+    // Penjaga tindakan yang tidak diizinkan (mis. tombol yang dipanggil dari tempat lain)
+    if(t.closest('[data-submit-event]')&&!can('submit')){e.preventDefault();e.stopImmediatePropagation();toast('Peranmu tidak bisa mengajukan event');return}
+    if(t.closest('[data-team-invite-toggle]')){showInvite=!showInvite;rerender();return}
+    const accept=t.closest('[data-team-accept]');if(accept){const m=team.members.find(x=>x.id===accept.dataset.teamAccept);if(m){m.status='active';m.joinedAt=Date.now();if(!m.name)m.name=m.email.split('@')[0];team.activity.unshift({by:m.name,role:m.role,text:`menerima undangan dan bergabung sebagai ${ROLES[m.role].label}`,at:Date.now()});savePromoter();
+      pushNotif({kind:'follow',icon:'＋',who:m.name,av:initials(m.name),tone:'teal',text:`bergabung ke tim ${promoterState.organization} sebagai ${ROLES[m.role].label}`,go:{screen:TEAM}});toast(`${m.name} bergabung ke tim`);rerender()}return}
+    const act=t.closest('[data-team-act]');if(act){actingId=act.dataset.teamAct;confirmRemove=null;editAccess=null;guardActive();toast(`Melihat sebagai ${me().name}`);openFlow(64,false);return}
+    if(t.closest('[data-team-exit]')){actingId=null;toast('Kembali sebagai Pemilik');openFlow(TEAM,false);return}
+    const rem=t.closest('[data-team-remove]');if(rem){const id=rem.dataset.teamRemove;if(confirmRemove!==id){confirmRemove=id;rerender();return}
+      const m=team.members.find(x=>x.id===id);if(m&&canManage(m)){team.members=team.members.filter(x=>x.id!==id);log(m.status==='invited'?`membatalkan undangan ${m.email}`:`menghapus ${m.name||m.email} dari tim`);toast(m.status==='invited'?'Undangan dibatalkan':'Anggota dihapus')}confirmRemove=null;rerender();return}
+    const ae=t.closest('[data-team-access-edit]');if(ae){editAccess=editAccess===ae.dataset.teamAccessEdit?null:ae.dataset.teamAccessEdit;rerender();return}
+    if(t.closest('[data-team-access-done]')){editAccess=null;rerender();return}
+  },true);
+  document.addEventListener('change',e=>{
+    const t=e.target;
+    const r=t.closest('[data-team-role]');if(r){const m=team.members.find(x=>x.id===r.dataset.teamRole);if(m&&canManage(m)){const from=ROLES[m.role].label;m.role=r.value;if(m.role==='admin')m.access='all';log(`mengubah peran ${m.name||m.email}: ${from} → ${ROLES[m.role].label}`);toast('Peran diperbarui');rerender()}return}
+    const sc=t.closest('[data-team-scope]');if(sc){const m=team.members.find(x=>x.id===sc.dataset.teamScope);if(m){m.access='all';log(`memberi ${m.name||m.email} akses semua event`);rerender()}return}
+    const ev=t.closest('[data-team-event]');if(ev){const m=team.members.find(x=>x.id===ev.dataset.teamEvent);if(m){const set=new Set(m.access==='all'?[]:m.access||[]);ev.checked?set.add(ev.value):set.delete(ev.value);m.access=[...set];const name=promoterState.events.find(x=>x.id===ev.value)?.name||'event';log(`${ev.checked?'memberi':'mencabut'} akses ${m.name||m.email} ke “${name}”`);rerender()}return}
+    // Form undangan: daftar event hanya aktif bila "Event tertentu"
+    const scope=t.closest('[data-team-invite] [name=scope]');if(scope)t.form.querySelector('.team-events').classList.toggle('on',scope.value==='some');
+  });
+  document.addEventListener('submit',e=>{
+    const f=e.target.closest('[data-team-invite]');if(!f)return;e.preventDefault();
+    if(!can('team')){toast('Peranmu tidak bisa mengundang anggota');return}
+    const d=new FormData(f),email=String(d.get('email')).trim().toLowerCase(),role=d.get('role'),scope=d.get('scope'),evs=d.getAll('events');
+    if(team.members.some(m=>(m.email||'').toLowerCase()===email)){toast('Email ini sudah ada di tim');return}
+    if(role!=='admin'&&scope==='some'&&!evs.length){toast('Pilih minimal satu event');return}
+    team.members.push({id:uid(),name:String(d.get('name')||'').trim(),email,role,access:role==='admin'||scope==='all'?'all':evs,status:'invited',invitedAt:Date.now()});
+    log(`mengundang ${email} sebagai ${ROLES[role].label}`);showInvite=false;toast('Undangan terkirim');rerender();
+  });
+  // Catat aktivitas dari form bawaan (kelola event & pengumuman); window bubble = setelah handler aslinya.
+  window.addEventListener('submit',e=>{
+    if(e.target.closest('[data-promoter-event-form]')){const intent=e.submitter?.value||'draft',name=promoterState.event.name||'Event tanpa nama';log(intent==='submit'?`mengajukan “${name}” ke Tim Temmoo`:`menyimpan draft “${name}”`)}
+    if(e.target.closest('[data-ins-announce]'))log(`mengirim pengumuman untuk “${promoterState.event.name}”`);
+  });
+  // Penjaga kirim pengajuan dari form untuk Editor/Pengamat
+  window.addEventListener('submit',e=>{const f=e.target.closest('[data-promoter-event-form]');if(!f)return;if((e.submitter?.value==='submit'&&!can('submit'))||!can('edit')){e.preventDefault();e.stopImmediatePropagation();toast('Peranmu tidak bisa melakukan ini')}},true);
 })();
 </script>
 

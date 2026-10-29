@@ -102,7 +102,7 @@
     if(n===71&&typeof isPromoter==='function'&&isPromoter()){
       const ev=promoterState.event;
       html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats(ev)):'')+'<section class="promoter-panel">');
-      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
+      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${window.promoterTeam&&!window.promoterTeam.can('announce')?'':announceCard()}</div>`})()
         :`<div class="ins-grid"><section class="ins-card ins-wide"><div class="ins-empty"><b>Data peserta muncul setelah event terbit</b><span>Rencana kehadiran, alasan peserta, asal kota, dan pengumuman tersedia begitu event disetujui Tim Temmoo.</span></div></section></div>`;
       const i=html.lastIndexOf('</main>');if(i>0)html=html.slice(0,i)+extra+html.slice(i);
     }
