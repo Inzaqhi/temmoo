@@ -98,3 +98,6 @@
 .team-otp-demo{font-size:13px;color:var(--indigo-dark)}
 .team-otp-demo b{letter-spacing:.2em;font-size:15px}
 @media(max-width:420px){.team-otp-boxes{gap:6px}.team-otp-boxes input{width:42px;height:50px;font-size:20px}}
+.team-accept-btn{padding:8px 13px!important;border:0!important;background:#1f7a5c!important;color:#fff!important}
+.team-accept{border-color:#a8dcc8}
+.accept-solid{padding:10px 14px;border:0;border-radius:11px;background:#1f7a5c;color:#fff;font:inherit;font-weight:800;cursor:pointer}
