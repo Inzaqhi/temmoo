@@ -14,6 +14,7 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 - **Notifikasi**
 - **Profil:** postingan, balasan, galeri foto pribadi, riwayat event, dan Pusat Akun
 - **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio untuk banyak event dan anggota tim), dan Tim Temmoo (Admin Console)
+- **Verifikasi bertingkat:** pengguna biasa dan Promotor Dasar (event gratis) tanpa KTP; Promotor Penuh (event berbayar & album) dan pemilik organisasi berbayar wajib verifikasi identitas sekali per orang (layar 73)
 
 ## Struktur proyek
 

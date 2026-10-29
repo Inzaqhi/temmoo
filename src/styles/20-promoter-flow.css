@@ -56,3 +56,20 @@
 .admin-list-row .pro-admin-actions button:last-child{background:var(--indigo);border-color:var(--indigo);color:#fff}
 @media(max-width:620px){.admin-list-row:has(.pro-admin-actions){flex-wrap:wrap}.admin-list-row .pro-admin-actions{width:100%}.admin-list-row .pro-admin-actions button{flex:1}}
 @media(max-width:620px){.pro-page{padding:14px 12px 90px}.pro-grid,.pro-benefits{grid-template-columns:1fr}}
+/* Pilihan tingkat promotor di form pendaftaran */
+.pro-tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pro-tiers label{display:flex!important;align-items:flex-start;gap:9px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:500!important}
+.pro-tiers label:has(input:checked){border-color:var(--indigo);background:var(--indigo-light)}
+.pro-tiers span{display:grid;gap:3px}.pro-tiers b{font-size:14px}.pro-tiers small{color:var(--muted);font-size:12px;line-height:1.45}
+.pro-hint{margin:-4px 0 0;color:var(--muted);font-size:12px}
+.pro-form:has([name=tier][value=basic]:checked) .pro-only-full{display:none}
+.pro-form:has([name=tier][value=full]:checked) .pro-only-basic{display:none}
+.pro-only-full{display:grid;gap:12px}
+.pro-id{display:flex;align-items:center;gap:12px;padding:12px;border:1px dashed #cbc6ee;border-radius:12px;background:#faf9ff}
+.pro-id.ok{border:1px solid #a8dcc8;background:#f2faf6}
+.pro-id>i{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--indigo-light);color:var(--indigo-dark);font-style:normal}
+.pro-id.ok>i{background:#1f7a5c;color:#fff}
+.pro-id>span{display:grid;gap:2px;flex:1}.pro-id small{color:var(--muted);font-weight:500}
+.pro-id-btn{flex:none;padding:8px 12px;border:0;border-radius:10px;background:var(--indigo);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+@media(max-width:620px){.pro-tiers{grid-template-columns:1fr}.pro-id{flex-wrap:wrap}}
+.pro-tiers input{flex:none;width:auto!important;margin:3px 0 0;padding:0;accent-color:var(--indigo)}

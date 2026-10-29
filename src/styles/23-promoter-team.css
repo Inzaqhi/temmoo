@@ -128,3 +128,16 @@
 .accept-solid:disabled{opacity:.7;cursor:progress}
 @media(max-width:760px){.kyc-files{grid-template-columns:1fr}.kyc-steps{flex-direction:column}}
 .kyc-form .team-check{display:flex;align-items:flex-start;gap:8px;font-weight:500;color:var(--muted)}
+/* Tingkat promotor */
+.tier-card{display:grid;gap:12px;margin-bottom:16px;padding:16px 18px;border:1px solid #c8c2ff;border-radius:16px;background:linear-gradient(135deg,#f3f1ff,#fff)}
+.tier-card>div:first-child{display:grid;gap:4px}
+.tier-card>div:first-child span{color:var(--muted);font-size:13px;line-height:1.5}
+.tier-checks{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:13px}
+.tier-checks li{display:flex;align-items:flex-start;gap:9px}
+.tier-checks i{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;border:2px solid var(--line);font-style:normal;font-size:11px;color:var(--muted);background:#fff}
+.tier-checks .ok i{border-color:#1f7a5c;background:#1f7a5c;color:#fff}
+.tier-checks span{display:grid;gap:2px}.tier-checks small{color:var(--muted)}
+.tier-btn{justify-self:start;padding:0 18px}
+.tier-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.tier-note{display:block;margin-top:2px;color:var(--muted);font-weight:500}
+.tier-file{cursor:pointer}
