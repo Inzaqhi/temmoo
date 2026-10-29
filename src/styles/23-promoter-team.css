@@ -101,3 +101,30 @@
 .team-accept-btn{padding:8px 13px!important;border:0!important;background:#1f7a5c!important;color:#fff!important}
 .team-accept{border-color:#a8dcc8}
 .accept-solid{padding:10px 14px;border:0;border-radius:11px;background:#1f7a5c;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+/* Verifikasi identitas (KTP) */
+.kyc-steps{display:flex;gap:8px;margin:0 0 16px;padding:0;list-style:none;font-size:13px;color:var(--muted);font-weight:700}
+.kyc-steps li{display:flex;align-items:center;gap:7px;flex:1;padding:9px 11px;border-radius:10px;background:var(--bg)}
+.kyc-steps i{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;border:2px solid var(--line);background:#fff;font-style:normal;font-size:11px}
+.kyc-steps .now{color:var(--text);background:#eaf7f2}.kyc-steps .now i{border-color:#1f7a5c;color:#1f7a5c}
+.kyc-steps .done i{border-color:#1f7a5c;background:#1f7a5c;color:#fff}
+.kyc-form{display:grid;gap:14px}
+.kyc-form label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.kyc-form input[name=nik],.kyc-form input[name=fullName]{padding:11px 12px;border:1px solid #ddd9e7;border-radius:11px;font:inherit;font-weight:500}
+.kyc-form input[name=nik]{letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.kyc-files{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kyc-file{position:relative;display:flex!important;align-items:center;gap:12px;padding:12px;border:1px dashed #b9c9c1;border-radius:14px;background:#f7fbf9;cursor:pointer}
+.kyc-file.has{border-style:solid;border-color:#a8dcc8}
+.kyc-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.kyc-thumb{flex:none;width:72px;height:48px;display:grid;place-items:center;overflow:hidden;border-radius:8px;background:#e5efe9;color:#1f7a5c;font-size:20px}
+.kyc-thumb img{width:100%;height:100%;object-fit:cover}
+.kyc-file>span:nth-child(2){display:grid;gap:3px;flex:1;min-width:0}
+.kyc-file small{color:var(--muted);font-weight:500;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.kyc-file em{flex:none;color:#1f7a5c;font-style:normal;font-size:12px;font-weight:800}
+.kyc-results{display:grid;gap:6px;margin:0;padding:12px 14px;border-radius:12px;background:var(--bg);list-style:none;font-size:13px}
+.kyc-results li{display:flex;align-items:flex-start;gap:8px}
+.kyc-results i{flex:none;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-style:normal;font-size:11px;font-weight:900;color:#fff}
+.kyc-results .ok i{background:#1f7a5c}.kyc-results .bad i{background:#c0303c}.kyc-results .warn i{background:var(--gold-text)}
+.kyc-form .pro-demo button{padding:7px 11px;border:1px solid #c8c2ff;border-radius:9px;background:#fff;color:var(--indigo-dark);font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.accept-solid:disabled{opacity:.7;cursor:progress}
+@media(max-width:760px){.kyc-files{grid-template-columns:1fr}.kyc-steps{flex-direction:column}}
+.kyc-form .team-check{display:flex;align-items:flex-start;gap:8px;font-weight:500;color:var(--muted)}

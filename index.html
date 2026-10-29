@@ -2445,6 +2445,33 @@ html{scrollbar-gutter:stable}
 .team-accept-btn{padding:8px 13px!important;border:0!important;background:#1f7a5c!important;color:#fff!important}
 .team-accept{border-color:#a8dcc8}
 .accept-solid{padding:10px 14px;border:0;border-radius:11px;background:#1f7a5c;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+/* Verifikasi identitas (KTP) */
+.kyc-steps{display:flex;gap:8px;margin:0 0 16px;padding:0;list-style:none;font-size:13px;color:var(--muted);font-weight:700}
+.kyc-steps li{display:flex;align-items:center;gap:7px;flex:1;padding:9px 11px;border-radius:10px;background:var(--bg)}
+.kyc-steps i{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;border:2px solid var(--line);background:#fff;font-style:normal;font-size:11px}
+.kyc-steps .now{color:var(--text);background:#eaf7f2}.kyc-steps .now i{border-color:#1f7a5c;color:#1f7a5c}
+.kyc-steps .done i{border-color:#1f7a5c;background:#1f7a5c;color:#fff}
+.kyc-form{display:grid;gap:14px}
+.kyc-form label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.kyc-form input[name=nik],.kyc-form input[name=fullName]{padding:11px 12px;border:1px solid #ddd9e7;border-radius:11px;font:inherit;font-weight:500}
+.kyc-form input[name=nik]{letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.kyc-files{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kyc-file{position:relative;display:flex!important;align-items:center;gap:12px;padding:12px;border:1px dashed #b9c9c1;border-radius:14px;background:#f7fbf9;cursor:pointer}
+.kyc-file.has{border-style:solid;border-color:#a8dcc8}
+.kyc-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.kyc-thumb{flex:none;width:72px;height:48px;display:grid;place-items:center;overflow:hidden;border-radius:8px;background:#e5efe9;color:#1f7a5c;font-size:20px}
+.kyc-thumb img{width:100%;height:100%;object-fit:cover}
+.kyc-file>span:nth-child(2){display:grid;gap:3px;flex:1;min-width:0}
+.kyc-file small{color:var(--muted);font-weight:500;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.kyc-file em{flex:none;color:#1f7a5c;font-style:normal;font-size:12px;font-weight:800}
+.kyc-results{display:grid;gap:6px;margin:0;padding:12px 14px;border-radius:12px;background:var(--bg);list-style:none;font-size:13px}
+.kyc-results li{display:flex;align-items:flex-start;gap:8px}
+.kyc-results i{flex:none;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-style:normal;font-size:11px;font-weight:900;color:#fff}
+.kyc-results .ok i{background:#1f7a5c}.kyc-results .bad i{background:#c0303c}.kyc-results .warn i{background:var(--gold-text)}
+.kyc-form .pro-demo button{padding:7px 11px;border:1px solid #c8c2ff;border-radius:9px;background:#fff;color:var(--indigo-dark);font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.accept-solid:disabled{opacity:.7;cursor:progress}
+@media(max-width:760px){.kyc-files{grid-template-columns:1fr}.kyc-steps{flex-direction:column}}
+.kyc-form .team-check{display:flex;align-items:flex-start;gap:8px;font-weight:500;color:var(--muted)}
 </style>
 <script id="promoter-team-js">// Anggota tim akun promotor: undangan, peran (Pemilik/Admin/Editor/Pengamat), akses per event,
 // "Lihat sebagai" untuk menguji hak akses, dan log aktivitas. Tanpa server, undangan diterima lewat simulasi
@@ -2560,11 +2587,12 @@ html{scrollbar-gutter:stable}
     const ch=document.querySelector('[data-otp-channel]');if(ch)ch.disabled=wait>0;
   },500);
   function transferPending(){
-    const tr=team.transfer;if(!tr){if(otp?.purpose==='accept')otp=null;return ''}
+    const tr=team.transfer;if(!tr){if(otp?.purpose==='accept')otp=null;kyc=null;return ''}
     const to=team.members.find(m=>m.id===tr.to);if(!to){team.transfer=null;savePromoter();return ''}
     const days=Math.max(0,Math.ceil((tr.expiresAt-Date.now())/DAY)),old=owner();
     const isTarget=me().id===to.id,mine=me().role==='owner';
-    if(otp?.purpose==='accept')return `<section class="team-card team-accept"><header class="team-head"><div><h3>Terima kepemilikan ${esc(promoterState.organization)}</h3><p>Verifikasi bahwa ${isTarget?'ini benar kamu':`ini benar ${esc(to.name||to.email)}`} sebelum menjadi Pemilik. Identitas (KTP) dianggap sudah terverifikasi di prototipe ini.</p></div></header>${otpForm('Verifikasi &amp; terima kepemilikan','accept-solid')}</section>`;
+    if(kyc)return kycStep(to,isTarget);
+    if(otp?.purpose==='accept')return `<section class="team-card team-accept"><header class="team-head"><div><h3>Terima kepemilikan ${esc(promoterState.organization)}</h3><p>Identitas sudah diperiksa${tr.kyc?` (NIK ${esc(tr.kyc.nik)}${tr.kyc.review?', dengan catatan tinjauan manual':''})`:''}. Terakhir, masukkan kode OTP.</p></div></header>${stepper(2)}${otpForm('Verifikasi &amp; terima kepemilikan','accept-solid')}</section>`;
     const head=isTarget?`<b>${esc(old?.name||'Pemilik')} meminta kamu menjadi Pemilik ${esc(promoterState.organization)}</b><span>Berlaku ${days} hari lagi. Sebagai Pemilik, kamu memegang kendali penuh atas event dan tim. Kode OTP akan dikirim ke emailmu untuk konfirmasi.</span>`
       :`<b>Menunggu ${esc(to.name||to.email)} menerima kepemilikan</b><span>Dikirim ${ago(tr.at)} · berlaku ${days} hari lagi. ${esc(to.name||to.email)} perlu memverifikasi identitas (KTP) dan kode OTP sebelum menerima. Setelah diterima, ${esc(old?.name||'pemilik lama')} ${tr.keepAs==='admin'?'tetap di tim sebagai Admin':'keluar dari tim'}.</span>`;
     const actions=isTarget?'<button type="button" class="team-accept-btn" data-transfer-accept>Terima kepemilikan</button><button type="button" class="danger" data-transfer-sim="decline">Tolak</button>'
@@ -2640,9 +2668,75 @@ html{scrollbar-gutter:stable}
     to.role='owner';to.access='all';
     if(tr.keepAs==='admin'){old.role='admin';old.access='all'}else team.members=team.members.filter(m=>m.id!==old.id);
     team.transfer=null;actingId=null;
-    team.activity.unshift({by:to.name||to.email,role:'owner',text:`menerima kepemilikan ${promoterState.organization} dari ${old.name}${tr.keepAs==='admin'?'':' (pemilik lama keluar dari tim)'}`,at:Date.now()});savePromoter();
+    team.activity.unshift({by:to.name||to.email,role:'owner',text:`menerima kepemilikan ${promoterState.organization} dari ${old.name}${tr.kyc?` · identitas NIK ${tr.kyc.nik}${tr.kyc.review?' (perlu tinjauan manual)':''}`:''}${tr.keepAs==='admin'?'':' (pemilik lama keluar dari tim)'}`,at:Date.now()});savePromoter();
     pushNotif({kind:'meet',icon:'✓',who:to.name||to.email,av:initials(to.name||to.email),tone:'teal',text:`sekarang menjadi Pemilik ${promoterState.organization}.${tr.keepAs==='admin'?' Kamu tetap di tim sebagai Admin.':' Kamu sudah keluar dari tim.'}`,go:{screen:tr.keepAs==='admin'?TEAM:56}});
     window.syncPromoterChrome?.();
+  }
+
+  /* ---------- Verifikasi identitas (KTP) sebelum OTP penerimaan ---------- */
+  // kyc = {to, ktp:{name,url,w,h}, selfie:{...}, nik, fullName, consent, status:'form'|'checking', error, results}
+  // Foto hanya disimpan di memori selama proses; yang dicatat hanya NIK tersamarkan.
+  let kyc=null;
+  const KYC_MAX=5*1024*1024,KYC_MIN_W=600,KYC_MIN_H=380;
+  const MONTHS_ID=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const maskNik=n=>n?n.slice(0,4)+'••••••••'+n.slice(-4):'';
+  function nikInfo(nik){
+    if(!/^\d{16}$/.test(nik))return {error:'NIK harus 16 digit angka.'};
+    const prov=+nik.slice(0,2);if(prov<11||prov>94)return {error:'Kode provinsi pada NIK tidak valid.'};
+    let dd=+nik.slice(6,8);const mm=+nik.slice(8,10),yy=+nik.slice(10,12),female=dd>40;if(female)dd-=40;
+    const nowYY=new Date().getFullYear()%100,year=yy>nowYY?1900+yy:2000+yy,birth=new Date(year,mm-1,dd);
+    if(mm<1||mm>12||dd<1||birth.getMonth()!==mm-1||birth.getDate()!==dd)return {error:'Tanggal lahir di dalam NIK tidak valid.'};
+    if(nik.slice(12)==='0000')return {error:'Nomor urut NIK tidak valid.'};
+    const t=new Date();let age=t.getFullYear()-year;if(t.getMonth()<mm-1||(t.getMonth()===mm-1&&t.getDate()<dd))age--;
+    return {birth,age,female,label:`${dd} ${MONTHS_ID[mm-1]} ${year}`};
+  }
+  const normName=n=>String(n||'').toLowerCase().replace(/[^a-z\s]/g,' ').split(/\s+/).filter(Boolean);
+  function nameMatches(a,b){const x=normName(a),y=normName(b);return x.length&&y.length&&(x.every(w=>y.includes(w))||y.every(w=>x.includes(w)))}
+  function readImage(file){return new Promise((ok,fail)=>{
+    if(!file)return fail('Pilih file foto.');
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type))return fail('Gunakan foto JPG, PNG, atau WEBP.');
+    if(file.size>KYC_MAX)return fail('Ukuran foto maksimal 5 MB.');
+    const r=new FileReader();r.onerror=()=>fail('Foto tidak bisa dibaca.');r.onload=()=>{const img=new Image();img.onload=()=>ok({name:file.name,url:r.result,w:img.naturalWidth,h:img.naturalHeight});img.onerror=()=>fail('Foto tidak bisa dibaca.');img.src=r.result};r.readAsDataURL(file);
+  })}
+  const stepper=n=>`<ol class="kyc-steps"><li class="${n>1?'done':'now'}"><i>${n>1?'✓':'1'}</i>Verifikasi identitas</li><li class="${n===2?'now':''}"><i>2</i>Kode OTP</li></ol>`;
+  function kycStep(to,isTarget){
+    const k=kyc,who=isTarget?'kamu':esc(to.name||to.email),uploading=k.status==='checking';
+    const file=(key,label,hint)=>{const f=k[key];return `<label class="kyc-file ${f?'has':''}"><span class="kyc-thumb">${f?`<img src="${f.url}" alt="Pratinjau ${label}">`:'▧'}</span><span><b>${label}</b><small>${f?`${esc(f.name)} · ${f.w}×${f.h} px`:hint}</small></span><input type="file" accept="image/jpeg,image/png,image/webp" data-kyc-file="${key}" ${uploading?'disabled':''}><em>${f?'Ganti':'Pilih foto'}</em></label>`};
+    const results=k.results?`<ul class="kyc-results">${k.results.map(r=>`<li class="${r.ok===true?'ok':r.ok===false?'bad':'warn'}"><i>${r.ok===true?'✓':r.ok===false?'✕':'!'}</i>${esc(r.text)}</li>`).join('')}</ul>`:'';
+    return `<section class="team-card team-accept"><header class="team-head"><div><h3>Terima kepemilikan ${esc(promoterState.organization)}</h3><p>Pemilik bertanggung jawab atas event resmi dan dana penjualan, jadi identitas ${who} perlu diperiksa.</p></div></header>${stepper(1)}
+      <form class="kyc-form" data-kyc-form novalidate>
+        <div class="kyc-files">${file('ktp','Foto KTP','Seluruh kartu terlihat jelas, tidak buram atau terpotong')}${file('selfie','Selfie dengan KTP','Wajah dan KTP terlihat dalam satu foto')}</div>
+        <div class="team-grid"><label>NIK<input name="nik" inputmode="numeric" maxlength="16" autocomplete="off" value="${esc(k.nik||'')}" placeholder="16 digit sesuai KTP" ${uploading?'disabled':''}></label><label>Nama lengkap sesuai KTP<input name="fullName" maxlength="60" value="${esc(k.fullName||'')}" placeholder="Seperti tertulis di KTP" ${uploading?'disabled':''}></label></div>
+        <label class="team-check"><input type="checkbox" name="consent" ${k.consent?'checked':''} ${uploading?'disabled':''}> Saya setuju data KTP dan foto diproses untuk verifikasi identitas sesuai Kebijakan Privasi Temmoo dan UU Pelindungan Data Pribadi.</label>
+        <p class="team-otp-error" role="alert">${esc(k.error||'')}</p>${results}
+        <div class="pro-demo"><small>FITUR UJI COBA PROTOTIPE: pemeriksaan hanya format & kualitas foto; pencocokan wajah dan data Dukcapil butuh layanan e-KYC</small><div><button type="button" data-kyc-sample>Isi NIK & nama contoh</button></div></div>
+        <div class="team-form-actions"><button type="button" class="ghost" data-kyc-back>Kembali</button><button type="submit" class="accept-solid" ${uploading?'disabled':''}>${uploading?'Memeriksa dokumen…':'Periksa & lanjut ke OTP'}</button></div>
+      </form></section>`;
+  }
+  function runKycCheck(){
+    const to=team.members.find(m=>m.id===kyc.to),info=nikInfo(kyc.nik||'');
+    const results=[];
+    results.push(kyc.ktp&&kyc.ktp.w>=KYC_MIN_W&&kyc.ktp.h>=KYC_MIN_H?{ok:true,text:`Foto KTP cukup jelas (${kyc.ktp.w}×${kyc.ktp.h} px)`}:{ok:false,text:`Foto KTP terlalu kecil; minimal ${KYC_MIN_W}×${KYC_MIN_H} px`});
+    results.push(kyc.selfie?{ok:true,text:'Selfie dengan KTP sudah diunggah'}:{ok:false,text:'Selfie dengan KTP belum diunggah'});
+    if(info.error)results.push({ok:false,text:info.error});
+    else{results.push({ok:true,text:`Format NIK valid · lahir ${info.label}`});results.push(info.age>=17?{ok:true,text:`Usia ${info.age} tahun (minimal 17)`}:{ok:false,text:`Usia ${info.age} tahun; pemilik minimal 17 tahun`})}
+    results.push(nameMatches(kyc.fullName,to?.name)?{ok:true,text:'Nama di KTP sesuai dengan nama akun'}:{ok:'warn',text:`Nama di KTP berbeda dengan nama akun (${to?.name||to?.email}); Tim Temmoo akan meninjau manual`});
+    return results;
+  }
+  function kycSubmit(form){
+    const d=new FormData(form);kyc.nik=String(d.get('nik')||'').replace(/\D/g,'');kyc.fullName=String(d.get('fullName')||'').trim();kyc.consent=!!d.get('consent');kyc.results=null;
+    const missing=!kyc.ktp?'Unggah foto KTP.':!kyc.selfie?'Unggah selfie dengan KTP.':!kyc.nik?'Isi NIK.':!kyc.fullName?'Isi nama lengkap sesuai KTP.':!/^[A-Za-z .,'-]+$/.test(kyc.fullName)?'Nama hanya boleh berisi huruf, spasi, titik, koma, atau tanda kutip.':!kyc.consent?'Setujui pemrosesan data untuk melanjutkan.':'';
+    if(missing){kyc.error=missing;rerender();return}
+    kyc.error='';kyc.status='checking';rerender();
+    setTimeout(()=>{
+      if(!kyc)return;kyc.status='form';kyc.results=runKycCheck();
+      if(kyc.results.some(r=>r.ok===false)){kyc.error='Verifikasi belum lolos. Perbaiki yang ditandai ✕ lalu periksa lagi.';rerender();return}
+      const to=team.members.find(m=>m.id===kyc.to);
+      team.transfer.kyc={nik:maskNik(kyc.nik),verifiedAt:Date.now(),review:kyc.results.some(r=>r.ok==='warn')};savePromoter();
+      const review=team.transfer.kyc.review;kyc=null;
+      toast(review?'Identitas diterima dengan catatan tinjauan manual':'Identitas terverifikasi');
+      startOtp({purpose:'accept',to:to.id,name:to.name||to.email,contact:{phone:to.phone||'',email:to.email}});
+    },1400);
   }
   /* ---------- Event ---------- */
   document.addEventListener('click',e=>{
@@ -2651,10 +2745,15 @@ html{scrollbar-gutter:stable}
     if(t.closest('[data-otp-back]')){otp=null;rerender();return}
     if(t.closest('[data-otp-resend]')&&otp){if(Date.now()<otp.sentAt+OTP_RESEND)return;sendOtp();toast('Kode baru dikirim');rerender();setTimeout(()=>document.querySelector('[data-otp-digit]')?.focus(),50);return}
     if(t.closest('[data-otp-channel]')&&otp){const wait=otp.sentAt+OTP_RESEND-Date.now();if(wait>0){toast(`Tunggu ${mmss(wait)} sebelum meminta kode baru`);return}otp.channel=otp.channel==='phone'?'email':'phone';sendOtp();toast(`Kode dikirim ke ${otp.channel==='phone'?'nomor HP':'email'}`);rerender();setTimeout(()=>document.querySelector('[data-otp-digit]')?.focus(),50);return}
-    if(t.closest('[data-transfer-cancel]')){if(otp?.purpose==='accept')otp=null;if(team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);team.transfer=null;log(`membatalkan pemindahan kepemilikan ke ${to?.name||to?.email}`);toast('Permintaan dibatalkan')}rerender();return}
-    if(t.closest('[data-transfer-accept]')&&team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);if(to)startOtp({purpose:'accept',to:to.id,name:to.name||to.email,contact:{phone:to.phone||'',email:to.email}});return}
+    if(t.closest('[data-transfer-cancel]')){if(otp?.purpose==='accept')otp=null;kyc=null;if(team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);team.transfer=null;log(`membatalkan pemindahan kepemilikan ke ${to?.name||to?.email}`);toast('Permintaan dibatalkan')}rerender();return}
+    if(t.closest('[data-transfer-accept]')&&team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);if(to){
+      // Identitas yang sudah lolos untuk permintaan ini tidak perlu diunggah ulang.
+      if(team.transfer.kyc){kyc=null;startOtp({purpose:'accept',to:to.id,name:to.name||to.email,contact:{phone:to.phone||'',email:to.email}})}
+      else{otp=null;kyc={to:to.id,status:'form'};rerender()}}return}
+    if(t.closest('[data-kyc-back]')){kyc=null;rerender();return}
+    if(t.closest('[data-kyc-sample]')&&kyc){const to=team.members.find(m=>m.id===kyc.to);kyc.nik='3578015408000004';kyc.fullName=(to?.name||'').toUpperCase();kyc.error='';rerender();return}
     const sim=t.closest('[data-transfer-sim]');if(sim&&team.transfer){
-      if(sim.dataset.transferSim==='decline'){otp=null;const to=team.members.find(m=>m.id===team.transfer.to);team.activity.unshift({by:to?.name||to?.email,role:to?.role,text:'menolak permintaan menjadi Pemilik',at:Date.now()});team.transfer=null;savePromoter();pushNotif({kind:'event',icon:'!',who:to?.name||'Anggota tim',av:initials(to?.name||to?.email),tone:'gold',text:'menolak permintaan menjadi Pemilik. Kamu tetap Pemilik.',go:{screen:TEAM}});toast('Permintaan ditolak');rerender()}
+      if(sim.dataset.transferSim==='decline'){otp=null;kyc=null;const to=team.members.find(m=>m.id===team.transfer.to);team.activity.unshift({by:to?.name||to?.email,role:to?.role,text:'menolak permintaan menjadi Pemilik',at:Date.now()});team.transfer=null;savePromoter();pushNotif({kind:'event',icon:'!',who:to?.name||'Anggota tim',av:initials(to?.name||to?.email),tone:'gold',text:'menolak permintaan menjadi Pemilik. Kamu tetap Pemilik.',go:{screen:TEAM}});toast('Permintaan ditolak');rerender()}
       return}
     if(t.closest('[data-transfer-restore]')){team.members.forEach(m=>{if(m.role==='owner'){m.role='admin';m.access='all'}});team.members.unshift({id:team.selfId,name:accountState.name,email:accountState.email,role:'owner',access:'all',status:'active',joinedAt:Date.now()});savePromoter();window.syncPromoterChrome?.();toast('Kamu kembali menjadi Pemilik (uji coba)');openFlow(TEAM,false);return}
     // Penjaga tindakan yang tidak diizinkan (mis. tombol yang dipanggil dari tempat lain)
@@ -2691,12 +2790,17 @@ html{scrollbar-gutter:stable}
   });
   document.addEventListener('change',e=>{
     const t=e.target;
+    const kf=t.closest('[data-kyc-file]');if(kf&&kyc){const key=kf.dataset.kycFile,form=kf.form;
+      if(form){kyc.nik=form.elements.nik.value.replace(/\D/g,'');kyc.fullName=form.elements.fullName.value;kyc.consent=form.elements.consent.checked}
+      readImage(kf.files[0]).then(img=>{kyc[key]=img;kyc.error='';kyc.results=null;rerender()},msg=>{kyc.error=msg;rerender()});return}
     const r=t.closest('[data-team-role]');if(r){const m=team.members.find(x=>x.id===r.dataset.teamRole);if(m&&canManage(m)){const from=ROLES[m.role].label;m.role=r.value;if(m.role==='admin')m.access='all';if(team.transfer?.to===m.id&&m.role!=='admin'){team.transfer=null;log('permintaan pemindahan kepemilikan batal karena calon pemilik bukan Admin lagi')}log(`mengubah peran ${m.name||m.email}: ${from} → ${ROLES[m.role].label}`);toast('Peran diperbarui');rerender()}return}
     const sc=t.closest('[data-team-scope]');if(sc){const m=team.members.find(x=>x.id===sc.dataset.teamScope);if(m){m.access='all';log(`memberi ${m.name||m.email} akses semua event`);rerender()}return}
     const ev=t.closest('[data-team-event]');if(ev){const m=team.members.find(x=>x.id===ev.dataset.teamEvent);if(m){const set=new Set(m.access==='all'?[]:m.access||[]);ev.checked?set.add(ev.value):set.delete(ev.value);m.access=[...set];const name=promoterState.events.find(x=>x.id===ev.value)?.name||'event';log(`${ev.checked?'memberi':'mencabut'} akses ${m.name||m.email} ke “${name}”`);rerender()}return}
     // Form undangan: daftar event hanya aktif bila "Event tertentu"
     const scope=t.closest('[data-team-invite] [name=scope]');if(scope)t.form.querySelector('.team-events').classList.toggle('on',scope.value==='some');
   });
+  document.addEventListener('submit',e=>{const f=e.target.closest('[data-kyc-form]');if(!f||!kyc)return;e.preventDefault();kycSubmit(f)});
+  document.addEventListener('input',e=>{const n=e.target.closest('[data-kyc-form] [name=nik]');if(n)n.value=n.value.replace(/\D/g,'').slice(0,16)});
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-transfer-form]');if(!f)return;e.preventDefault();
     if(me().role!=='owner'||actingId){toast('Hanya Pemilik yang bisa memindahkan kepemilikan');return}
