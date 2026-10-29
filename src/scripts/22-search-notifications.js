@@ -69,7 +69,7 @@
     else if(g.event!==undefined)openEvent(g.event);
     else if(g.chat!==undefined){closeFlow();show('chat');selectChat(g.chat)}
     else if(g.view){closeFlow();show(g.view)}
-    else if(g.screen)openFlow(g.screen);
+    else if(g.screen){if(g.promoterEvent)window.selectPromoterEvent?.(g.promoterEvent);openFlow(g.screen)}
   }
 
   /* ---------- Layar baru di sistem flow ---------- */

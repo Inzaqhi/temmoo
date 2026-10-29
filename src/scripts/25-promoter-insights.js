@@ -12,8 +12,8 @@
   function eventDate(ev){const m=String(ev.date||'').toLowerCase().match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/);if(!m)return null;const mi=MONTHS.indexOf(m[2]);return mi<0?null:new Date(+m[3],mi,+m[1])}
   function phase(ev){const d=eventDate(ev);if(!d)return {key:'upcoming',days:null};const t=new Date();t.setHours(0,0,0,0);const days=Math.round((d-t)/864e5);return {key:days>0?'upcoming':days===0?'today':'finished',days,date:d}}
 
-  function stats(){
-    const ev=promoterState.event,cap=Number(ev.capacity)||1000,r=rand(seedOf(ev.name)),ph=phase(ev);
+  function stats(ev=promoterState.event){
+    const cap=Number(ev.capacity)||1000,r=rand(seedOf(ev.name)),ph=phase(ev);
     const s={interested:Math.round(cap*.2+r()*40),considering:Math.round(cap*.055+r()*15),going:Math.round(cap*.15+r()*30),attended:0};
     if(ph.key==='finished'){s.attended=Math.round(s.going*(.78+r()*.1));s.going-=s.attended}
     // Sinyal nyata dari browser ini: status & alasan yang dipilih pengguna untuk event ini.
@@ -84,12 +84,13 @@
       <div class="ins-actions">${items.map(x=>`<button type="button" data-ins-action="${x[3]}"><i>${x[0]}</i><span><b>${x[1]}</b><small>${x[2]}</small></span>›</button>`).join('')}</div></section>`;
   }
   function announceCard(){
-    const list=promoterState.announcements||[];
+    const list=promoterState.event.announcements||[];
     return `<section class="ins-card ins-announce" id="insAnnounce"><header><div><h2>Pengumuman ke peserta</h2><p>Tampil di Event Hub dan dikirim sebagai notifikasi</p></div></header>
       <form data-ins-announce><textarea name="text" required maxlength="280" placeholder="Contoh: Gate dibuka pukul 09.00. Bawa tiket dan identitas."></textarea><div><span>Maksimal 280 karakter</span><button type="submit">Kirim pengumuman</button></div></form>
       ${list.length?`<ul>${list.slice(0,3).map(a=>`<li>${esc(a.text)}<small>${new Date(a.at).toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></li>`).join('')}</ul>`:''}</section>`;
   }
 
+  window.promoterInsights={stats,phase,eventDate};
   // Tooltip hover ringan untuk semua elemen [data-tip] di dashboard.
   document.body.insertAdjacentHTML('beforeend','<div class="ins-hover" id="insHover" hidden></div>');
   const hover=document.querySelector('#insHover');
@@ -97,17 +98,18 @@
 
   const baseTemplate=template;
   template=function(n){
-    let html=baseTemplate(n);
-    if(n===64&&typeof isPromoter==='function'&&isPromoter()){
+    let html=baseTemplate(n===71?64:n);
+    if(n===71&&typeof isPromoter==='function'&&isPromoter()){
       const ev=promoterState.event;
-      html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats()):'')+'<section class="promoter-panel">');
-      const extra=ev.status==='published'?(()=>{const st=stats();return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
+      html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats(ev)):'')+'<section class="promoter-panel">');
+      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
         :`<div class="ins-grid"><section class="ins-card ins-wide"><div class="ins-empty"><b>Data peserta muncul setelah event terbit</b><span>Rencana kehadiran, alasan peserta, asal kota, dan pengumuman tersedia begitu event disetujui Tim Temmoo.</span></div></section></div>`;
       const i=html.lastIndexOf('</main>');if(i>0)html=html.slice(0,i)+extra+html.slice(i);
     }
     // Event Hub menampilkan pengumuman terbaru promotor untuk event miliknya.
-    if(n===46&&promoterState.event.status==='published'&&activeEvent===promoterState.event.publishedIndex&&promoterState.announcements?.length){
-      const a=promoterState.announcements[0];
+    const own=n===46&&(promoterState.events||[promoterState.event]).find(e=>e.status==='published'&&e.publishedIndex===activeEvent&&e.announcements?.length);
+    if(own){
+      const a=own.announcements[0];
       html=html.replace(/(<div class="hub-announcement"><b>)Pengumuman promotor(<\/b><p>)[\s\S]*?(<\/p><small>)[\s\S]*?(<\/small>)/,`$1Pengumuman ${esc(promoterState.organization)}$2${esc(a.text)}$3Baru saja$4`);
     }
     return html;
@@ -125,9 +127,9 @@
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-ins-announce]');if(!f)return;e.preventDefault();
     const text=f.elements.text.value.trim();if(!text)return;
-    promoterState.announcements=[{text,at:Date.now()},...(promoterState.announcements||[])].slice(0,20);savePromoter();
+    promoterState.event.announcements=[{text,at:Date.now()},...(promoterState.event.announcements||[])].slice(0,20);savePromoter();
     const idx=promoterState.event.publishedIndex;
     pushNotif({kind:'group',icon:'✉',who:promoterState.organization,av:promoterState.organization.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(),tone:'gold',text:`mengumumkan untuk ${promoterState.event.name}`,quote:text,go:idx!=null?{event:idx}:{screen:64}});
-    toast('Pengumuman terkirim ke peserta');openFlow(64,false);
+    toast('Pengumuman terkirim ke peserta');openFlow(71,false);
   });
 })();

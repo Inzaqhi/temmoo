@@ -13,7 +13,7 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 - **Pencarian global:** orang, event, dan postingan
 - **Notifikasi**
 - **Profil:** postingan, balasan, galeri foto pribadi, riwayat event, dan Pusat Akun
-- **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio), dan Tim Temmoo (Admin Console)
+- **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio untuk banyak event), dan Tim Temmoo (Admin Console)
 
 ## Struktur proyek
 
@@ -22,8 +22,8 @@ index.html        Hasil build (satu file). Buka file ini di browser. Jangan died
 build.py          Menggabungkan src/ menjadi index.html
 src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
-  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 21-…css)
-  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 25-…js)
+  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 22-…css)
+  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 26-…js)
 ```
 
 Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebelumnya (misalnya `show`, `openFlow`, dan `template`), dan CSS yang dimuat belakangan menimpa yang sebelumnya. Jangan mengubah urutan nomor tanpa alasan yang jelas.
@@ -37,7 +37,8 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/22-search-notifications.js` | Pencarian, notifikasi, serta penyimpanan Temui/follow/chat |
 | `scripts/23-call.js` | Panggilan suara dan video |
 | `scripts/24-promoter-flow.js` | Pendaftaran dan akses promotor |
-| `scripts/25-promoter-insights.js` | Ringkasan Promotor Studio: rencana kehadiran, alasan, tren, asal peserta, pengumuman |
+| `scripts/25-promoter-insights.js` | Dashboard per event (layar 71): rencana kehadiran, alasan, tren, asal peserta, pengumuman |
+| `scripts/26-promoter-events.js` | Banyak event per akun promotor: daftar event (layar 64), pemilih event, antrean admin |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja

@@ -7,7 +7,7 @@
   let app=read();
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}};
   window.isPromoter=()=>app.status==='approved';
-  const STUDIO=[64,65,66,67],APPLY=69,STATUS=70;
+  const STUDIO=[64,65,66,67,71],APPLY=69,STATUS=70;
   const statusText={none:'Belum mendaftar',review:'Sedang ditinjau',changes:'Perlu perbaikan',approved:'Disetujui'};
 
   function setStatus(status,note=''){
@@ -112,10 +112,10 @@
     const name=promoterState.event.name;
     if(ev.dataset.eventSim==='publish'){
       promoterState.event.status='published';promoterState.event.reviewNote='';savePromoter();syncPublishedEvent();render();adminLog(`${name} disetujui dan diterbitkan`);
-      pushNotif({kind:'event',icon:'★',who:'Tim Temmoo',av:'T',tone:'',text:`menerbitkan ${name}. Event Hub dan grup resmi sudah aktif.`,go:{screen:66}});toast('Event terbit dan tampil di Temukan Event');
+      pushNotif({kind:'event',icon:'★',who:'Tim Temmoo',av:'T',tone:'',text:`menerbitkan ${name}. Event Hub dan grup resmi sudah aktif.`,go:{screen:66,promoterEvent:promoterState.event.id}});toast('Event terbit dan tampil di Temukan Event');
     }else{
       promoterState.event.status='changes';promoterState.event.reviewNote='Tambahkan rundown acara dan pastikan tautan tiket mengarah ke partner resmi.';savePromoter();adminLog(`Revisi diminta untuk ${name}`);
-      pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`meminta revisi untuk ${name}`,quote:promoterState.event.reviewNote,go:{screen:66}});toast('Permintaan revisi dikirim');
+      pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`meminta revisi untuk ${name}`,quote:promoterState.event.reviewNote,go:{screen:66,promoterEvent:promoterState.event.id}});toast('Permintaan revisi dikirim');
     }
     openFlow(66,false);
   },true);

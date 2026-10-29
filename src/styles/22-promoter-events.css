@@ -1,0 +1,29 @@
+/* ===== Promotor Studio: banyak event per akun ===== */
+.pe-list{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.pe-list>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.pe-list h2{margin:0;font-size:17px}.pe-list header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.pe-new{flex:none;padding:10px 14px;border:0;border-radius:11px;background:var(--temmoo-gradient);color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(91,75,255,.18)}
+.pe-tabs{display:flex;gap:8px;margin-bottom:6px;overflow-x:auto;scrollbar-width:none}
+.pe-tabs::-webkit-scrollbar{display:none}
+.pe-tabs button{flex:none;padding:7px 12px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--muted);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.pe-tabs button span{margin-left:3px;padding:1px 6px;border-radius:99px;background:var(--soft);font-size:11px}
+.pe-tabs button.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.pe-tabs button.active span{background:rgba(255,255,255,.22)}
+.pe-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:14px 4px;border-top:1px solid var(--line)}
+.pe-date{width:52px;height:52px;display:grid;place-items:center;border-radius:12px;background:var(--indigo-light);color:var(--indigo-dark);font-size:11px;font-weight:900;text-align:center;line-height:1.15}
+.pe-main{display:grid;gap:3px;min-width:0}
+.pe-main b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-main>span{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-metrics{display:flex;flex-wrap:wrap;gap:12px;margin-top:3px;font-size:13px;color:var(--muted)}
+.pe-metrics b{color:var(--text);font-size:13px}
+.pe-metrics.muted{font-size:12px}
+.pe-actions{display:flex;gap:6px}
+.pe-actions button{padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.pe-actions .pe-open{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.pe-actions .pe-del{color:#c0303c}
+.pe-note{margin:14px 0 0;color:var(--muted);font-size:12px}
+.pe-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.pe-switch button{border:0;background:none;color:var(--indigo);font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
+.pe-switch label{display:flex;align-items:center;gap:8px;min-width:0;font-size:13px;color:var(--muted)}
+.pe-switch select{min-width:0;max-width:340px;padding:8px 10px;border:1px solid #ddd9e7;border-radius:10px;background:#fff;color:var(--text);font:inherit;font-weight:700}
+@media(max-width:760px){.pe-row{grid-template-columns:46px minmax(0,1fr);gap:10px}.pe-row .status-chip{grid-column:2;justify-self:start}.pe-actions{grid-column:1/-1}.pe-actions button{flex:1}.pe-date{width:46px;height:46px}.pe-list>header{flex-direction:column}.pe-new{width:100%}.pe-switch{flex-direction:column;align-items:stretch}.pe-switch select{max-width:none;width:100%}}

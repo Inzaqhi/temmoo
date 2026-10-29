@@ -764,7 +764,7 @@ template=function(n){
   if(n===61){const pending=['submitted','review','changes'].includes(promoterState.event.status);return adminPage('Event & Promotor','Persetujuan dan kualitas katalog event',`<div class="admin-stats compact"><article><span>Menunggu event</span><b>${pending?1:0}</b></article><article><span>Promotor baru</span><b>4</b></article><article><span>Event aktif</span><b>${promoterState.event.status==='published'?47:46}</b></article></div><section class="admin-panel">${pending?`<div class="admin-list-row"><i class="event-admin-icon">E</i><div><b>${promoterState.event.name}</b><span>${promoterState.organization} · ${promoterState.event.date} · ${promoterStatus()[0]}</span></div><button data-admin-review-event>Periksa</button></div>`:'<div class="approval-empty"><i>✓</i><h3>Tidak ada event menunggu</h3><p>Semua pengajuan event sudah ditinjau.</p></div>'}<div class="admin-list-row"><i class="event-admin-icon">P</i><div><b>Langit Production</b><span>Pengajuan akun promotor · Dokumen lengkap</span></div><button data-admin-approve-promoter>Periksa</button></div></section>`)};
   if(n===62)return adminPage('Audit log','Setiap tindakan admin tercatat dan tidak dapat diedit',`<section class="admin-panel">${(adminState.audit.length?adminState.audit:[{action:'Admin masuk ke dashboard',time:'Hari ini, 09.14',by:'Admin Temmoo'},{action:'Laporan spam ditutup',time:'Kemarin, 18.42',by:'Admin Nabila'},{action:'Centang biru @akunpromo123 dicabut',time:'Kemarin, 16.10',by:'Admin Reza'}]).map(a=>`<div class="admin-list-row"><i>↳</i><div><b>${a.action}</b><span>${a.by}</span></div><time>${a.time}</time></div>`).join('')}</section>`);
   if(n===64){const status=promoterStatus(),ev=promoterState.event;return promoterPage('Dashboard Promotor','Kelola perjalanan event dari draft sampai Event Hub aktif',`<div class="promoter-status ${ev.status}"><div><small>STATUS EVENT</small><b>${status[0]}</b><span>${status[1]}</span></div><button data-go="${ev.status==='draft'||ev.status==='changes'?65:66}">${ev.status==='draft'||ev.status==='changes'?'Lanjutkan':'Lihat status'}</button></div><div class="promoter-stats"><article><span>Event dikelola</span><b>1</b><small>${ev.status==='published'?'1 aktif':'Belum terbit'}</small></article><article><span>Pengikut event</span><b>${ev.status==='published'?'0':'—'}</b><small>Tersedia setelah terbit</small></article><article><span>Check-in</span><b>—</b><small>Belum dimulai</small></article></div><section class="promoter-panel"><header><div><h2>${ev.name}</h2><span>${ev.date} · ${ev.venue}</span></div><em class="status-chip ${ev.status}">${status[0]}</em></header><div class="event-readiness"><b>Kesiapan publikasi</b>${[['Informasi dasar',true],['Lokasi dan jadwal',true],['Tautan tiket',Boolean(ev.ticketUrl)],['Persetujuan Temmoo',ev.status==='published']].map(x=>`<div><span class="${x[1]?'done':''}">${x[1]?'✓':'○'}</span><p>${x[0]}</p></div>`).join('')}</div><footer><button data-go="65">Edit event</button>${ev.status==='published'?'<button data-promoter-preview>Buka Event Hub</button>':ev.status==='draft'||ev.status==='changes'?'<button class="primary" data-submit-event>Kirim untuk ditinjau</button>':'<button data-go="66">Lacak pengajuan</button>'}</footer></section>`)}
-  if(n===65){const ev=promoterState.event,locked=['submitted','review'].includes(ev.status);return promoterPage('Kelola Event',locked?'Pengajuan sedang ditinjau dan tidak dapat diedit':'Lengkapi informasi yang akan dilihat pengguna',`<form class="promoter-form" data-promoter-event-form><div class="form-section"><h2>Informasi utama</h2><div class="form-grid"><label>Nama event<input name="name" required maxlength="70" value="${ev.name}" ${locked?'disabled':''}></label><label>Kategori<select name="category" ${locked?'disabled':''}>${['Musik','Olahraga','Kuliner','Komunitas','Seni & Budaya'].map(x=>`<option ${x===ev.category?'selected':''}>${x}</option>`).join('')}</select></label><label>Tanggal<input name="date" required value="${ev.date}" ${locked?'disabled':''}></label><label>Label tanggal singkat<input name="dateShort" required maxlength="8" value="${ev.dateShort}" ${locked?'disabled':''}></label><label>Waktu<input name="time" required value="${ev.time}" ${locked?'disabled':''}></label><label>Lokasi<input name="venue" required value="${ev.venue}" ${locked?'disabled':''}></label></div><label>Deskripsi<textarea name="description" required maxlength="400" ${locked?'disabled':''}>${ev.description}</textarea></label></div><div class="form-section"><h2>Tiket dan kapasitas</h2><div class="form-grid"><label>Tautan pembelian tiket<input name="ticketUrl" type="url" value="${ev.ticketUrl}" ${locked?'disabled':''}></label><label>Kapasitas venue<input name="capacity" type="number" min="10" value="${ev.capacity}" ${locked?'disabled':''}></label></div></div>${locked?'<div class="submission-lock">▣ Pengeditan dibuka kembali jika Admin Temmoo meminta revisi.</div>':'<div class="form-actions"><button type="submit" name="intent" value="draft">Simpan draft</button><button class="primary" type="submit" name="intent" value="submit">Simpan & kirim pengajuan</button></div>'}</form>`)}
+  if(n===65){const ev=promoterState.event,locked=['submitted','review'].includes(ev.status);return promoterPage('Kelola Event',locked?'Pengajuan sedang ditinjau dan tidak dapat diedit':'Lengkapi informasi yang akan dilihat pengguna',`<form class="promoter-form" data-promoter-event-form><div class="form-section"><h2>Informasi utama</h2><div class="form-grid"><label>Nama event<input name="name" required maxlength="70" value="${ev.name}" ${locked?'disabled':''}></label><label>Kategori<select name="category" ${locked?'disabled':''}>${['Musik','Olahraga','Kuliner','Komunitas','Seni & Budaya'].map(x=>`<option ${x===ev.category?'selected':''}>${x}</option>`).join('')}</select></label><label>Tanggal<input name="date" required value="${ev.date}" ${locked?'disabled':''}></label><label>Label tanggal singkat<input name="dateShort" required maxlength="8" value="${ev.dateShort}" ${locked?'disabled':''}></label><label>Waktu<input name="time" required value="${ev.time}" ${locked?'disabled':''}></label><label>Lokasi<input name="venue" required value="${ev.venue}" ${locked?'disabled':''}></label></div><label>Deskripsi<textarea name="description" required maxlength="400" ${locked?'disabled':''}>${ev.description}</textarea></label></div><div class="form-section"><h2>Tiket dan kapasitas</h2><div class="form-grid"><label>Tautan pembelian tiket<input name="ticketUrl" type="url" value="${ev.ticketUrl}" ${locked?'disabled':''}></label><label>Kapasitas venue<input name="capacity" type="number" min="10" value="${ev.capacity}" ${locked?'disabled':''}></label></div></div>${locked?'<div class="submission-lock">▣ Pengeditan dibuka kembali jika Admin Temmoo meminta revisi.</div>':'<div class="form-actions"><button type="submit" name="intent" value="draft" formnovalidate>Simpan draft</button><button class="primary" type="submit" name="intent" value="submit">Simpan & kirim pengajuan</button></div>'}</form>`)}
   if(n===66){const ev=promoterState.event,status=promoterStatus();return promoterPage('Status Pengajuan',`${ev.name} · ${status[0]}`,`<section class="submission-track"><div class="submission-hero ${ev.status}"><span>${ev.status==='published'?'✓':ev.status==='changes'?'!':'◷'}</span><div><small>STATUS TERKINI</small><h2>${status[0]}</h2><p>${status[1]}</p></div></div><div class="timeline">${[['Draft dibuat',true],['Dikirim ke Admin Temmoo',ev.status!=='draft'],['Pemeriksaan konten',['review','changes','published'].includes(ev.status)],['Event diterbitkan',ev.status==='published']].map((x,i)=>`<div class="${x[1]?'done':''}"><i>${x[1]?'✓':i+1}</i><span><b>${x[0]}</b><small>${x[1]?'Selesai':'Menunggu tahap sebelumnya'}</small></span></div>`).join('')}</div>${ev.status==='changes'?`<div class="review-note"><b>Catatan Admin Temmoo</b><p>${ev.reviewNote}</p><button class="wide" data-go="65">Perbaiki event</button></div>`:''}${ev.status==='published'?'<button class="wide" data-promoter-preview>Buka Event Hub aktif</button>':'<button class="wide secondary" data-go="64">Kembali ke dashboard</button>'}</section>`)}
   if(n===67){const ev=promoterState.event;return `<div class="flow-body publish-success"><div class="success-mark">✓</div><h1>Event berhasil diterbitkan</h1><p>${ev.name} sudah tampil di Temukan Event. Event Hub, grup resmi, status kehadiran, dan pengumuman promotor kini aktif.</p><button class="wide" data-promoter-preview>Buka Event Hub</button><button class="wide secondary" data-go="64">Dashboard Promotor</button></div>`}
   if(n===68){if(accountState.accountType!=='temmoo_official')return `<div class="access-denied"><div>▣</div><h2>Akses khusus Temmoo Official</h2><p>Masuk sebagai admin untuk meninjau pengajuan event.</p><button class="wide" data-go="63">Masuk sebagai tim Temmoo</button></div>`;const ev=promoterState.event;return adminPage('Tinjau Event',`${promoterState.organization} · pengajuan promotor terverifikasi`,`<section class="event-review-card"><header><div><small>${ev.category}</small><h2>${ev.name}</h2><p>${ev.date} · ${ev.time} · ${ev.venue}</p></div><em>${promoterStatus()[0]}</em></header><div class="review-grid"><article><span>Promotor</span><b>${promoterState.organization}</b><small>✓ Akun promotor terverifikasi</small></article><article><span>Kapasitas</span><b>${Number(ev.capacity).toLocaleString('id-ID')} orang</b><small>Informasi venue tersedia</small></article><article><span>Tiket</span><b>${ev.ticketUrl?'Tautan tersedia':'Belum tersedia'}</b><small>${ev.ticketUrl||'Perlu dilengkapi'}</small></article></div><div class="review-description"><b>Deskripsi event</b><p>${ev.description}</p></div><label class="admin-note">Catatan untuk promotor<textarea id="adminEventNote" placeholder="Isi jika event perlu diperbaiki"></textarea></label><footer><button data-admin-request-changes>Minta revisi</button><button class="primary" data-admin-publish-event>Setujui & terbitkan</button></footer></section>`)}
@@ -1243,7 +1243,8 @@ html{scrollbar-gutter:stable}
 // & tombol Enter ditangani di sini: validasi form, lalu kirim event submit buatan langsung ke form.
 (()=>{
   const fire=(form,submitter)=>{
-    if(!form.reportValidity())return;
+    // formnovalidate (mis. "Simpan draft") boleh menyimpan form yang belum lengkap.
+    if(!submitter?.formNoValidate&&!form.noValidate&&!form.reportValidity())return;
     const ev=typeof SubmitEvent==='function'?new SubmitEvent('submit',{bubbles:true,cancelable:true,submitter:submitter||null}):new Event('submit',{bubbles:true,cancelable:true});
     form.dispatchEvent(ev);
   };
@@ -1474,7 +1475,7 @@ html{scrollbar-gutter:stable}
     else if(g.event!==undefined)openEvent(g.event);
     else if(g.chat!==undefined){closeFlow();show('chat');selectChat(g.chat)}
     else if(g.view){closeFlow();show(g.view)}
-    else if(g.screen)openFlow(g.screen);
+    else if(g.screen){if(g.promoterEvent)window.selectPromoterEvent?.(g.promoterEvent);openFlow(g.screen)}
   }
 
   /* ---------- Layar baru di sistem flow ---------- */
@@ -1862,7 +1863,7 @@ html{scrollbar-gutter:stable}
   let app=read();
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}};
   window.isPromoter=()=>app.status==='approved';
-  const STUDIO=[64,65,66,67],APPLY=69,STATUS=70;
+  const STUDIO=[64,65,66,67,71],APPLY=69,STATUS=70;
   const statusText={none:'Belum mendaftar',review:'Sedang ditinjau',changes:'Perlu perbaikan',approved:'Disetujui'};
 
   function setStatus(status,note=''){
@@ -1967,10 +1968,10 @@ html{scrollbar-gutter:stable}
     const name=promoterState.event.name;
     if(ev.dataset.eventSim==='publish'){
       promoterState.event.status='published';promoterState.event.reviewNote='';savePromoter();syncPublishedEvent();render();adminLog(`${name} disetujui dan diterbitkan`);
-      pushNotif({kind:'event',icon:'★',who:'Tim Temmoo',av:'T',tone:'',text:`menerbitkan ${name}. Event Hub dan grup resmi sudah aktif.`,go:{screen:66}});toast('Event terbit dan tampil di Temukan Event');
+      pushNotif({kind:'event',icon:'★',who:'Tim Temmoo',av:'T',tone:'',text:`menerbitkan ${name}. Event Hub dan grup resmi sudah aktif.`,go:{screen:66,promoterEvent:promoterState.event.id}});toast('Event terbit dan tampil di Temukan Event');
     }else{
       promoterState.event.status='changes';promoterState.event.reviewNote='Tambahkan rundown acara dan pastikan tautan tiket mengarah ke partner resmi.';savePromoter();adminLog(`Revisi diminta untuk ${name}`);
-      pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`meminta revisi untuk ${name}`,quote:promoterState.event.reviewNote,go:{screen:66}});toast('Permintaan revisi dikirim');
+      pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`meminta revisi untuk ${name}`,quote:promoterState.event.reviewNote,go:{screen:66,promoterEvent:promoterState.event.id}});toast('Permintaan revisi dikirim');
     }
     openFlow(66,false);
   },true);
@@ -2071,8 +2072,8 @@ html{scrollbar-gutter:stable}
   function eventDate(ev){const m=String(ev.date||'').toLowerCase().match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/);if(!m)return null;const mi=MONTHS.indexOf(m[2]);return mi<0?null:new Date(+m[3],mi,+m[1])}
   function phase(ev){const d=eventDate(ev);if(!d)return {key:'upcoming',days:null};const t=new Date();t.setHours(0,0,0,0);const days=Math.round((d-t)/864e5);return {key:days>0?'upcoming':days===0?'today':'finished',days,date:d}}
 
-  function stats(){
-    const ev=promoterState.event,cap=Number(ev.capacity)||1000,r=rand(seedOf(ev.name)),ph=phase(ev);
+  function stats(ev=promoterState.event){
+    const cap=Number(ev.capacity)||1000,r=rand(seedOf(ev.name)),ph=phase(ev);
     const s={interested:Math.round(cap*.2+r()*40),considering:Math.round(cap*.055+r()*15),going:Math.round(cap*.15+r()*30),attended:0};
     if(ph.key==='finished'){s.attended=Math.round(s.going*(.78+r()*.1));s.going-=s.attended}
     // Sinyal nyata dari browser ini: status & alasan yang dipilih pengguna untuk event ini.
@@ -2143,12 +2144,13 @@ html{scrollbar-gutter:stable}
       <div class="ins-actions">${items.map(x=>`<button type="button" data-ins-action="${x[3]}"><i>${x[0]}</i><span><b>${x[1]}</b><small>${x[2]}</small></span>›</button>`).join('')}</div></section>`;
   }
   function announceCard(){
-    const list=promoterState.announcements||[];
+    const list=promoterState.event.announcements||[];
     return `<section class="ins-card ins-announce" id="insAnnounce"><header><div><h2>Pengumuman ke peserta</h2><p>Tampil di Event Hub dan dikirim sebagai notifikasi</p></div></header>
       <form data-ins-announce><textarea name="text" required maxlength="280" placeholder="Contoh: Gate dibuka pukul 09.00. Bawa tiket dan identitas."></textarea><div><span>Maksimal 280 karakter</span><button type="submit">Kirim pengumuman</button></div></form>
       ${list.length?`<ul>${list.slice(0,3).map(a=>`<li>${esc(a.text)}<small>${new Date(a.at).toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></li>`).join('')}</ul>`:''}</section>`;
   }
 
+  window.promoterInsights={stats,phase,eventDate};
   // Tooltip hover ringan untuk semua elemen [data-tip] di dashboard.
   document.body.insertAdjacentHTML('beforeend','<div class="ins-hover" id="insHover" hidden></div>');
   const hover=document.querySelector('#insHover');
@@ -2156,17 +2158,18 @@ html{scrollbar-gutter:stable}
 
   const baseTemplate=template;
   template=function(n){
-    let html=baseTemplate(n);
-    if(n===64&&typeof isPromoter==='function'&&isPromoter()){
+    let html=baseTemplate(n===71?64:n);
+    if(n===71&&typeof isPromoter==='function'&&isPromoter()){
       const ev=promoterState.event;
-      html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats()):'')+'<section class="promoter-panel">');
-      const extra=ev.status==='published'?(()=>{const st=stats();return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
+      html=html.replace(/<div class="promoter-stats">[\s\S]*?<\/div><section class="promoter-panel">/,m=>(ev.status==='published'?kpis(stats(ev)):'')+'<section class="promoter-panel">');
+      const extra=ev.status==='published'?(()=>{const st=stats(ev);return `<div class="ins-grid">${attendanceCard(st)}${reasonsCard(st)}${trendCard(st)}${citiesCard(st)}${communityCard(st)}${actionsCard(st)}${announceCard()}</div>`})()
         :`<div class="ins-grid"><section class="ins-card ins-wide"><div class="ins-empty"><b>Data peserta muncul setelah event terbit</b><span>Rencana kehadiran, alasan peserta, asal kota, dan pengumuman tersedia begitu event disetujui Tim Temmoo.</span></div></section></div>`;
       const i=html.lastIndexOf('</main>');if(i>0)html=html.slice(0,i)+extra+html.slice(i);
     }
     // Event Hub menampilkan pengumuman terbaru promotor untuk event miliknya.
-    if(n===46&&promoterState.event.status==='published'&&activeEvent===promoterState.event.publishedIndex&&promoterState.announcements?.length){
-      const a=promoterState.announcements[0];
+    const own=n===46&&(promoterState.events||[promoterState.event]).find(e=>e.status==='published'&&e.publishedIndex===activeEvent&&e.announcements?.length);
+    if(own){
+      const a=own.announcements[0];
       html=html.replace(/(<div class="hub-announcement"><b>)Pengumuman promotor(<\/b><p>)[\s\S]*?(<\/p><small>)[\s\S]*?(<\/small>)/,`$1Pengumuman ${esc(promoterState.organization)}$2${esc(a.text)}$3Baru saja$4`);
     }
     return html;
@@ -2184,11 +2187,152 @@ html{scrollbar-gutter:stable}
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-ins-announce]');if(!f)return;e.preventDefault();
     const text=f.elements.text.value.trim();if(!text)return;
-    promoterState.announcements=[{text,at:Date.now()},...(promoterState.announcements||[])].slice(0,20);savePromoter();
+    promoterState.event.announcements=[{text,at:Date.now()},...(promoterState.event.announcements||[])].slice(0,20);savePromoter();
     const idx=promoterState.event.publishedIndex;
     pushNotif({kind:'group',icon:'✉',who:promoterState.organization,av:promoterState.organization.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(),tone:'gold',text:`mengumumkan untuk ${promoterState.event.name}`,quote:text,go:idx!=null?{event:idx}:{screen:64}});
-    toast('Pengumuman terkirim ke peserta');openFlow(64,false);
+    toast('Pengumuman terkirim ke peserta');openFlow(71,false);
   });
+})();
+</script>
+<style id="promoter-events-css">/* ===== Promotor Studio: banyak event per akun ===== */
+.pe-list{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.pe-list>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.pe-list h2{margin:0;font-size:17px}.pe-list header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.pe-new{flex:none;padding:10px 14px;border:0;border-radius:11px;background:var(--temmoo-gradient);color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(91,75,255,.18)}
+.pe-tabs{display:flex;gap:8px;margin-bottom:6px;overflow-x:auto;scrollbar-width:none}
+.pe-tabs::-webkit-scrollbar{display:none}
+.pe-tabs button{flex:none;padding:7px 12px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--muted);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.pe-tabs button span{margin-left:3px;padding:1px 6px;border-radius:99px;background:var(--soft);font-size:11px}
+.pe-tabs button.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.pe-tabs button.active span{background:rgba(255,255,255,.22)}
+.pe-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:14px 4px;border-top:1px solid var(--line)}
+.pe-date{width:52px;height:52px;display:grid;place-items:center;border-radius:12px;background:var(--indigo-light);color:var(--indigo-dark);font-size:11px;font-weight:900;text-align:center;line-height:1.15}
+.pe-main{display:grid;gap:3px;min-width:0}
+.pe-main b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-main>span{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-metrics{display:flex;flex-wrap:wrap;gap:12px;margin-top:3px;font-size:13px;color:var(--muted)}
+.pe-metrics b{color:var(--text);font-size:13px}
+.pe-metrics.muted{font-size:12px}
+.pe-actions{display:flex;gap:6px}
+.pe-actions button{padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.pe-actions .pe-open{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.pe-actions .pe-del{color:#c0303c}
+.pe-note{margin:14px 0 0;color:var(--muted);font-size:12px}
+.pe-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.pe-switch button{border:0;background:none;color:var(--indigo);font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
+.pe-switch label{display:flex;align-items:center;gap:8px;min-width:0;font-size:13px;color:var(--muted)}
+.pe-switch select{min-width:0;max-width:340px;padding:8px 10px;border:1px solid #ddd9e7;border-radius:10px;background:#fff;color:var(--text);font:inherit;font-weight:700}
+@media(max-width:760px){.pe-row{grid-template-columns:46px minmax(0,1fr);gap:10px}.pe-row .status-chip{grid-column:2;justify-self:start}.pe-actions{grid-column:1/-1}.pe-actions button{flex:1}.pe-date{width:46px;height:46px}.pe-list>header{flex-direction:column}.pe-new{width:100%}.pe-switch{flex-direction:column;align-items:stretch}.pe-switch select{max-width:none;width:100%}}
+</style>
+<script id="promoter-events-js">// Satu akun promotor bisa mengelola banyak event.
+// Data: promoterState.events (daftar) + promoterState.activeEventId. promoterState.event tetap ada sebagai
+// penunjuk ke event yang sedang dipilih, sehingga kode lama (Kelola event, status, admin, Event Hub) tetap jalan.
+(()=>{
+  const esc=escapeText,nf=n=>Number(n).toLocaleString('id-ID');
+  const blank=()=>({id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:'',category:'Musik',date:'',dateShort:'',time:'',venue:'',description:'',ticketUrl:'',capacity:500,status:'draft',submittedAt:'',reviewNote:'',publishedIndex:null,announcements:[]});
+
+  /* ---------- Migrasi dari format satu event ---------- */
+  if(!Array.isArray(promoterState.events)){
+    const first={...promoterState.event,id:promoterState.event?.id||'e1'};
+    if(promoterState.announcements?.length&&!first.announcements)first.announcements=promoterState.announcements;
+    promoterState.events=[first];promoterState.activeEventId=first.id;delete promoterState.announcements;
+  }
+  promoterState.events.forEach(e=>{if(!e.id)e.id=blank().id});
+  if(!promoterState.events.some(e=>e.id===promoterState.activeEventId))promoterState.activeEventId=promoterState.events[0]?.id;
+  delete promoterState.event;
+  Object.defineProperty(promoterState,'event',{enumerable:false,configurable:true,
+    get(){return promoterState.events.find(e=>e.id===promoterState.activeEventId)||promoterState.events[0]},
+    set(v){const i=promoterState.events.findIndex(e=>e.id===promoterState.activeEventId);const next={...v,id:promoterState.activeEventId};if(i<0)promoterState.events.push(next);else promoterState.events[i]=next}});
+  savePromoter();
+
+  const select=id=>{if(promoterState.events.some(e=>e.id===id)){promoterState.activeEventId=id;savePromoter()}};
+  window.selectPromoterEvent=select;
+
+  // Semua event yang terbit harus masuk katalog, bukan hanya event yang sedang dipilih.
+  const baseSync=syncPublishedEvent;
+  syncPublishedEvent=function(){const keep=promoterState.activeEventId;promoterState.events.filter(e=>e.status==='published').forEach(e=>{promoterState.activeEventId=e.id;baseSync()});promoterState.activeEventId=keep};
+  syncPublishedEvent();try{render()}catch{}
+
+  /* ---------- Ringkasan semua event (layar 64) ---------- */
+  const STATUS={draft:['Draft','draft'],changes:['Perlu revisi','changes'],submitted:['Diajukan','review'],review:['Ditinjau','review'],published:['Terbit','published']};
+  let filter='all',confirmDelete=null;
+  const groupOf=e=>{if(e.status!=='published')return ['submitted','review'].includes(e.status)?'waiting':'draft';const ph=window.promoterInsights?.phase(e);return ph?.key==='finished'?'finished':'active'};
+  const sortKey=e=>{const d=window.promoterInsights?.eventDate(e);return d?d.getTime():Infinity};
+  function row(e){
+    const st=STATUS[e.status]||STATUS.draft,g=groupOf(e),ph=window.promoterInsights?.phase(e),s=e.status==='published'?window.promoterInsights.stats(e):null;
+    const when=!e.date?'Tanggal belum diisi':ph?.days==null?e.date:ph.key==='finished'?`${e.date} · selesai`:ph.key==='today'?`${e.date} · hari ini`:`${e.date} · ${ph.days} hari lagi`;
+    const metrics=s?`<div class="pe-metrics"><span><b>${nf(s.people)}</b> peminat</span><span><b>${nf(g==='finished'?s.attended:s.going)}</b> ${g==='finished'?'hadir':'mau datang'}</span></div>`:`<div class="pe-metrics muted">${e.status==='changes'?esc(e.reviewNote||'Perlu perbaikan'):['submitted','review'].includes(e.status)?'Menunggu Tim Temmoo':'Belum diajukan'}</div>`;
+    const go=e.status==='draft'||e.status==='changes'?65:71,label=e.status==='draft'?'Lanjutkan':e.status==='changes'?'Perbaiki':'Buka';
+    const del=e.status==='draft'?`<button type="button" class="pe-del" data-pe-delete="${e.id}">${confirmDelete===e.id?'Yakin hapus?':'Hapus'}</button>`:'';
+    return `<article class="pe-row"><div class="pe-date">${esc(e.dateShort||'—').replace(' ','<br>')}</div><div class="pe-main"><b>${esc(e.name||'Event tanpa nama')}</b><span>${esc(when)}${e.venue?' · '+esc(e.venue):''}</span>${metrics}</div><em class="status-chip ${st[1]}">${st[0]}</em><div class="pe-actions">${del}<button type="button" class="pe-open" data-pe-open="${e.id}" data-pe-go="${go}">${label}</button></div></article>`;
+  }
+  function portfolio(){
+    const list=[...promoterState.events].sort((a,b)=>sortKey(a)-sortKey(b));
+    const counts={all:list.length,active:0,waiting:0,draft:0,finished:0};list.forEach(e=>counts[groupOf(e)]++);
+    const published=list.filter(e=>e.status==='published').map(e=>window.promoterInsights.stats(e));
+    const people=published.reduce((a,s)=>a+s.people,0),going=published.reduce((a,s)=>a+s.going,0);
+    const shown=list.filter(e=>filter==='all'||groupOf(e)===filter);
+    const tabs=[['all','Semua'],['active','Aktif'],['waiting','Menunggu'],['draft','Draft & revisi'],['finished','Selesai']];
+    return `<div class="ins-kpis"><article><span>Event aktif</span><b>${counts.active}</b><small>Terbit & belum berlangsung</small></article><article><span>Menunggu tinjauan</span><b>${counts.waiting}</b><small>Diperiksa Tim Temmoo</small></article><article><span>Total peminat</span><b>${nf(people)}</b><small>Dari ${published.length} event terbit</small></article><article><span>Mau datang</span><b>${nf(going)}</b><small>Event yang akan datang</small></article></div>
+      <section class="pe-list"><header><div><h2>Event saya</h2><p>${counts.all} event · ${esc(promoterState.organization)}</p></div><button type="button" class="pe-new" data-pe-new>＋ Buat event baru</button></header>
+      <div class="pe-tabs">${tabs.map(([k,l])=>`<button type="button" class="${filter===k?'active':''}" data-pe-filter="${k}">${l} <span>${counts[k]}</span></button>`).join('')}</div>
+      ${shown.length?shown.map(row).join(''):`<div class="ins-empty"><b>${counts.all?'Tidak ada event di kategori ini':'Belum ada event'}</b><span>${counts.all?'Pilih tab lain atau buat event baru.':'Buat event pertamamu untuk mulai mengumpulkan peserta.'}</span></div>`}
+      <p class="pe-note">Angka peserta pada event terbit adalah data contoh prototipe.</p></section>`;
+  }
+  // Pemilih event di atas halaman per event (dashboard, kelola, status).
+  function switcher(){
+    const opts=promoterState.events.map(e=>`<option value="${e.id}" ${e.id===promoterState.activeEventId?'selected':''}>${esc(e.name||'Event tanpa nama')} · ${(STATUS[e.status]||STATUS.draft)[0]}</option>`).join('');
+    return `<div class="pe-switch"><button type="button" data-go="64">← Semua event</button><label><span>Event</span><select data-pe-select aria-label="Pilih event">${opts}</select></label></div>`;
+  }
+
+  const baseTemplate=template;
+  template=function(n){
+    const promoter=typeof isPromoter==='function'&&isPromoter();
+    if(n===64&&promoter){
+      let html=baseTemplate(64);
+      html=html.replace(/(<main class="promoter-main">[\s\S]*?<\/header>)[\s\S]*(<\/main>)/,(m,head,end)=>head.replace(/<h1>[^<]*<\/h1><p>[^<]*<\/p>/,`<h1>Ringkasan</h1><p>Semua event yang kamu kelola di satu tempat</p>`)+portfolio()+end);
+      return nav(html,64);
+    }
+    let html=baseTemplate(n);
+    if(promoter&&[65,66,71].includes(n))html=html.replace('<main class="promoter-main">','<main class="promoter-main">'+switcher());
+    if(promoter&&[65,66,67,71].includes(n))html=nav(html,n);
+    if(promoter&&n===71)html=html.replace(/<h1>Dashboard Promotor<\/h1><p>[^<]*<\/p>/,'<h1>Dashboard event</h1><p>Pantau peserta, rencana kehadiran, dan pengumuman untuk event ini</p>');
+    if(n===61)html=adminQueue(html);
+    return html;
+  };
+  // Menu Promotor Studio: "Kelola event" diganti "Buat event baru" (event dipilih dari Ringkasan).
+  function nav(html,n){
+    html=html.replace(/<button class="(?:active)?" data-go="64">Ringkasan<\/button>/,`<button class="${[64,71].includes(n)?'active':''}" data-go="64">Ringkasan</button>`);
+    html=html.replace(/<button class="(?:active)?" data-go="65">Kelola event<\/button>/,`<button class="${n===65&&!promoterState.event.name?'active':''}" data-pe-new>＋ Buat event</button>`);
+    if(n===64)html=html.replace('<button data-promoter-preview>Pratinjau publik</button>','');
+    return html;
+  }
+
+  /* ---------- Admin: tinjau semua event yang menunggu ---------- */
+  function adminQueue(html){
+    const pending=promoterState.events.filter(e=>['submitted','review','changes'].includes(e.status));
+    const rows=pending.length?pending.map(e=>`<div class="admin-list-row"><i class="event-admin-icon">E</i><div><b>${esc(e.name)}</b><span>${esc(promoterState.organization)} · ${esc(e.date)} · ${(STATUS[e.status]||STATUS.draft)[0]}</span></div><button data-admin-review-event data-pe-id="${e.id}">Periksa</button></div>`).join('')
+      :'<div class="approval-empty"><i>✓</i><h3>Tidak ada event menunggu</h3><p>Semua pengajuan event sudah ditinjau.</p></div>';
+    html=html.replace(/<section class="admin-panel">(?:<div class="admin-list-row"><i class="event-admin-icon">E<\/i>[\s\S]*?<\/button><\/div>|<div class="approval-empty">[\s\S]*?<\/div>)/,'<section class="admin-panel">'+rows);
+    const live=promoterState.events.filter(e=>e.status==='published').length;
+    return html.replace(/(<span>Menunggu event<\/span><b>)\d+/,`$1${pending.length}`).replace(/(<span>Event aktif<\/span><b>)\d+/,`$1${46+live}`);
+  }
+
+  /* ---------- Event ---------- */
+  document.addEventListener('click',e=>{
+    const pick=e.target.closest('[data-admin-review-event][data-pe-id]');if(pick){select(pick.dataset.peId);return}
+    if(e.target.closest('[data-pe-new]')){e.preventDefault();e.stopPropagation();const ev=blank();promoterState.events.push(ev);select(ev.id);openFlow(65);toast('Draft event baru dibuat');return}
+    const open=e.target.closest('[data-pe-open]');if(open){e.stopPropagation();confirmDelete=null;select(open.dataset.peOpen);openFlow(+open.dataset.peGo);return}
+    const f=e.target.closest('[data-pe-filter]');if(f){filter=f.dataset.peFilter;confirmDelete=null;openFlow(64,false);return}
+    const del=e.target.closest('[data-pe-delete]');if(del){e.stopPropagation();const id=del.dataset.peDelete;
+      if(confirmDelete!==id){confirmDelete=id;openFlow(64,false);return}
+      confirmDelete=null;promoterState.events=promoterState.events.filter(x=>x.id!==id||x.status!=='draft');
+      if(!promoterState.events.length){const ev=blank();promoterState.events.push(ev)}
+      if(!promoterState.events.some(x=>x.id===promoterState.activeEventId))promoterState.activeEventId=promoterState.events[0].id;
+      savePromoter();toast('Draft dihapus');openFlow(64,false);return}
+  },true);
+  document.addEventListener('change',e=>{const s=e.target.closest('[data-pe-select]');if(!s)return;select(s.value);
+    const ev=promoterState.event,target=flowCurrent===65&&!['draft','changes'].includes(ev.status)?71:flowCurrent;openFlow(target,false)});
 })();
 </script>
 

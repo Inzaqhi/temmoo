@@ -5,7 +5,8 @@
 // & tombol Enter ditangani di sini: validasi form, lalu kirim event submit buatan langsung ke form.
 (()=>{
   const fire=(form,submitter)=>{
-    if(!form.reportValidity())return;
+    // formnovalidate (mis. "Simpan draft") boleh menyimpan form yang belum lengkap.
+    if(!submitter?.formNoValidate&&!form.noValidate&&!form.reportValidity())return;
     const ev=typeof SubmitEvent==='function'?new SubmitEvent('submit',{bubbles:true,cancelable:true,submitter:submitter||null}):new Event('submit',{bubbles:true,cancelable:true});
     form.dispatchEvent(ev);
   };
