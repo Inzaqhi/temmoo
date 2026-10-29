@@ -57,3 +57,30 @@
 .team-note.inline{align-self:center;margin-right:auto;font-size:12px}
 @media(max-width:900px){.team-two{grid-template-columns:1fr}.team-roles{grid-template-columns:1fr}}
 @media(max-width:760px){.team-row{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr)}.team-who{grid-column:2/-1}.team-row .team-cell:nth-of-type(1){grid-column:2}.team-actions{grid-column:1/-1;justify-content:flex-start}.team-access-edit{grid-column:1/-1}.team-grid{grid-template-columns:1fr}.team-acting{flex-direction:column;align-items:stretch}.team-head{flex-direction:column}.team-matrix>div{grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(0,.6fr));font-size:12px}}
+/* Pindahkan kepemilikan */
+.team-danger{border-color:#f4b9bf}
+.team-danger-btn{flex:none;padding:10px 14px;border:1px solid #f4b9bf;border-radius:11px;background:#fff7f7;color:#c0303c;font:inherit;font-weight:800;cursor:pointer}
+.team-transfer{display:grid;gap:14px}
+.team-transfer fieldset{display:grid;gap:8px;margin:0;padding:0;border:0}
+.team-transfer legend{margin-bottom:8px;font-size:13px;font-weight:800}
+.team-pick{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.team-pick:has(input:checked){border-color:var(--indigo);background:var(--indigo-light)}
+.team-pick .avatar{width:34px;height:34px;font-size:11px}
+.team-pick>span:last-child{display:grid;gap:2px}.team-pick small{color:var(--muted);font-size:12px}
+.team-consequences{margin:0;padding:12px 14px 12px 30px;border-radius:12px;background:#fff7f7;color:#7d2a32;font-size:13px;line-height:1.6}
+.team-confirm{display:grid;gap:6px;font-size:13px}
+.team-confirm input{padding:11px 12px;border:1px solid #ddd9e7;border-radius:11px;font:inherit}
+.team-check{display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-size:13px}
+.team-check input{margin-top:3px}
+.danger-solid{padding:10px 14px;border:0;border-radius:11px;background:#c0303c;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.team-transfer-empty{display:grid;gap:6px;justify-items:start;padding:14px;border-radius:12px;background:var(--bg);font-size:13px}
+.team-transfer-empty span{color:var(--muted)}
+.team-transfer-empty .ghost{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-weight:700;cursor:pointer}
+.team-transfer-pending{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;padding:14px 16px;border:1px solid #f1d58b;border-radius:14px;background:#fff8e8;color:#5c4106}
+.team-transfer-pending>div:first-child{display:grid;gap:4px;font-size:13px;line-height:1.5}
+.team-transfer-pending b{font-size:14px}
+.team-transfer-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.team-transfer-actions button{padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.team-transfer-actions .danger{color:#c0303c}
+.team-transfer-actions .team-demo{border-style:dashed;border-color:#c8c2ff;color:var(--indigo-dark);background:#faf9ff}
+@media(max-width:760px){.team-transfer-pending{flex-direction:column;align-items:stretch}.team-transfer-actions{justify-content:flex-start}}

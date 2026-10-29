@@ -90,6 +90,7 @@
   /* ---------- Menu samping & label profil ---------- */
   const svg='<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3M8 17h6"/></svg>';
   document.querySelector('.nav[data-open-screen="11"]')?.insertAdjacentHTML('afterend',`<button class="nav nav-extra" data-open-screen="64" data-promoter-nav hidden>${svg}<span>Promotor Studio</span></button>`);
+  window.syncPromoterChrome=()=>syncChrome();
   function syncChrome(rerender){
     const nav=document.querySelector('[data-promoter-nav]');if(nav)nav.hidden=!isPromoter();
     document.querySelectorAll('#profile .profile h2').forEach(h=>{const pill=h.querySelector('.promoter-pill');if(isPromoter()&&!pill)h.insertAdjacentHTML('beforeend','<span class="promoter-pill">▣ Promotor</span>');if(!isPromoter()&&pill)pill.remove()});

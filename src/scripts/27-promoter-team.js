@@ -21,13 +21,22 @@
   const team=promoterState.team;
   // Pemilik = akun yang mendaftar sebagai promotor.
   if(!team.members.some(m=>m.role==='owner'))team.members.unshift({id:'owner',name:accountState.name,email:accountState.email,role:'owner',access:'all',status:'active',joinedAt:Date.now()});
+  // Akun yang sedang login. Bukan berarti Pemilik: kepemilikan bisa dipindahkan ke anggota lain.
+  if(!team.selfId)team.selfId='owner';
   savePromoter();
   let actingId=null; // "Lihat sebagai" (tidak disimpan: kembali ke Pemilik setelah refresh)
   let showInvite=false,confirmRemove=null,editAccess=null;
 
-  const me=()=>team.members.find(m=>m.id===(actingId||'owner'))||team.members[0];
+  const self=()=>team.members.find(m=>m.id===team.selfId);
+  const me=()=>(actingId&&team.members.find(m=>m.id===actingId))||self()||{id:null,name:accountState.name,role:'none'};
   const can=act=>!!PERMS[me().role]?.[act];
+  // Tetap promotor terverifikasi hanya selama masih menjadi anggota tim.
+  const baseIsPromoter=window.isPromoter;
+  window.isPromoter=()=>baseIsPromoter()&&!!self();
+  const leftTeam=()=>baseIsPromoter()&&!self();
   const fullAccess=m=>m.role==='owner'||m.role==='admin'||m.access==='all';
+  const owner=()=>team.members.find(m=>m.role==='owner');
+  const DAY=864e5;
   const visibleEvents=()=>{const m=me();return fullAccess(m)?promoterState.events:promoterState.events.filter(e=>(m.access||[]).includes(e.id))};
   function log(text){team.activity.unshift({by:me().name,role:me().role,text,at:Date.now()});team.activity=team.activity.slice(0,40);savePromoter()}
   // Event baru yang dibuat Editor dengan akses terbatas otomatis masuk aksesnya.
@@ -61,14 +70,38 @@
     if(manage)actions.push(`<button type="button" class="danger" data-team-remove="${m.id}">${confirmRemove===m.id?(pending?'Yakin batalkan?':'Yakin hapus?'):(pending?'Batalkan':'Hapus')}</button>`);
     const editor=editAccess===m.id?`<div class="team-access-edit"><b>Akses ${esc(m.name||m.email)}</b><label><input type="radio" name="scope-${m.id}" value="all" ${m.access==='all'?'checked':''} data-team-scope="${m.id}"> Semua event</label>${promoterState.events.map(e=>`<label><input type="checkbox" value="${e.id}" data-team-event="${m.id}" ${m.access!=='all'&&(m.access||[]).includes(e.id)?'checked':''}> ${esc(e.name||'Event tanpa nama')}</label>`).join('')}<button type="button" data-team-access-done>Selesai</button></div>`:'';
     return `<article class="team-row ${pending?'pending':''}"><div class="avatar ${m.role==='owner'?'':'teal'}">${esc(initials(m.name||m.email))}</div>
-      <div class="team-who"><b>${esc(m.name||m.email)}${isMe?' <em>(kamu)</em>':''}</b><span>${esc(m.email||'')}</span><small>${pending?`Undangan terkirim ${ago(m.invitedAt)}`:m.role==='owner'?'Pemilik akun promotor':`Bergabung ${ago(m.joinedAt)}`}</small></div>
+      <div class="team-who"><b>${esc(m.name||m.email)}${isMe?' <em>(kamu)</em>':''}</b><span>${esc(m.email||'')}</span><small>${pending?`Undangan terkirim ${ago(m.invitedAt)}`:m.role==='owner'?'Pemilik akun promotor':team.transfer?.to===m.id?'Calon pemilik baru · menunggu diterima':`Bergabung ${ago(m.joinedAt)}`}</small></div>
       <div class="team-cell">${role}</div><div class="team-cell">${access}</div><div class="team-actions">${actions.join('')}</div>${editor}</article>`;
+  }
+  let showTransfer=false;
+  function transferPending(){
+    const tr=team.transfer;if(!tr)return '';
+    const to=team.members.find(m=>m.id===tr.to);if(!to){team.transfer=null;savePromoter();return ''}
+    const days=Math.max(0,Math.ceil((tr.expiresAt-Date.now())/DAY));
+    const mine=me().role==='owner';
+    return `<section class="team-transfer-pending"><div><b>Menunggu ${esc(to.name||to.email)} menerima kepemilikan</b><span>Dikirim ${ago(tr.at)} · berlaku ${days} hari lagi. ${esc(to.name||to.email)} perlu memverifikasi identitas (KTP) sebelum menerima. Setelah diterima, kamu ${tr.keepAs==='admin'?'tetap di tim sebagai Admin':'keluar dari tim'}.</span></div>
+      <div class="team-transfer-actions">${mine?'<button type="button" class="danger" data-transfer-cancel>Batalkan permintaan</button>':''}<button type="button" class="team-demo" data-transfer-sim="accept">Simulasikan diterima</button><button type="button" class="team-demo" data-transfer-sim="decline">Simulasikan ditolak</button></div></section>`;
+  }
+  function transferCard(){
+    if(me().role!=='owner'||actingId)return '';
+    if(team.transfer)return '';
+    const admins=team.members.filter(m=>m.role==='admin'&&m.status==='active');
+    const intro=`<header class="team-head"><div><h3>Pindahkan kepemilikan</h3><p>Serahkan peran Pemilik ${esc(promoterState.organization)} ke Admin lain. Hanya ada satu Pemilik.</p></div>${showTransfer?'':'<button type="button" class="team-danger-btn" data-transfer-toggle>Pindahkan kepemilikan…</button>'}</header>`;
+    if(!showTransfer)return `<section class="team-card team-danger">${intro}</section>`;
+    if(!admins.length)return `<section class="team-card team-danger">${intro}<div class="team-transfer-empty"><b>Belum ada Admin aktif</b><span>Pemilik baru harus Admin yang sudah bergabung. Ubah peran salah satu anggota menjadi Admin, lalu coba lagi.</span><button type="button" class="ghost" data-transfer-toggle>Tutup</button></div></section>`;
+    return `<section class="team-card team-danger">${intro}<form class="team-transfer" data-transfer-form>
+      <fieldset><legend>Pemilik baru</legend>${admins.map((m,i)=>`<label class="team-pick"><input type="radio" name="to" value="${m.id}" ${i===0?'checked':''}><span class="avatar teal">${esc(initials(m.name||m.email))}</span><span><b>${esc(m.name||m.email)}</b><small>${esc(m.email)} · Admin</small></span></label>`).join('')}</fieldset>
+      <fieldset><legend>Setelah dipindahkan, kamu</legend><label class="team-pick"><input type="radio" name="keepAs" value="admin" checked><span><b>Tetap di tim sebagai Admin</b><small>Masih bisa mengelola event dan anggota</small></span></label><label class="team-pick"><input type="radio" name="keepAs" value="leave"><span><b>Keluar dari tim</b><small>Kehilangan akses ke Promotor Studio ${esc(promoterState.organization)}</small></span></label></fieldset>
+      <ul class="team-consequences"><li>Pemilik baru memegang kendali penuh, termasuk menghapus atau mengubah peranmu.</li><li>Pemilik baru harus menerima dalam 7 hari dan memverifikasi identitas (KTP).</li><li>Setelah diterima, kamu tidak bisa membatalkannya sendiri.</li></ul>
+      <label class="team-confirm"><span>Ketik <b>${esc(promoterState.organization)}</b> untuk konfirmasi</span><input name="confirm" autocomplete="off" required></label>
+      <label class="team-check"><input type="checkbox" name="agree" required> Saya memahami akibat pemindahan kepemilikan ini.</label>
+      <div class="team-form-actions"><button type="button" class="ghost" data-transfer-toggle>Batal</button><button type="submit" class="danger-solid">Kirim permintaan pemindahan</button></div></form></section>`;
   }
   function teamPage(){
     const active=team.members.filter(m=>m.status==='active').length,pending=team.members.length-active;
     const matrix=`<section class="team-card"><h3>Hak akses per peran</h3><div class="team-matrix" role="table"><div role="row"><span role="columnheader">Tindakan</span>${Object.values(ROLES).map(r=>`<span role="columnheader">${r.label}</span>`).join('')}</div>${ACTIONS.map(([label,key])=>`<div role="row"><span role="cell">${label}</span>${Object.keys(ROLES).map(r=>`<span role="cell" class="${!key||PERMS[r][key]?'yes':'no'}" aria-label="${!key||PERMS[r][key]?'Bisa':'Tidak bisa'}">${!key||PERMS[r][key]?'✓':'—'}</span>`).join('')}</div>`).join('')}</div><p class="team-muted">Editor dan Pengamat bisa dibatasi ke event tertentu.</p></section>`;
     const activity=`<section class="team-card"><h3>Aktivitas tim</h3>${team.activity.length?`<ul class="team-activity">${team.activity.slice(0,10).map(a=>`<li><b>${esc(a.by)}</b> <span class="team-role mini ${a.role}">${ROLES[a.role]?.label||''}</span> ${esc(a.text)}<small>${ago(a.at)}</small></li>`).join('')}</ul>`:'<p class="team-muted">Belum ada aktivitas.</p>'}</section>`;
-    const body=can('team')?`<section class="team-card"><header class="team-head"><div><h3>Anggota tim</h3><p>${active} aktif${pending?` · ${pending} undangan menunggu`:''}</p></div>${showInvite?'':'<button type="button" class="team-primary" data-team-invite-toggle>＋ Undang anggota</button>'}</header>${showInvite?inviteForm():''}<div class="team-list">${team.members.map(memberRow).join('')}</div></section><div class="team-two">${matrix}${activity}</div>`
+    const body=can('team')?`<section class="team-card"><header class="team-head"><div><h3>Anggota tim</h3><p>${active} aktif${pending?` · ${pending} undangan menunggu`:''}</p></div>${showInvite?'':'<button type="button" class="team-primary" data-team-invite-toggle>＋ Undang anggota</button>'}</header>${showInvite?inviteForm():''}<div class="team-list">${team.members.map(memberRow).join('')}</div></section>${transferPending()}<div class="team-two">${matrix}${activity}</div>${transferCard()}`
       :`<section class="team-card"><div class="ins-empty"><b>Hanya Pemilik dan Admin yang bisa mengelola tim</b><span>Kamu masuk sebagai ${ROLES[me().role].label}.</span></div></section>${matrix}`;
     return promoterPage('Tim',`Kelola siapa saja yang bisa mengakses Promotor Studio ${esc(promoterState.organization)}`,body);
   }
@@ -95,7 +128,13 @@
   function guardActive(){const vis=visibleEvents();if(vis.length&&!vis.some(e=>e.id===promoterState.activeEventId)){promoterState.activeEventId=vis[0].id}}
 
   const baseTemplate=template;
+  function leftPage(){
+    const o=owner();
+    return `<div class="pro-locked"><div class="orb">▣</div><h2>Kamu sudah keluar dari tim ${esc(promoterState.organization)}</h2><p>Kepemilikan dipindahkan ke ${esc(o?.name||o?.email||'pemilik baru')}. Minta Pemilik mengundangmu lagi bila perlu akses.</p>
+      <button class="pro-btn secondary" data-go="56">Kembali ke Pusat Akun</button><div class="pro-demo"><small>FITUR UJI COBA PROTOTIPE</small><div><button data-transfer-restore>Pulihkan sebagai Pemilik</button></div></div></div>`;
+  }
   template=function(n){
+    if(leftTeam()&&[64,65,66,67,70,71,TEAM].includes(n)){const fl=document.querySelector('#flowLayer');if(innerWidth>620)fl.classList.add('embedded');document.querySelector('#flowTitle').textContent='Promotor Studio';document.querySelector('#flowIndex').textContent='Akses berakhir';return leftPage()}
     const promoter=typeof isPromoter==='function'&&isPromoter();
     if(n===TEAM&&promoter)return restrict(window.promoterNav(teamPage(),TEAM),TEAM);
     if(promoter&&[64,65,66,67,71].includes(n)){
@@ -106,9 +145,25 @@
   };
   const rerender=()=>openFlow(flowCurrent,false);
 
+  function completeTransfer(){
+    const tr=team.transfer,to=team.members.find(m=>m.id===tr?.to),old=owner();if(!tr||!to||!old)return;
+    to.role='owner';to.access='all';
+    if(tr.keepAs==='admin'){old.role='admin';old.access='all'}else team.members=team.members.filter(m=>m.id!==old.id);
+    team.transfer=null;actingId=null;
+    team.activity.unshift({by:to.name||to.email,role:'owner',text:`menerima kepemilikan ${promoterState.organization} dari ${old.name}${tr.keepAs==='admin'?'':' (pemilik lama keluar dari tim)'}`,at:Date.now()});savePromoter();
+    pushNotif({kind:'meet',icon:'✓',who:to.name||to.email,av:initials(to.name||to.email),tone:'teal',text:`sekarang menjadi Pemilik ${promoterState.organization}.${tr.keepAs==='admin'?' Kamu tetap di tim sebagai Admin.':' Kamu sudah keluar dari tim.'}`,go:{screen:tr.keepAs==='admin'?TEAM:56}});
+    window.syncPromoterChrome?.();
+  }
   /* ---------- Event ---------- */
   document.addEventListener('click',e=>{
     const t=e.target;
+    if(t.closest('[data-transfer-toggle]')){showTransfer=!showTransfer;rerender();return}
+    if(t.closest('[data-transfer-cancel]')){if(team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);team.transfer=null;log(`membatalkan pemindahan kepemilikan ke ${to?.name||to?.email}`);toast('Permintaan dibatalkan')}rerender();return}
+    const sim=t.closest('[data-transfer-sim]');if(sim&&team.transfer){
+      if(sim.dataset.transferSim==='accept'){const left=team.transfer.keepAs==='leave';completeTransfer();toast(left?'Kepemilikan dipindahkan. Kamu keluar dari tim.':'Kepemilikan dipindahkan. Kamu sekarang Admin.');openFlow(left?64:TEAM,false)}
+      else{const to=team.members.find(m=>m.id===team.transfer.to);team.activity.unshift({by:to?.name||to?.email,role:to?.role,text:'menolak permintaan menjadi Pemilik',at:Date.now()});team.transfer=null;savePromoter();pushNotif({kind:'event',icon:'!',who:to?.name||'Anggota tim',av:initials(to?.name||to?.email),tone:'gold',text:'menolak permintaan menjadi Pemilik. Kamu tetap Pemilik.',go:{screen:TEAM}});toast('Permintaan ditolak');rerender()}
+      return}
+    if(t.closest('[data-transfer-restore]')){team.members.forEach(m=>{if(m.role==='owner'){m.role='admin';m.access='all'}});team.members.unshift({id:team.selfId,name:accountState.name,email:accountState.email,role:'owner',access:'all',status:'active',joinedAt:Date.now()});savePromoter();window.syncPromoterChrome?.();toast('Kamu kembali menjadi Pemilik (uji coba)');openFlow(TEAM,false);return}
     // Penjaga tindakan yang tidak diizinkan (mis. tombol yang dipanggil dari tempat lain)
     if(t.closest('[data-submit-event]')&&!can('submit')){e.preventDefault();e.stopImmediatePropagation();toast('Peranmu tidak bisa mengajukan event');return}
     if(t.closest('[data-team-invite-toggle]')){showInvite=!showInvite;rerender();return}
@@ -117,17 +172,28 @@
     const act=t.closest('[data-team-act]');if(act){actingId=act.dataset.teamAct;confirmRemove=null;editAccess=null;guardActive();toast(`Melihat sebagai ${me().name}`);openFlow(64,false);return}
     if(t.closest('[data-team-exit]')){actingId=null;toast('Kembali sebagai Pemilik');openFlow(TEAM,false);return}
     const rem=t.closest('[data-team-remove]');if(rem){const id=rem.dataset.teamRemove;if(confirmRemove!==id){confirmRemove=id;rerender();return}
-      const m=team.members.find(x=>x.id===id);if(m&&canManage(m)){team.members=team.members.filter(x=>x.id!==id);log(m.status==='invited'?`membatalkan undangan ${m.email}`:`menghapus ${m.name||m.email} dari tim`);toast(m.status==='invited'?'Undangan dibatalkan':'Anggota dihapus')}confirmRemove=null;rerender();return}
+      const m=team.members.find(x=>x.id===id);if(m&&canManage(m)){if(team.transfer?.to===id){team.transfer=null;log('permintaan pemindahan kepemilikan batal karena calon pemilik dihapus')}team.members=team.members.filter(x=>x.id!==id);log(m.status==='invited'?`membatalkan undangan ${m.email}`:`menghapus ${m.name||m.email} dari tim`);toast(m.status==='invited'?'Undangan dibatalkan':'Anggota dihapus')}confirmRemove=null;rerender();return}
     const ae=t.closest('[data-team-access-edit]');if(ae){editAccess=editAccess===ae.dataset.teamAccessEdit?null:ae.dataset.teamAccessEdit;rerender();return}
     if(t.closest('[data-team-access-done]')){editAccess=null;rerender();return}
   },true);
   document.addEventListener('change',e=>{
     const t=e.target;
-    const r=t.closest('[data-team-role]');if(r){const m=team.members.find(x=>x.id===r.dataset.teamRole);if(m&&canManage(m)){const from=ROLES[m.role].label;m.role=r.value;if(m.role==='admin')m.access='all';log(`mengubah peran ${m.name||m.email}: ${from} → ${ROLES[m.role].label}`);toast('Peran diperbarui');rerender()}return}
+    const r=t.closest('[data-team-role]');if(r){const m=team.members.find(x=>x.id===r.dataset.teamRole);if(m&&canManage(m)){const from=ROLES[m.role].label;m.role=r.value;if(m.role==='admin')m.access='all';if(team.transfer?.to===m.id&&m.role!=='admin'){team.transfer=null;log('permintaan pemindahan kepemilikan batal karena calon pemilik bukan Admin lagi')}log(`mengubah peran ${m.name||m.email}: ${from} → ${ROLES[m.role].label}`);toast('Peran diperbarui');rerender()}return}
     const sc=t.closest('[data-team-scope]');if(sc){const m=team.members.find(x=>x.id===sc.dataset.teamScope);if(m){m.access='all';log(`memberi ${m.name||m.email} akses semua event`);rerender()}return}
     const ev=t.closest('[data-team-event]');if(ev){const m=team.members.find(x=>x.id===ev.dataset.teamEvent);if(m){const set=new Set(m.access==='all'?[]:m.access||[]);ev.checked?set.add(ev.value):set.delete(ev.value);m.access=[...set];const name=promoterState.events.find(x=>x.id===ev.value)?.name||'event';log(`${ev.checked?'memberi':'mencabut'} akses ${m.name||m.email} ke “${name}”`);rerender()}return}
     // Form undangan: daftar event hanya aktif bila "Event tertentu"
     const scope=t.closest('[data-team-invite] [name=scope]');if(scope)t.form.querySelector('.team-events').classList.toggle('on',scope.value==='some');
+  });
+  document.addEventListener('submit',e=>{
+    const f=e.target.closest('[data-transfer-form]');if(!f)return;e.preventDefault();
+    if(me().role!=='owner'||actingId){toast('Hanya Pemilik yang bisa memindahkan kepemilikan');return}
+    const d=new FormData(f),to=team.members.find(m=>m.id===d.get('to')&&m.role==='admin'&&m.status==='active');
+    if(!to){toast('Pilih Admin aktif sebagai pemilik baru');return}
+    if(String(d.get('confirm')).trim()!==promoterState.organization){toast(`Ketik “${promoterState.organization}” persis untuk konfirmasi`);f.elements.confirm.focus();return}
+    team.transfer={to:to.id,keepAs:d.get('keepAs')==='leave'?'leave':'admin',at:Date.now(),expiresAt:Date.now()+7*DAY};
+    log(`meminta ${to.name||to.email} menjadi Pemilik baru`);showTransfer=false;
+    pushNotif({kind:'event',icon:'◷',who:'Tim Temmoo',av:'T',tone:'',text:`permintaan pemindahan kepemilikan ${promoterState.organization} ke ${to.name||to.email} sudah dikirim`,go:{screen:TEAM}});
+    toast('Permintaan pemindahan dikirim');rerender();
   });
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-team-invite]');if(!f)return;e.preventDefault();
