@@ -66,7 +66,8 @@
   function accountSection(){
     const st=app.status,go=st==='approved'?64:st==='none'?APPLY:STATUS;
     const label=st==='approved'?`Promotor Studio<small>${esc(app.org)} · Kelola event resmi</small>`:st==='none'?'Daftar sebagai promotor<small>Buat event resmi, grup resmi, dan album foto</small>':`Pengajuan promotor<small>${esc(app.org)}</small>`;
-    return `<section><h3>Promotor</h3><button data-go="${go}"><span>${label}</span>${st==='none'?'<b>›</b>':`<em class="pro-row-status ${st}">${statusText[st]}</em>`}</button></section>`;
+    return `<section><h3>Promotor</h3><button data-go="${go}"><span>${label}</span>${st==='none'?'<b>›</b>':`<em class="pro-row-status ${st}">${statusText[st]}</em>`}</button></section>
+      <section><h3>Uji coba prototipe</h3><button data-go="63"><span>Portal tim Temmoo<small>Masuk ke Admin Console: gunakan email apa pun berakhiran @temmoo.id</small></span><b>›</b></button></section>`;
   }
 
   const baseTemplate=template;
@@ -78,6 +79,10 @@
     if(STUDIO.includes(n)&&!isPromoter()){embed();title.textContent='Promotor Studio';sub.textContent='Akses terbatas';return lockedScreen()}
     let html=baseTemplate(n);
     if(n===56){html=html.replace('<button class="account-logout"',accountSection()+'<button class="account-logout"');title.textContent='Pusat Akun';sub.textContent='Profil, keamanan, dan peran akun'}
+    if(n===66&&['submitted','review'].includes(promoterState.event.status)){
+      const box='<div class="pro-demo"><small>FITUR UJI COBA PROTOTIPE: simulasikan keputusan Admin Temmoo</small><div><button data-event-sim="publish">✓ Setujui & terbitkan</button><button data-event-sim="changes">! Minta revisi</button></div></div>';
+      const i=html.lastIndexOf('</section>');if(i>0)html=html.slice(0,i)+box+html.slice(i);
+    }
     if(n===61&&app.status==='review')html=html.replace('<div class="admin-list-row"><i class="event-admin-icon">P</i>',`<div class="admin-list-row"><i class="event-admin-icon">P</i><div><b>${esc(app.org)}</b><span>Pengajuan akun promotor · ${esc(app.type)} · ${esc(app.city)} · oleh ${esc(accountState.handle)}</span></div><div class="pro-admin-actions"><button data-promoter-admin="changes">Minta revisi</button><button data-promoter-admin="approved">Setujui</button></div></div><div class="admin-list-row"><i class="event-admin-icon">P</i>`);
     return html;
   };
@@ -100,6 +105,20 @@
       ktp:f.elements.ktp.files[0]?.name||app.ktp,legal:legalFile,status:'review',note:'',submittedAt:Date.now()};
     save();syncChrome();toast('Pengajuan promotor terkirim');openFlow(STATUS);
   });
+  // "Kembali ke aplikasi" dari login admin. Tanpa ini, href di preview Claude (iframe srcdoc) membuka halaman lain.
+  document.addEventListener('click',e=>{if(!e.target.closest('[data-back-home]'))return;e.preventDefault();closeFlow();show('home')});
+  document.addEventListener('click',e=>{
+    const ev=e.target.closest('[data-event-sim]');if(!ev)return;e.preventDefault();e.stopPropagation();
+    const name=promoterState.event.name;
+    if(ev.dataset.eventSim==='publish'){
+      promoterState.event.status='published';promoterState.event.reviewNote='';savePromoter();syncPublishedEvent();render();adminLog(`${name} disetujui dan diterbitkan`);
+      pushNotif({kind:'event',icon:'★',who:'Tim Temmoo',av:'T',tone:'',text:`menerbitkan ${name}. Event Hub dan grup resmi sudah aktif.`,go:{screen:66}});toast('Event terbit dan tampil di Temukan Event');
+    }else{
+      promoterState.event.status='changes';promoterState.event.reviewNote='Tambahkan rundown acara dan pastikan tautan tiket mengarah ke partner resmi.';savePromoter();adminLog(`Revisi diminta untuk ${name}`);
+      pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`meminta revisi untuk ${name}`,quote:promoterState.event.reviewNote,go:{screen:66}});toast('Permintaan revisi dikirim');
+    }
+    openFlow(66,false);
+  },true);
   document.addEventListener('click',e=>{
     const sim=e.target.closest('[data-promoter-sim],[data-promoter-admin]');if(!sim)return;e.preventDefault();e.stopPropagation();
     const decision=sim.dataset.promoterSim||sim.dataset.promoterAdmin;
