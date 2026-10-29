@@ -84,3 +84,17 @@
 .team-transfer-actions .danger{color:#c0303c}
 .team-transfer-actions .team-demo{border-style:dashed;border-color:#c8c2ff;color:var(--indigo-dark);background:#faf9ff}
 @media(max-width:760px){.team-transfer-pending{flex-direction:column;align-items:stretch}.team-transfer-actions{justify-content:flex-start}}
+/* Verifikasi OTP */
+.team-otp{display:grid;gap:12px}
+.team-otp>p{margin:0;font-size:14px;line-height:1.5}
+.team-otp-boxes{display:flex;gap:8px}
+.team-otp-boxes input{width:48px;height:56px;border:1px solid #ddd9e7;border-radius:12px;background:#fff;text-align:center;font:800 22px Inter,sans-serif;color:var(--text)}
+.team-otp-boxes input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(91,75,255,.15);outline:0}
+.team-otp-boxes.bad input{border-color:#e5484d}
+.team-otp-error{min-height:18px;margin:-4px 0 0!important;color:#c0303c;font-size:13px!important}
+.team-otp-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px}
+.team-otp-meta b{color:var(--text);font-variant-numeric:tabular-nums}
+.team-link:disabled{color:var(--muted);cursor:default}
+.team-otp-demo{font-size:13px;color:var(--indigo-dark)}
+.team-otp-demo b{letter-spacing:.2em;font-size:15px}
+@media(max-width:420px){.team-otp-boxes{gap:6px}.team-otp-boxes input{width:42px;height:50px;font-size:20px}}

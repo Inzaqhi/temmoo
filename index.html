@@ -2428,6 +2428,20 @@ html{scrollbar-gutter:stable}
 .team-transfer-actions .danger{color:#c0303c}
 .team-transfer-actions .team-demo{border-style:dashed;border-color:#c8c2ff;color:var(--indigo-dark);background:#faf9ff}
 @media(max-width:760px){.team-transfer-pending{flex-direction:column;align-items:stretch}.team-transfer-actions{justify-content:flex-start}}
+/* Verifikasi OTP */
+.team-otp{display:grid;gap:12px}
+.team-otp>p{margin:0;font-size:14px;line-height:1.5}
+.team-otp-boxes{display:flex;gap:8px}
+.team-otp-boxes input{width:48px;height:56px;border:1px solid #ddd9e7;border-radius:12px;background:#fff;text-align:center;font:800 22px Inter,sans-serif;color:var(--text)}
+.team-otp-boxes input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(91,75,255,.15);outline:0}
+.team-otp-boxes.bad input{border-color:#e5484d}
+.team-otp-error{min-height:18px;margin:-4px 0 0!important;color:#c0303c;font-size:13px!important}
+.team-otp-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px}
+.team-otp-meta b{color:var(--text);font-variant-numeric:tabular-nums}
+.team-link:disabled{color:var(--muted);cursor:default}
+.team-otp-demo{font-size:13px;color:var(--indigo-dark)}
+.team-otp-demo b{letter-spacing:.2em;font-size:15px}
+@media(max-width:420px){.team-otp-boxes{gap:6px}.team-otp-boxes input{width:42px;height:50px;font-size:20px}}
 </style>
 <script id="promoter-team-js">// Anggota tim akun promotor: undangan, peran (Pemilik/Admin/Editor/Pengamat), akses per event,
 // "Lihat sebagai" untuk menguji hak akses, dan log aktivitas. Tanpa server, undangan diterima lewat simulasi
@@ -2504,7 +2518,39 @@ html{scrollbar-gutter:stable}
       <div class="team-who"><b>${esc(m.name||m.email)}${isMe?' <em>(kamu)</em>':''}</b><span>${esc(m.email||'')}</span><small>${pending?`Undangan terkirim ${ago(m.invitedAt)}`:m.role==='owner'?'Pemilik akun promotor':team.transfer?.to===m.id?'Calon pemilik baru · menunggu diterima':`Bergabung ${ago(m.joinedAt)}`}</small></div>
       <div class="team-cell">${role}</div><div class="team-cell">${access}</div><div class="team-actions">${actions.join('')}</div>${editor}</article>`;
   }
-  let showTransfer=false;
+  let showTransfer=false,otp=null;
+  const OTP_TTL=5*60e3,OTP_RESEND=60e3,OTP_MAX=5;
+  const maskPhone=p=>{const d=String(p||'').replace(/\D/g,'');return d.length<8?p:`+${d.slice(0,2)} ${d.slice(2,5)}-••••-${d.slice(-4)}`};
+  const maskEmail=e=>{const [u,dom]=String(e||'').split('@');return dom?`${u.slice(0,2)}${'•'.repeat(Math.max(2,u.length-2))}@${dom}`:e};
+  function sendOtp(){otp.code=String(Math.floor(100000+Math.random()*900000));otp.sentAt=Date.now();otp.expiresAt=otp.sentAt+OTP_TTL;otp.error='';}
+  const mmss=ms=>{const t=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`};
+  function otpStep(){
+    const to=team.members.find(m=>m.id===otp.to),dest=otp.channel==='phone'?maskPhone(accountState.phone):maskEmail(accountState.email);
+    const wait=otp.sentAt+OTP_RESEND-Date.now(),cooling=wait>0;
+    return `<section class="team-card team-danger"><header class="team-head"><div><h3>Verifikasi dengan kode OTP</h3><p>Langkah terakhir sebelum meminta ${esc(to?.name||to?.email||'')} menjadi Pemilik.</p></div></header>
+      <form class="team-otp" data-otp-form autocomplete="off">
+        <p>Kami mengirim kode 6 digit ke <b>${esc(dest)}</b> lewat ${otp.channel==='phone'?'SMS/WhatsApp':'email'}.</p>
+        <div class="team-otp-boxes" role="group" aria-label="Kode OTP 6 digit">${Array.from({length:6},(_,i)=>`<input data-otp-digit inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit ${i+1}" ${i===0?'autocomplete="one-time-code"':''}>`).join('')}</div>
+        <p class="team-otp-error" data-otp-error role="alert">${esc(otp.error)}</p>
+        <div class="team-otp-meta"><span>Kode berlaku <b data-otp-expire>${mmss(otp.expiresAt-Date.now())}</b></span><button type="button" class="team-link" data-otp-resend ${cooling?'disabled':''}>${cooling?`Kirim ulang dalam ${mmss(wait)}`:'Kirim ulang'}</button></div>
+        <div class="team-otp-meta"><span>Tidak menerima kode?</span>${accountState.phone&&accountState.email?`<button type="button" class="team-link" data-otp-channel ${cooling?'disabled':''}>Kirim ke ${otp.channel==='phone'?'email':'nomor HP'}</button>`:''}</div>
+        <div class="pro-demo"><small>FITUR UJI COBA PROTOTIPE: kode tidak benar-benar dikirim</small><div><span class="team-otp-demo">Kode OTP-mu: <b>${otp.code}</b></span></div></div>
+        <div class="team-form-actions"><button type="button" class="ghost" data-otp-back>Kembali</button><button type="submit" class="danger-solid">Verifikasi &amp; kirim permintaan</button></div>
+      </form></section>`;
+  }
+  // Perbarui teks tanpa merender ulang (agar isi kotak OTP tidak hilang).
+  function refreshOtp(clear){
+    const err=document.querySelector('[data-otp-error]');if(err)err.textContent=otp?.error||'';
+    if(clear){document.querySelectorAll('[data-otp-digit]').forEach(i=>i.value='');document.querySelector('[data-otp-digit]')?.focus()}
+    document.querySelector('.team-otp-boxes')?.classList.toggle('bad',!!otp?.error);
+  }
+  setInterval(()=>{
+    if(!otp)return;
+    const ex=document.querySelector('[data-otp-expire]');if(ex)ex.textContent=Date.now()>otp.expiresAt?'kedaluwarsa':mmss(otp.expiresAt-Date.now());
+    const wait=otp.sentAt+OTP_RESEND-Date.now();
+    const rs=document.querySelector('[data-otp-resend]');if(rs){rs.disabled=wait>0;rs.textContent=wait>0?`Kirim ulang dalam ${mmss(wait)}`:'Kirim ulang'}
+    const ch=document.querySelector('[data-otp-channel]');if(ch)ch.disabled=wait>0;
+  },500);
   function transferPending(){
     const tr=team.transfer;if(!tr)return '';
     const to=team.members.find(m=>m.id===tr.to);if(!to){team.transfer=null;savePromoter();return ''}
@@ -2516,6 +2562,7 @@ html{scrollbar-gutter:stable}
   function transferCard(){
     if(me().role!=='owner'||actingId)return '';
     if(team.transfer)return '';
+    if(otp)return otpStep();
     const admins=team.members.filter(m=>m.role==='admin'&&m.status==='active');
     const intro=`<header class="team-head"><div><h3>Pindahkan kepemilikan</h3><p>Serahkan peran Pemilik ${esc(promoterState.organization)} ke Admin lain. Hanya ada satu Pemilik.</p></div>${showTransfer?'':'<button type="button" class="team-danger-btn" data-transfer-toggle>Pindahkan kepemilikan…</button>'}</header>`;
     if(!showTransfer)return `<section class="team-card team-danger">${intro}</section>`;
@@ -2588,7 +2635,10 @@ html{scrollbar-gutter:stable}
   /* ---------- Event ---------- */
   document.addEventListener('click',e=>{
     const t=e.target;
-    if(t.closest('[data-transfer-toggle]')){showTransfer=!showTransfer;rerender();return}
+    if(t.closest('[data-transfer-toggle]')){showTransfer=!showTransfer;otp=null;rerender();return}
+    if(t.closest('[data-otp-back]')){otp=null;rerender();return}
+    if(t.closest('[data-otp-resend]')&&otp){if(Date.now()<otp.sentAt+OTP_RESEND)return;sendOtp();toast('Kode baru dikirim');rerender();setTimeout(()=>document.querySelector('[data-otp-digit]')?.focus(),50);return}
+    if(t.closest('[data-otp-channel]')&&otp){const wait=otp.sentAt+OTP_RESEND-Date.now();if(wait>0){toast(`Tunggu ${mmss(wait)} sebelum meminta kode baru`);return}otp.channel=otp.channel==='phone'?'email':'phone';sendOtp();toast(`Kode dikirim ke ${otp.channel==='phone'?'nomor HP':'email'}`);rerender();setTimeout(()=>document.querySelector('[data-otp-digit]')?.focus(),50);return}
     if(t.closest('[data-transfer-cancel]')){if(team.transfer){const to=team.members.find(m=>m.id===team.transfer.to);team.transfer=null;log(`membatalkan pemindahan kepemilikan ke ${to?.name||to?.email}`);toast('Permintaan dibatalkan')}rerender();return}
     const sim=t.closest('[data-transfer-sim]');if(sim&&team.transfer){
       if(sim.dataset.transferSim==='accept'){const left=team.transfer.keepAs==='leave';completeTransfer();toast(left?'Kepemilikan dipindahkan. Kamu keluar dari tim.':'Kepemilikan dipindahkan. Kamu sekarang Admin.');openFlow(left?64:TEAM,false)}
@@ -2607,6 +2657,26 @@ html{scrollbar-gutter:stable}
     const ae=t.closest('[data-team-access-edit]');if(ae){editAccess=editAccess===ae.dataset.teamAccessEdit?null:ae.dataset.teamAccessEdit;rerender();return}
     if(t.closest('[data-team-access-done]')){editAccess=null;rerender();return}
   },true);
+  const digits=()=>[...document.querySelectorAll('[data-otp-digit]')];
+  const submitIfFull=()=>{if(digits().every(i=>i.value))document.querySelector('[data-otp-form] [type=submit]')?.click()};
+  document.addEventListener('input',e=>{
+    const box=e.target.closest('[data-otp-digit]');if(!box)return;
+    // Hapus pesan error lama SEBELUM memeriksa, supaya error dari pemeriksaan ini tetap tampil.
+    if(otp?.error){otp.error='';refreshOtp()}
+    const v=box.value.replace(/\D/g,'');
+    if(v.length>1){const all=digits(),start=all.indexOf(box);[...v].slice(0,6-start).forEach((c,i)=>all[start+i].value=c);all[Math.min(5,start+v.length)]?.focus();submitIfFull();return}
+    box.value=v;if(v){const all=digits();all[all.indexOf(box)+1]?.focus();submitIfFull()}
+  });
+  document.addEventListener('keydown',e=>{
+    const box=e.target.closest?.('[data-otp-digit]');if(!box)return;const all=digits(),i=all.indexOf(box);
+    if(e.key==='Backspace'&&!box.value&&i>0){e.preventDefault();all[i-1].value='';all[i-1].focus()}
+    if(e.key==='ArrowLeft'&&i>0)all[i-1].focus();
+    if(e.key==='ArrowRight'&&i<5)all[i+1].focus();
+  });
+  document.addEventListener('paste',e=>{
+    const box=e.target.closest?.('[data-otp-digit]');if(!box)return;const v=(e.clipboardData?.getData('text')||'').replace(/\D/g,'').slice(0,6);if(!v)return;e.preventDefault();
+    const all=digits();[...v].forEach((c,i)=>{if(all[i])all[i].value=c});all[Math.min(5,v.length)]?.focus();submitIfFull();
+  });
   document.addEventListener('change',e=>{
     const t=e.target;
     const r=t.closest('[data-team-role]');if(r){const m=team.members.find(x=>x.id===r.dataset.teamRole);if(m&&canManage(m)){const from=ROLES[m.role].label;m.role=r.value;if(m.role==='admin')m.access='all';if(team.transfer?.to===m.id&&m.role!=='admin'){team.transfer=null;log('permintaan pemindahan kepemilikan batal karena calon pemilik bukan Admin lagi')}log(`mengubah peran ${m.name||m.email}: ${from} → ${ROLES[m.role].label}`);toast('Peran diperbarui');rerender()}return}
@@ -2621,10 +2691,26 @@ html{scrollbar-gutter:stable}
     const d=new FormData(f),to=team.members.find(m=>m.id===d.get('to')&&m.role==='admin'&&m.status==='active');
     if(!to){toast('Pilih Admin aktif sebagai pemilik baru');return}
     if(String(d.get('confirm')).trim()!==promoterState.organization){toast(`Ketik “${promoterState.organization}” persis untuk konfirmasi`);f.elements.confirm.focus();return}
-    team.transfer={to:to.id,keepAs:d.get('keepAs')==='leave'?'leave':'admin',at:Date.now(),expiresAt:Date.now()+7*DAY};
-    log(`meminta ${to.name||to.email} menjadi Pemilik baru`);showTransfer=false;
+    otp={to:to.id,keepAs:d.get('keepAs')==='leave'?'leave':'admin',channel:accountState.phone?'phone':'email',attempts:0,error:''};sendOtp();rerender();
+    setTimeout(()=>document.querySelector('[data-otp-digit]')?.focus(),50);
+  });
+  // Langkah OTP: kode 6 digit, berlaku 5 menit, kirim ulang setelah 60 detik, maksimal 5 percobaan.
+  document.addEventListener('submit',e=>{
+    const f=e.target.closest('[data-otp-form]');if(!f)return;e.preventDefault();
+    if(!otp||me().role!=='owner'||actingId)return;
+    const code=[...f.querySelectorAll('[data-otp-digit]')].map(i=>i.value).join('');
+    if(code.length<6){otp.error='Masukkan 6 digit kode.';refreshOtp();return}
+    if(Date.now()>otp.expiresAt){otp.error='Kode sudah kedaluwarsa. Kirim ulang kode baru.';refreshOtp();return}
+    if(code!==otp.code){
+      otp.attempts++;
+      if(otp.attempts>=OTP_MAX){log(`gagal memasukkan kode OTP ${OTP_MAX} kali saat memindahkan kepemilikan`);otp=null;showTransfer=false;toast('Terlalu banyak percobaan. Ulangi pemindahan dari awal.');rerender();return}
+      otp.error=`Kode salah. Sisa ${OTP_MAX-otp.attempts} percobaan.`;refreshOtp(true);return}
+    const to=team.members.find(m=>m.id===otp.to&&m.role==='admin'&&m.status==='active');
+    if(!to){otp=null;toast('Calon pemilik tidak lagi Admin aktif');rerender();return}
+    team.transfer={to:to.id,keepAs:otp.keepAs,at:Date.now(),expiresAt:Date.now()+7*DAY};otp=null;
+    log(`memverifikasi OTP dan meminta ${to.name||to.email} menjadi Pemilik baru`);showTransfer=false;
     pushNotif({kind:'event',icon:'◷',who:'Tim Temmoo',av:'T',tone:'',text:`permintaan pemindahan kepemilikan ${promoterState.organization} ke ${to.name||to.email} sudah dikirim`,go:{screen:TEAM}});
-    toast('Permintaan pemindahan dikirim');rerender();
+    toast('Kode benar. Permintaan pemindahan dikirim');rerender();
   });
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-team-invite]');if(!f)return;e.preventDefault();
