@@ -5,14 +5,14 @@
   const photos=[
     {id:'p1',name:'Bareng teman sebelum konser',date:'24 Agustus 2026',album:'LaLaLa Fest',tone:'tone-coral',favorite:true},
     {id:'p2',name:'Panggung utama',date:'24 Agustus 2026',album:'LaLaLa Fest',tone:'tone-indigo'},
-    {id:'p3',name:'Circle pertama',date:'12 Juli 2026',album:'Hindia Live',tone:'tone-teal',shared:true},
-    {id:'p4',name:'Menunggu gate dibuka',date:'12 Juli 2026',album:'Hindia Live',tone:'tone-gold'},
+    {id:'p3',name:'Circle pertama',date:'12 Juli 2025',album:'Hindia Live 2025',tone:'tone-teal',shared:true},
+    {id:'p4',name:'Menunggu gate dibuka',date:'12 Juli 2025',album:'Hindia Live 2025',tone:'tone-gold'},
     {id:'p5',name:'Coffee corner',date:'10 Oktober 2025',album:'Coffee Fest',tone:'tone-mix',archived:true},
     {id:'p6',name:'Foto bersama komunitas',date:'10 Oktober 2025',album:'Coffee Fest',tone:'tone-coral',favorite:true}
   ];
   const albums=[
     {id:'a1',name:'LaLaLa Fest 2026',count:14,privacy:'Pribadi',tone:'tone-coral'},
-    {id:'a2',name:'Hindia Live',count:9,privacy:'Publik',tone:'tone-teal'},
+    {id:'a2',name:'Hindia Live 2025',count:9,privacy:'Publik',tone:'tone-teal'},
     {id:'a3',name:'Circle Coffee Fest',count:6,privacy:'Dibagikan',tone:'tone-gold'}
   ];
   const esc=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
