@@ -25,7 +25,7 @@
     const limit=tab==='all'?3:99;
     const section=(key,title,items,render)=>(tab==='all'||tab===key)&&items.length?`<section class="search-section"><header><h3>${title} <small class="muted">${items.length}</small></h3>${tab==='all'&&items.length>limit?`<button data-search-tab="${key}">Lihat semua</button>`:''}</header>${items.slice(0,limit).map(render).join('')}</section>`:'';
     return section('people','Orang',ppl,p=>`<button class="search-row" data-open-profile="${esc(p.name)}" data-search-hit>${avatar(p.tone,p.avatar)}<div><b>${mark(p.name,q)}</b><small>${mark(p.handle,q)}${p.interests?' · '+mark(p.interests,q):''}</small></div>${p.match?`<em>${esc(p.match)}</em>`:''}</button>`)
-      +section('events','Event',evs,({e,i})=>`<button class="search-row" data-event-index="${i}" data-search-hit><span class="search-date">${esc(e[1]).replace(' ','<br>')}</span><div><b>${mark(e[0],q)}</b><small>${mark(e[2],q)} · ${mark(e[4],q)}</small></div></button>`)
+      +section('events','Event',evs,({e,i})=>`<button class="search-row" data-event-index="${i}" data-search-hit><span class="search-date">${esc(e[1]).replace(' ','<br>')}</span><div><b>${mark(e[0],q)}</b> ${endedBadge(i)}<small>${mark(e[2],q)} · ${mark(e[4],q)}</small></div></button>`)
       +section('posts','Postingan',pst,p=>post(p))
       +((tab!=='all'&&!{people:ppl,events:evs,posts:pst}[tab].length)?`<div class="search-empty"><b>Tidak ada hasil di kategori ini</b>Coba lihat tab Semua.</div>`:'');
   }
@@ -43,7 +43,7 @@
     {id:'n1',kind:'meet',icon:'✓',who:'Nadia Aulia',av:'NA',tone:'teal',text:'menerima permintaan Temui-mu. Sekarang kalian bisa ngobrol.',time:'2 menit',fresh:true,go:{profile:'Nadia Aulia'}},
     {id:'n2',kind:'like',icon:'♥',who:'Kevin Ardana',av:'KA',tone:'gold',text:'menyukai postinganmu',quote:'Circle-nya asik banget pas konser kemarin.',time:'15 menit',fresh:true,go:{view:'profile'}},
     {id:'n3',kind:'reply',icon:'↩',who:'Salsa Putri',av:'SP',tone:'',text:'membalas postinganmu',quote:'Aku juga mau ikut barengan dari Surabaya!',time:'1 jam',fresh:true,go:{view:'profile'}},
-    {id:'n4',kind:'event',icon:'★',who:'+62 Coffee R-I Fest',av:'CF',tone:'gold',text:'dimulai 12 hari lagi. Sudah siapkan tiketmu?',time:'3 jam',go:{event:0}},
+    {id:'n4',kind:'event',icon:'★',who:'+62 Coffee R-I Fest',av:'CF',tone:'gold',text:'sudah selesai. Bagikan momen favoritmu bersama Circle',time:'3 jam',go:{event:0}},
     {id:'n5',kind:'group',icon:'▣',who:'Circle Coffee Fest',av:'CF',tone:'gold',text:'12 pesan baru di grup',quote:'Kevin: ketemu di gate 2 ya',time:'5 jam',go:{chat:1}},
     {id:'n6',kind:'follow',icon:'＋',who:'Dimas Raka',av:'DR',tone:'teal',text:'mulai mengikutimu',time:'1 hari',go:{profile:'Dimas Raka'},follow:true},
     {id:'n7',kind:'event',icon:'★',who:'Hindia Live 2026',av:'HL',tone:'teal',text:'94 orang tertarik, termasuk 2 teman Circle-mu',time:'2 hari',go:{event:1}}
