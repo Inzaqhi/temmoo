@@ -34,3 +34,12 @@
 @media(max-width:620px){.claim-banner{margin:10px 12px 0;flex-wrap:wrap}.claim-banner button{width:100%}}
 .admin-stats.claim-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:760px){.admin-stats.claim-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.claim-request{text-align:left}
+.claim-request .pro-steps,.pro-status .claim-event{margin:14px 0}
+.claim-legal{margin:14px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.claim-admin-hint{margin:0;padding:10px 16px 0;color:var(--muted);font-size:12px;line-height:1.5}
+.claim-assign{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fafafe}
+.admin-list-row .pro-admin-actions:empty{display:none}
+
+.admin-list-row:has(.claim-assign),.admin-list-row:has(.claim-reject){align-items:flex-start}

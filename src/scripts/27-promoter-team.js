@@ -13,7 +13,7 @@
     admin:{create:1,edit:1,submit:1,delete:1,announce:1,team:1},
     editor:{create:1,edit:1,submit:0,delete:0,announce:1,team:0},
     viewer:{create:0,edit:0,submit:0,delete:0,announce:0,team:0}};
-  const ACTIONS=[['Melihat dashboard & data peserta',null],['Membuat event baru','create'],['Mengubah event','edit'],['Mengirim pengumuman','announce'],['Mengajukan event & klaim halaman ke Tim Temmoo','submit'],['Menghapus draft event','delete'],['Mengundang & mengatur anggota','team']];
+  const ACTIONS=[['Melihat dashboard & data peserta',null],['Membuat event baru','create'],['Mengubah event','edit'],['Mengirim pengumuman','announce'],['Mengajukan event & meminta halaman ke Tim Temmoo','submit'],['Menghapus draft event','delete'],['Mengundang & mengatur anggota','team']];
 
   /* ---------- Data ---------- */
   const uid=()=>'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);

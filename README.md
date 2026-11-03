@@ -14,7 +14,7 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 - **Aktivitas** (notifikasi)
 - **Profil:** postingan, balasan, galeri foto pribadi, riwayat event, dan Pusat Akun
 - **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio untuk banyak event dan anggota tim), dan Tim Temmoo (Admin Console)
-- **Kalender kurasi & klaim halaman:** Tim Temmoo mengisi kalender event dari sumber publik; promotor terverifikasi (Pemilik/Admin tim) mengklaim halamannya dengan bukti, lalu event masuk Promotor Studio tanpa kehilangan peminat
+- **Kalender kurasi & penyerahan halaman:** Tim Temmoo mengisi kalender event dari sumber publik. Promotor terverifikasi (Pemilik/Admin tim) menghubungi Tim Temmoo lewat WhatsApp; Tim Temmoo memverifikasi ke nomor resmi penyelenggara lalu menyerahkan (atau mencabut) halaman dari Admin Console. Event masuk Promotor Studio tanpa kehilangan peminat. Nomor WhatsApp Tim Temmoo diatur di `TEMMOO_WA` (`28-event-claim.js`)
 - **Verifikasi bertingkat:** pengguna biasa dan Promotor Dasar (event gratis) tanpa KTP; Promotor Penuh (event berbayar & album) dan pemilik organisasi berbayar wajib verifikasi identitas sekali per orang (layar 73)
 
 ## Struktur proyek
@@ -48,7 +48,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/25-promoter-insights.js` | Dashboard per event (layar 71): rencana kehadiran, alasan, tren, asal peserta, pengumuman |
 | `scripts/26-promoter-events.js` | Banyak event per akun promotor: daftar event (layar 64), pemilih event, antrean admin |
 | `scripts/27-promoter-team.js` | Anggota tim promotor (layar 72): undangan, peran, akses per event, "Lihat sebagai", pemindahan kepemilikan, log aktivitas |
-| `scripts/28-event-claim.js` | Kalender kurasi & klaim halaman: tanda di halaman event, form klaim (layar 74), Kalender kurasi di Admin Console (layar 75) |
+| `scripts/28-event-claim.js` | Kalender kurasi & penyerahan halaman: tanda di halaman event, permintaan lewat WhatsApp (layar 74), penyerahan/penolakan/pencabutan di Admin Console (layar 75) |
 | `scripts/29-promoter-album.js` | Album resmi promotor (layar 76): unggah foto, harga per foto, terbitkan ke tab Album event. Foto disimpan di `temmoo_album_v1` |
 | `scripts/30-dialogs.js` | Dialog di dalam halaman (`askConfirm`, `openAppDialog`). Jangan pakai `confirm()`/`alert()`: diblokir di pratinjau Claude |
 | `scripts/31-photo-purchases.js` | Checkout foto album, pembelian tersimpan di `temmoo_purchases_v1`, tanda Dimiliki, Foto Saya → Dibeli |

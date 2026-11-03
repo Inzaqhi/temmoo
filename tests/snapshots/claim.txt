@@ -1,79 +1,86 @@
-1 banner kurasi: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman
-  klik Klaim (bukan promotor): Klaim halaman khusus promotor terverifikasi | tombol: Daftar sebagai promotor
-  banner diklaim pihak lain: ✓ | Halaman resmi | Dikelola Youth Lab Surabaya
-  banner di tab Posts: 1 | Ruang Event: 1
-2 kartu klaim di Studio: ◆ | Event-mu sudah ada di kalender Temmoo? | Klaim halamannya, tidak perlu membuat event dari awal | ›
-  pemilih event: [
-  '+62 Coffee R-I Fest 2026 Selesai',
-  'Hindia Live 2026',
-  'Pasar Seni Surabaya',
-  'Surabaya Food Market',
-  'Sunday Run Community',
-  'Indie Night Vol. 4',
-  'Nusantara Culture Week',
-  'LaLaLa Fest 2026 Selesai'
-]
+1 banner kurasi: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. | Ini event-mu?
+  "Ini event-mu?" (bukan promotor): Pengelolaan halaman khusus promotor terverifikasi | tombol: Daftar sebagai promotor
+  banner dikelola pihak lain: ✓ | Halaman resmi | Dikelola Youth Lab Surabaya
+  form klaim mandiri sudah tidak ada: true
+2 kartu di Studio: ◆ | Event-mu sudah ada di kalender Temmoo? | Minta Tim Temmoo menyerahkan halamannya, tidak perlu membuat event dari awal | ›
   cari "food": [ 'Surabaya Food Market' ]
-  form: 13 | DES | Surabaya Food Market | Grand City, Surabaya · Kuliner · Gratis | tautan terisi: https://instagram.com/ruangkolektif | email: halo@ruangkolektif.id
-  tautan salah -> valid: false | masih form: 1 | klaim tersimpan: 0
-  kirim -> Klaim dikirim ke Tim Temmoo | Klaim sedang ditinjau | Organisasi | Ruang Kolektif | Peran | Penyelenggara / EO | Bukti | https://instagram.com/ruangkolektif/p/foodmarket | Dokumen | ktp-small.png | Kontak | halo@ruangkolektif.id
-  banner saat ditinjau: ◆ | Dikurasi Tim Temmoo | Klaim oleh Ruang Kolektif sedang ditinjau | Lihat status klaim
-3 setujui -> Klaim disetujui. Event masuk Promotor Studio | Halaman ini sudah dikelola organisasimu
+  layar permintaan: Minta Tim Temmoo menyerahkan halaman ini | [
+  'Hubungi Tim Temmoo',
+  'Verifikasi ke kontak resmi',
+  'Halaman diserahkan'
+]
+  tautan WhatsApp: https://wa.me/6281100000000?text=Halo Tim Temmoo, saya dari Ruang Kolektif dan ingin mengelola halaman event "Surabaya Food Market" di Temmoo. | target: _blank
+  teks hukum: [ 'id', 'en' ]
+  setelah klik -> Permintaan dicatat. Lanjutkan percakapan di WhatsApp | Menunggu verifikasi Tim Temmoo
+  tersimpan: [ 'requested', 'Ruang Kolektif' ]
+  banner saat diverifikasi: ◆ | Dikurasi Tim Temmoo | Permintaan Ruang Kolektif sedang diverifikasi Tim Temmoo | Lihat status
+3 admin statistik: [
+  'Event kurasi=9',
+  'Belum dikelola=7',
+  'Permintaan masuk=1',
+  'Sudah diserahkan=1'
+]
+  permintaan: [ 'Surabaya Food Market' ]
+  form serahkan: [
+  'Organisasi promotor',
+  'Nomor WhatsApp resmi yang dihubungi',
+  'Sumber nomor',
+  'Penyelenggara sudah mengonfirmasi lewat WhatsApp di nomor resmi tersebut'
+] | organisasi terisi: Ruang Kolektif
+  tanpa centang verifikasi -> valid: false | form masih ada: 1
+  serahkan -> Halaman diserahkan ke Ruang Kolektif
+  daftar: 13 | Surabaya Food Market | 13 DES · Grand City, Surabaya · verifikasi WhatsApp +62 812-••••-7890 | Dikelola Ruang Kolektif | Cabut
   data: {
   jumlah: 1,
   id: 'surabaya-food-market',
-  harga: 'Gratis · Gratis',
+  harga: 'Gratis',
   kehadiran: 'going',
-  studio: [ 'Surabaya Food Market · published · 13 Desember 2026' ]
+  studio: [ 'Surabaya Food Market · published' ]
 }
   banner resmi: ✓ | Halaman resmi | Dikelola Ruang Kolektif · organisasimu | Kelola di Studio
-  daftar Studio: [ 'Malam Puisi', 'Surabaya Food Market Diklaim' ]
+  Studio: [ 'Malam Puisi', 'Surabaya Food Market Diserahkan' ]
+  notifikasi: Tim Temmoo menyerahkan halaman Surabaya Food Market ke Ruang Kolektif. Kelola dari Promotor Studio.
   setelah reload: {
   jumlah: 1,
   id: 'surabaya-food-market',
-  harga: 'Gratis · Gratis',
-  kehadiran: 'going',
-  studio: [ 'Surabaya Food Market · published · 13 Desember 2026' ]
-}
-  kartu katalog: 1
-  Kelola di Studio -> [ 71, 'Surabaya Food Market' ]
-4 admin statistik: [
-  'Event kurasi=9',
-  'Belum diklaim=6',
-  'Klaim menunggu=1',
-  'Sudah diklaim=2'
-]
-  klaim menunggu: [ 'Pasar Seni Surabaya' ]
-  pilihan alasan: 3
-  tolak -> Klaim ditolak | menunggu: 0
-  tambah kurasi -> Festival Rujak Uleg 2027 ditambahkan ke kalender
-  Audit log: [
-  'Festival Rujak Uleg 2027 ditambahkan ke kalender kurasi (sumber: Kalender Disbudpar Surabaya) · 3 Nov 2026, 10.00',
-  'Klaim halaman Pasar Seni Surabaya oleh Ruang Kolektif ditolak: Bukti tidak menyebut organisasi ini sebagai penyelenggara. · 3 Nov 2026, 10.00',
-  'Klaim halaman Surabaya Food Market oleh Ruang Kolektif disetujui · 3 Nov 2026, 10.00'
-]
-  status di daftar: [
-  '+62 Coffee R-I Fest 2026 Selesai = Belum diklaim',
-  'Hindia Live 2026 = Belum diklaim',
-  'Pasar Seni Surabaya = Klaim ditolak',
-  'Surabaya Food Market = Diklaim Ruang Kolektif',
-  'Sunday Run Community = Belum diklaim',
-  'Indie Night Vol. 4 = Belum diklaim',
-  'Nusantara Culture Week = Belum diklaim',
-  'Youth Creative Festival = Diklaim Youth Lab Surabaya',
-  'LaLaLa Fest 2026 Selesai = Belum diklaim',
-  'Festival Rujak Uleg 2027 = Belum diklaim'
-]
-  promotor lihat Pasar Seni: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. Penyelenggara bisa mengklaim halaman ini. | Ajukan ulang
-  catatan penolakan: Klaim sebelumnya ditolak: Bukti tidak menyebut organisasi ini sebagai penyelenggara.
-  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman || 14 MAR 2027 · mulai 10.00 WIB
-5 setelah klaim & reload: {
-  jumlah: 1,
-  id: 'curated-festival-rujak-uleg-2027-20270314',
   harga: 'Gratis',
-  studio: [ 'Surabaya Food Market', 'Festival Rujak Uleg 2027' ]
+  kehadiran: 'going',
+  studio: [ 'Surabaya Food Market · published' ]
 }
-  di katalog: 1
-6 sebagai editor -> Hanya Pemilik atau Admin tim yang bisa mengklaim
+4 alasan penolakan: [
+  'Tidak bisa diverifikasi lewat WhatsApp',
+  'Nomor resmi penyelenggara tidak cocok',
+  'Event dikelola organisasi lain'
+]
+  tolak -> Permintaan ditolak
+  promotor lihat: Permintaan sebelumnya ditolak: Tidak bisa diverifikasi lewat WhatsApp. | bisa minta lagi: 1
+5 serahkan ke organisasi lain -> Halaman diserahkan ke Komunitas Lari SBY
+  banner: ✓ | Halaman resmi | Dikelola Komunitas Lari SBY
+  alasan cabut: [
+  'Penyelenggara resmi meminta pengalihan',
+  'Diserahkan ke organisasi yang salah',
+  'Kerja sama dengan penyelenggara berakhir'
+]
+  cabut Food Market -> Pengelolaan halaman dicabut
+  Audit log: [
+  'Pengelolaan halaman Youth Creative Festival oleh Youth Lab Surabaya dicabut: Penyelenggara resmi meminta pengalihan.',
+  'Pengelolaan halaman Surabaya Food Market oleh Ruang Kolektif dicabut: Diserahkan ke organisasi yang salah.',
+  'Halaman Sunday Run Community diserahkan ke Komunitas Lari SBY (verifikasi WhatsApp ke +62 812-••••-0000 · sumber: website resmi)',
+  'Permintaan pengelolaan Pasar Seni Surabaya oleh Ruang Kolektif ditolak: Tidak bisa diverifikasi lewat WhatsApp.',
+  'Halaman Surabaya Food Market diserahkan ke Ruang Kolektif (verifikasi WhatsApp ke +62 812-••••-7890 · sumber: bio Instagram @ruangkolektif)'
+]
+  setelah cabut: {
+  jumlah: 1,
+  id: 'surabaya-food-market',
+  harga: 'Gratis',
+  kehadiran: 'going',
+  studio: []
+}
+  banner Food Market: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. | Ini event-mu?
+  Youth Creative setelah reload: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. | Ini event-mu?
+6 simulasi serahkan -> Halaman diserahkan. Event masuk Promotor Studio | Halaman ini sudah dikelola organisasimu
+  tambah kurasi -> Festival Rujak Uleg 2027 ditambahkan ke kalender
+  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. | Ini event-mu? || 14 MAR 2027 · mulai 10.00 WIB
+7 sebagai editor -> Hanya Pemilik atau Admin tim yang bisa meminta pengelolaan
 HP geser horizontal: tidak
 errors []

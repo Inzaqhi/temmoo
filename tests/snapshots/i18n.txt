@@ -26,9 +26,9 @@
 ]
 2 Studio: RUANG KOLEKTIF · FULL PROMOTER | Overview | All the events you manage in one place | RK | Active events | 0 | Published & upcoming | Awaiting review | 0 | Checked by the Temmoo team | Total interest | 218 | From 1 published event | Going | 11 | Upcoming events | ◆ | Is your event already on the Temm
   klaim, teks hukum: [
-  'Saya berwenang mewakili Ruang Kolektif untuk event ini. Klaim palsu dapat membuat akun promotor dinonaktifkan. / I am authorized to represent Ruang Kolektif for this event. False claims may result in the promoter account being deactivated.'
+  'Dengan mengirim permintaan, saya menyatakan berwenang mewakili Ruang Kolektif untuk event ini. Permintaan palsu dapat membuat akun promotor dinonaktifkan. / By sending this request, I confirm I am authorized to represent Ruang Kolektif for this event. False requests may result in the promoter account being deactivated.'
 ]
-3 Admin kalender: TEMMOO ADMIN · SUPER ADMIN | Curated calendar | Events added by the Temmoo team and page claims by organizers | TO | [ 'Curated events', 'Unclaimed', 'Pending claims', 'Claimed' ]
+3 Admin kalender: TEMMOO ADMIN · SUPER ADMIN | Curated calendar | Events added by the Temmoo team and page handovers to organizers | TO | [ 'Curated events', 'Unmanaged', 'Incoming requests', 'Handed over' ]
 4 belum diterjemahkan: 9 [
   'Admin Nabila',
   'Admin Reza',
