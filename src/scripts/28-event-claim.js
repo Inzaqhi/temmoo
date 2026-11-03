@@ -21,7 +21,7 @@
   function addToCatalog(c){
     if(eventIndexById(c.id)>=0)return; // sudah dimuat sebagai event promotor hasil klaim
     events.push([c.name,shortDate(c.date),c.venue,'0 orang tertarik',c.category]);
-    const i=events.length-1;eventMeta[i]={id:c.id,date:c.date,city:c.city,price:c.price,amount:c.amount};eventEndDates[i]=c.date;
+    const i=events.length-1;eventMeta[i]={id:c.id,date:c.date,time:c.time,city:c.city,price:c.price,amount:c.amount};eventEndDates[i]=c.date;
   }
   curated.forEach(addToCatalog);
   const refreshCatalog=()=>{try{renderCategorizedEvents()}catch{}try{renderUpcomingRail()}catch{}};
@@ -106,9 +106,11 @@
       promoterState.events.push(ev);savePromoter();syncPublishedEvent();
       window.promoterTeam?.log(`mengklaim halaman “${e[0]}” dari kalender kurasi`);
       pushNotif({kind:'event',icon:'✓',who:'Tim Temmoo',av:'T',tone:'',text:`menyetujui klaim ${e[0]}. Halaman kini dikelola ${c.org}.`,go:{screen:64}});
+      adminLog(`Klaim halaman ${e[0]} oleh ${c.org} disetujui`);
     }else{
       c.status='rejected';c.note=note||'Bukti belum menunjukkan organisasimu sebagai penyelenggara. Kirim tautan resmi yang menyebut nama organisasimu.';
       pushNotif({kind:'event',icon:'!',who:'Tim Temmoo',av:'T',tone:'gold',text:`menolak klaim ${e[0]}`,quote:c.note,go:{screen:CLAIM}});
+      adminLog(`Klaim halaman ${e[0]} oleh ${c.org} ditolak: ${c.note}`);
     }
     save();refreshCatalog();
   }
@@ -170,7 +172,7 @@
       const id='curated-'+name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+date.replace(/-/g,'');
       if(eventIndexById(id)>=0){toast('Event dengan nama dan tanggal ini sudah ada');return}
       const c={id,name,date,time:String(d.get('time')||'10.00'),venue:String(d.get('venue')).trim(),city:d.get('city'),category:d.get('category'),price,amount:price==='Gratis'?'Gratis':/^https?:/.test(ticket)?'Lihat tautan tiket':ticket||'Harga menyusul',ticketUrl:/^https?:/.test(ticket)?ticket:'',source:String(d.get('source')).trim(),addedAt:Date.now()};
-      curated.push(c);addToCatalog(c);save();refreshCatalog();toast(`${name} ditambahkan ke kalender`);openFlow(CAL,false);return}
+      curated.push(c);addToCatalog(c);save();refreshCatalog();adminLog(`${name} ditambahkan ke kalender kurasi (sumber: ${c.source})`);toast(`${name} ditambahkan ke kalender`);openFlow(CAL,false);return}
   },true);
 
   window.eventClaims={info,decide,claims};

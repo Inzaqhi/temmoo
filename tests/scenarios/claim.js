@@ -51,6 +51,8 @@ await p.click('[data-claim-admin="reject"]');await W();console.log('  pilihan al
 await p.click('[data-claim-reject-reason] >> nth=0');await W();console.log('  tolak ->',await toast(),'| menunggu:',await p.$$eval('.claim-admin:first-of-type .admin-list-row',x=>x.length));
 await p.fill('[data-curate-form] [name=name]','Festival Rujak Uleg 2027');await p.fill('[data-curate-form] [name=date]','2027-03-14');await p.fill('[data-curate-form] [name=venue]','Jalan Kembang Jepun');await p.fill('[data-curate-form] [name=source]','Kalender Disbudpar Surabaya');
 await p.click('[data-curate-form] [type=submit]');await W();console.log('  tambah kurasi ->',await toast());
+await p.evaluate(()=>openFlow(62));await W();console.log('  Audit log:',await p.$$eval('.admin-panel .admin-list-row',x=>x.slice(0,3).map(r=>r.querySelector('b').textContent+' · '+r.querySelector('time').textContent)));
+await p.evaluate(()=>openFlow(75));await W();
 console.log('  status di daftar:',await p.$$eval('.claim-admin:last-of-type .admin-list-row',x=>x.map(r=>r.querySelector('b').textContent.trim()+' = '+r.querySelector('.claim-state').textContent)));
 await p.evaluate(()=>{accountState.accountType='user'});
 await openEvent('Pasar Seni Surabaya');console.log('  promotor lihat Pasar Seni:',await text('.claim-banner'));await p.click('[data-claim-start]');await W();console.log('  catatan penolakan:',await text('.pro-note'));

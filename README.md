@@ -77,7 +77,7 @@ python3 build.py && npm test            # build lalu jalankan semua skenario (±
 node tests/run.js otp kyc               # hanya skenario yang namanya mengandung "otp" atau "kyc"
 ```
 
-- Tanggal dikunci di **3 November 2026**, dan `Math.random` dibuat tetap. Karena itu label "Selesai", hitung mundur, dan kode OTP selalu sama. Tanggal lain bisa dicoba lewat `TEMMOO_NOW=2026-12-25T10:00:00+07:00`.
+- Tanggal dikunci di **3 November 2026 pukul 10.00 WIB** (browser tes memakai zona Asia/Jakarta dan locale id-ID), dan `Math.random` dibuat tetap. Karena itu label "Selesai", hitung mundur, dan kode OTP selalu sama. Tanggal lain bisa dicoba lewat `TEMMOO_NOW=2026-12-25T10:00:00+07:00`.
 - Kalau perubahanmu **memang** mengubah tampilan atau perilaku, jalankan `npm run test:update` (atau `node tests/run.js --update nama`). Baca diff `tests/snapshots/` dengan teliti sebelum commit, karena snapshot adalah definisi "benar".
 - Screenshot dan file sementara dari setiap skenario tersimpan di `tests/.output/<nama>/` (tidak ikut di-commit).
 - GitHub Actions (`.github/workflows/test.yml`) menjalankan semua tes setiap ada push ke `main` dan setiap pull request. Workflow itu juga gagal kalau `index.html` belum dibuild ulang dari `src/`.

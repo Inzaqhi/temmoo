@@ -16,9 +16,16 @@ console.log('katalog:',await p.$$eval('#eventsList .catalog-card',x=>x.map(c=>c.
 await p.evaluate(()=>render());console.log('katalog tetap terkategori setelah render():',await p.$$eval('#eventsList .catalog-card',x=>x.length));
 await p.evaluate(()=>openFlow(13));console.log('kalender berlabel Selesai:',await p.$$eval('.history-item',x=>x.filter(i=>i.querySelector('.event-ended')).map(i=>i.querySelector('b').textContent)));
 await p.evaluate(()=>openFlow(44));console.log('riwayat:',await p.$$eval('.history-card',x=>x.map(c=>(c.querySelector('h3')?.textContent)+' · '+c.querySelector('.history-status')?.textContent)));
+console.log('ringkasan riwayat:',await text('.history-summary'),'| profil:',await p.$eval('[data-profile-jump="history"] b',x=>x.textContent));
+await p.evaluate(()=>{activeEvent=events.findIndex(e=>e[0]==='Indie Night Vol. 4');saveAttendance('going');openFlow(44)});
+console.log('Indie Night jadi Mau datang -> kartu Indie Night:',await p.$$eval('.history-card h3',x=>x.filter(h=>h.textContent==='Indie Night Vol. 4').length),'|',await text('.history-summary'),'| profil:',await p.$eval('[data-profile-jump="history"] b',x=>x.textContent));
+await p.evaluate(()=>{activeEvent=events.findIndex(e=>e[0]==='Indie Night Vol. 4');saveAttendance('interested')});
 
 // 2. Ruang Event per kondisi
-await open('Hindia Live 2026',46);console.log('Hindia 2026 (akan datang):',await text('.event-status-strip'),'||',await text('.hub-countdown'));
+await open('Hindia Live 2026',46);console.log('Hindia 2026 (akan datang):',await text('.event-status-strip'),'||',await text('.hub-countdown'),'||',await text('.hub-announcement p'));
+await open('Surabaya Food Market',46);console.log('Food Market (Mau datang):',await p.$$eval('.hub-grid button span',x=>x.slice(0,2).map(s=>s.textContent)),'||',await text('.hub-countdown small'));
+await open('LaLaLa Fest 2026',46);console.log('LaLaLa teman ditemui:',await p.$$eval('.hub-progress small',x=>x.map(s=>s.textContent)));
+await open('Hindia Live 2026',20);console.log('Detail Hindia:',await p.$$eval('.info-card p',x=>[x[0].textContent,x[2].textContent]));
 await open('LaLaLa Fest 2026',46);console.log('LaLaLa (hadir):',await text('.event-status-strip'),'||',await text('.hub-countdown'));
 await open('+62 Coffee R-I Fest 2026',46);console.log('Coffee (selesai, tidak hadir):',await text('.event-status-strip'),'||',await text('.hub-countdown'),'||',await text('.event-over'));
 console.log('  tombol ajakan datang:',await p.$$eval('.event-hub [data-set-attendance],.event-hub [data-go="21"],.event-hub [data-go="26"]',x=>x.length),'| pengumuman:',await text('.hub-announcement p'));

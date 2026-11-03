@@ -47,6 +47,11 @@
   pilihan alasan: 3
   tolak -> Klaim ditolak | menunggu: 0
   tambah kurasi -> Festival Rujak Uleg 2027 ditambahkan ke kalender
+  Audit log: [
+  'Festival Rujak Uleg 2027 ditambahkan ke kalender kurasi (sumber: Kalender Disbudpar Surabaya) · 3 Nov 2026, 10.00',
+  'Klaim halaman Pasar Seni Surabaya oleh Ruang Kolektif ditolak: Bukti tidak menyebut organisasi ini sebagai penyelenggara. · 3 Nov 2026, 10.00',
+  'Klaim halaman Surabaya Food Market oleh Ruang Kolektif disetujui · 3 Nov 2026, 10.00'
+]
   status di daftar: [
   '+62 Coffee R-I Fest 2026 Selesai = Belum diklaim',
   'Hindia Live 2026 = Belum diklaim',
@@ -61,7 +66,7 @@
 ]
   promotor lihat Pasar Seni: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. Penyelenggara bisa mengklaim halaman ini. | Ajukan ulang
   catatan penolakan: Klaim sebelumnya ditolak: Bukti tidak menyebut organisasi ini sebagai penyelenggara.
-  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman || 14 MAR 2027 · 10.00–22.00
+  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman || 14 MAR 2027 · mulai 10.00 WIB
 5 setelah klaim & reload: {
   jumlah: 1,
   id: 'curated-festival-rujak-uleg-2027-20270314',

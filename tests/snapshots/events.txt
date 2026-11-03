@@ -19,15 +19,23 @@ riwayat: [
   'Hindia Live 2025 · ✓ Sudah check-in',
   'Indie Night Vol. 4 · ♡ Tertarik'
 ]
-Hindia 2026 (akan datang): ♡ | STATUS KEHADIRANMU | Tertarik | Ubah || EVENT DIMULAI DALAM | 18 hari | 21 NOV 2026 · 10.00
-LaLaLa (hadir): ✓ | STATUS KEHADIRANMU | Sudah hadir || EVENT TELAH KAMU HADIRI | Momen tersimpan | 24 AGU 2026 · 10.00
-Coffee (selesai, tidak hadir): ◷ | STATUS KEHADIRANMU | Tidak tercatat hadir || EVENT SUDAH SELESAI | 24 hari lalu | 10 OKT 2026 · 10.00 || Event ini sudah selesai | Lihat dokumentasi resmi dan cerita dari peserta lain. | Lihat album resmiBuka grup pasca-event
+ringkasan riwayat: 5 | Event diikuti | 2 | Sudah hadir | 14 | Teman ditemui | profil: 5
+Indie Night jadi Mau datang -> kartu Indie Night: 1 | 5 | Event diikuti | 2 | Sudah hadir | 14 | Teman ditemui | profil: 5
+Hindia 2026 (akan datang): ♡ | STATUS KEHADIRANMU | Tertarik | Ubah || EVENT DIMULAI DALAM | 18 hari | 21 NOV 2026 · 19.00 WIB || Gate dibuka pukul 18.00. Siapkan tiket dan identitas sebelum masuk.
+Food Market (Mau datang): [ '2 grup · 1 kamu ikuti', '2 orang ke event ini' ] || 13 DES 2026 · 16.00 WIB
+LaLaLa teman ditemui: [ 'Sudah hadir', 'Sudah digunakan', '8 teman ditemui' ]
+Detail Hindia: [
+  '21 NOV 2026 · mulai 19.00 WIB',
+  '18.00 Gate dibuka · 19.00 Acara dimulai · Rundown lengkap diumumkan promotor'
+]
+LaLaLa (hadir): ✓ | STATUS KEHADIRANMU | Sudah hadir || EVENT TELAH KAMU HADIRI | Momen tersimpan | 24 AGU 2026 · 13.00 WIB
+Coffee (selesai, tidak hadir): ◷ | STATUS KEHADIRANMU | Tidak tercatat hadir || EVENT SUDAH SELESAI | 24 hari lalu | 10 OKT 2026 · 10.00 WIB || Event ini sudah selesai | Lihat dokumentasi resmi dan cerita dari peserta lain. | Lihat album resmiBuka grup pasca-event
   tombol ajakan datang: 0 | pengumuman: Terima kasih sudah meramaikan +62 Coffee R-I Fest 2026! Album resmi sudah bisa dilihat di tab Album.
   layar 21: Penjualan tiket sudah ditutup | Event ini sudah berlangsung. Simpan event serupa dari hala
   layar 22: ◷ | STATUS KEHADIRANMU | Tidak tercatat hadir | Event sudah selesai | Status kehadiran dik
   layar 26: Check-in sudah ditutup | Check-in hanya bisa dilakukan di venue saat event berlangsung. |
   paksa ubah status -> Event sudah selesai. Status kehadiran tidak bisa diubah lagi. | status: none
-Indie Night tahun di detail: 9 JAN 2027 · 10.00–22.00
+Indie Night tahun di detail: 9 JAN 2027 · mulai 19.00 WIB
 status setelah migrasi: [
   '62-coffee-r-i-fest-2026',
   'hindia-live-2026',
@@ -36,7 +44,7 @@ status setelah migrasi: [
   'promoter-a',
   'surabaya-food-market'
 ]
-Malam Puisi (promotor) status: going || EVENT DIMULAI DALAM | 39 hari | 12 DES 2026 · 10.00
+Malam Puisi (promotor) status: going || EVENT DIMULAI DALAM | 39 hari | 12 DES 2026 · 10.00 WIB
 kartu Malam Puisi: [
   'SENI & BUDAYA | Malam Puisi | ▣ 12 Des 2026 | ⌖ Balai Pemuda, Surabaya | ◆ Gratis | 0 orang tertarik | Lihat ›'
 ]
