@@ -370,3 +370,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--indigo)!important;box
 .catalog-card.is-ended .event-save{display:none}
 .hero-event{position:relative}
 
+.event-status-strip.missed{background:var(--card)!important;border-color:var(--line)!important}
+.event-status-strip.missed>span{background:var(--soft);color:var(--muted)}
+.event-status-strip em{display:block;margin-top:2px;color:var(--muted);font-size:12px;font-style:normal}
+.hub-countdown small{color:#ffffffd9!important}.hub-countdown span{color:#fff!important;opacity:.9}

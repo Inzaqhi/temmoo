@@ -17,7 +17,7 @@
     const s={interested:Math.round(cap*.2+r()*40),considering:Math.round(cap*.055+r()*15),going:Math.round(cap*.15+r()*30),attended:0};
     if(ph.key==='finished'){s.attended=Math.round(s.going*(.78+r()*.1));s.going-=s.attended}
     // Sinyal nyata dari browser ini: status & alasan yang dipilih pengguna untuk event ini.
-    const idx=ev.publishedIndex,own=idx!=null&&typeof attendanceState!=='undefined'?attendanceState[idx]:null;
+    const idx=ev.publishedIndex,own=idx!=null&&typeof attendanceState!=='undefined'?attendanceState[eventId(idx)]:null;
     if(own&&s[own.status]!==undefined)s[own.status]++;
     const w=[.38,.27,.17,.11,.07],reasons=REASONS.map((name,i)=>({name,n:Math.round(s.considering*w[i])}));
     if(own?.reason){const x=reasons.find(x=>x.name===own.reason);if(x)x.n++}
