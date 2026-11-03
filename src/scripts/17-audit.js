@@ -1,6 +1,6 @@
 
 const attendanceKey='temmoo_attendance_v1';
-const attendanceDefaults={1:{status:'interested',reason:''}};
+const attendanceDefaults={1:{status:'interested',reason:''},3:{status:'going',reason:''}};
 let attendanceState={...attendanceDefaults,...JSON.parse(localStorage.getItem(attendanceKey)||'{}')};
 // Data contoh lama menandai Hindia Live 2026 (21 Nov, belum terjadi) sebagai sudah hadir; yang dihadiri adalah edisi 2025.
 if(!localStorage.getItem('temmoo_sample_hindia_v2')){if(attendanceState[1]?.status==='attended'){attendanceState[1]={status:'interested',reason:''};localStorage.setItem(attendanceKey,JSON.stringify(attendanceState))}localStorage.setItem('temmoo_sample_hindia_v2','1')}
@@ -44,7 +44,7 @@ function eventGroupData(kind=0){
   if(kind>=2){const custom=groupFlowState.customGroups[kind-2];return custom?{...custom,...groupInfoState[kind],kind}:{kind,name:'Grup baru',avatar:'GB',tone:'teal',members:1,message:'Belum ada pesan',description:''}}
   const event=selectedEvent(),short=event[0].replace(' 2026','');
   const base=kind===0
-    ? {kind,name:`Circle ${short.replace('+62 Coffee R-I Fest','Coffee Fest')}`,avatar:'CF',tone:'gold',members:86,message:'Kevin: ketemu di gate utama ya',description:`Grup resmi untuk informasi, koordinasi, dan teman baru di ${short}.`}
+    ? {kind,name:`Circle ${short.replace('+62 Coffee R-I Fest','Coffee Fest')}`,avatar:short.replace('+62 Coffee R-I Fest','Coffee Fest').split(/\s+/).map(w=>w[0]).join('').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase(),tone:'gold',members:86,message:'Kevin: ketemu di pintu masuk ya',description:`Grup resmi untuk informasi, koordinasi, dan teman baru di ${short}.`}
     : {kind,name:'Berangkat dari Surabaya',avatar:'SB',tone:'teal',members:24,message:`Ada yang berangkat bareng ke ${short}?`,description:`Koordinasi keberangkatan bareng dari Surabaya menuju ${short}.`};
   return {...base,...groupInfoState[kind]};
 }
@@ -127,7 +127,7 @@ function renderMomentAlbum(button){
 
 function renderCircleDirectory(filter='Semua'){
   const profiles=[
-    {name:'Nadia Aulia',avatar:'NA',tone:'teal',match:88,city:'Surabaya',interest:'Musik',event:'+62 Coffee R-I Fest',plan:'Mau datang sendiri',reason:'Sama-sama suka musik indie dan kopi'},
+    {name:'Nadia Aulia',avatar:'NA',tone:'teal',match:88,city:'Surabaya',interest:'Musik',event:'Surabaya Food Market',plan:'Mau datang sendiri',reason:'Sama-sama suka musik indie dan kopi'},
     {name:'Kevin Ardana',avatar:'KA',tone:'gold',match:84,city:'Jakarta',interest:'Musik',event:'Indie Night Vol. 4',plan:'Mencari teman',reason:'Sama-sama suka festival dan fotografi'},
     {name:'Salsa Putri',avatar:'SP',tone:'',match:79,city:'Surabaya',interest:'Kuliner',event:'Surabaya Food Market',plan:'Mau datang',reason:'Sama-sama suka kuliner dan konser'},
     {name:'Dimas Raka',avatar:'DR',tone:'teal',match:76,city:'Malang',interest:'Komunitas',event:'Pasar Seni Surabaya',plan:'Mencari grup',reason:'Sama-sama tertarik komunitas kreatif'}

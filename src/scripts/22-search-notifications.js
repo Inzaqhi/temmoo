@@ -44,7 +44,7 @@
     {id:'n2',kind:'like',icon:'♥',who:'Kevin Ardana',av:'KA',tone:'gold',text:'menyukai postinganmu',quote:'Circle-nya asik banget pas konser kemarin.',time:'15 menit',fresh:true,go:{view:'profile'}},
     {id:'n3',kind:'reply',icon:'↩',who:'Salsa Putri',av:'SP',tone:'',text:'membalas postinganmu',quote:'Aku juga mau ikut barengan dari Surabaya!',time:'1 jam',fresh:true,go:{view:'profile'}},
     {id:'n4',kind:'event',icon:'★',who:'+62 Coffee R-I Fest',av:'CF',tone:'gold',text:'sudah selesai. Bagikan momen favoritmu bersama Circle',time:'3 jam',go:{event:0}},
-    {id:'n5',kind:'group',icon:'▣',who:'Circle Coffee Fest',av:'CF',tone:'gold',text:'12 pesan baru di grup',quote:'Kevin: ketemu di gate 2 ya',time:'5 jam',go:{chat:1}},
+    {id:'n5',kind:'group',icon:'▣',who:'Circle Surabaya Food Market',av:'SF',tone:'gold',text:'12 pesan baru di grup',quote:'Kevin: ketemu di pintu barat ya',time:'5 jam',go:{chat:1}},
     {id:'n6',kind:'follow',icon:'＋',who:'Dimas Raka',av:'DR',tone:'teal',text:'mulai mengikutimu',time:'1 hari',go:{profile:'Dimas Raka'},follow:true},
     {id:'n7',kind:'event',icon:'★',who:'Hindia Live 2026',av:'HL',tone:'teal',text:'94 orang tertarik, termasuk 2 teman Circle-mu',time:'2 hari',go:{event:1}}
   ];
@@ -94,6 +94,8 @@
   /* ---------- Penyimpanan Temui, follow, chat ---------- */
   const MEET='temmoo_meet_v1',CHAT='temmoo_chat_v1';
   const met=new Set(read(MEET,[])),chatStore=read(CHAT,{});
+  // Grup contoh dipindah dari Coffee Fest (sudah lewat) ke Surabaya Food Market: bawa pesan yang sudah terkirim.
+  if(chatStore['Circle Coffee Fest']){chatStore['Circle Surabaya Food Market']=[...chatStore['Circle Coffee Fest'],...(chatStore['Circle Surabaya Food Market']||[])];delete chatStore['Circle Coffee Fest'];write(CHAT,chatStore)}
   const meetName=btn=>(btn.closest('.suggest')?.querySelector('b')||btn.closest('.circle-card')?.querySelector('h3')||btn.closest('.row')?.querySelector('b'))?.textContent.trim();
   function applyState(){
     document.querySelectorAll('[data-meet]:not([data-state-applied])').forEach(b=>{b.dataset.stateApplied='1';if(met.has(meetName(b)))b.textContent='Terkirim'});
