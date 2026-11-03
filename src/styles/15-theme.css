@@ -375,3 +375,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--indigo)!important;box
 .event-status-strip em{display:block;margin-top:2px;color:var(--muted);font-size:12px;font-style:normal}
 .hub-countdown small{color:#ffffffd9!important}.hub-countdown span{color:#fff!important;opacity:.9}
 .group-life.active{color:var(--teal-text)!important}
+/* Menu samping dua grup (seperti Threads): navigasi utama, lalu grup Akun (Profil, Promotor Studio). */
+.nav-group-label{margin:22px 15px 6px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.02em}
+@media(max-width:1080px){.nav-group-label{height:1px;margin:14px 10px;background:var(--line);font-size:0;overflow:hidden}}
+@media(max-width:620px){.nav-group-label{display:none}}
+
