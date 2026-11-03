@@ -32,5 +32,5 @@ await p.reload();await p.waitForTimeout(300);await p.evaluate(()=>{show('chat')}
 // hp: DM
 const m=await ctx.newPage();await m.setViewportSize({width:390,height:844});await m.route(/^https?:/,r=>r.abort());await m.goto(APP+'#/home');await m.waitForTimeout(300);
 await m.evaluate(()=>show('chat'));await m.click('#chatList .row >> nth=0');await m.waitForTimeout(300);console.log('DM tombol:',await m.$$eval('.dm-call',x=>x.map(b=>b.textContent.trim())));await m.screenshot({path:'call-dm.png'});
-await m.click('.dm-call[data-call="video"]');await m.waitForTimeout(3800);await m.screenshot({path:'call-mobile.png'});console.log('HP video',await m.evaluate(()=>document.querySelector('#callStatus').textContent));
+await m.click('.dm-call[data-call="video"]');await m.waitForTimeout(3800);await m.waitForFunction(()=>/^\d\d:\d\d$/.test(document.querySelector('#callStatus')?.textContent)&&document.querySelector('#callStatus').textContent!=='00:00',null,{timeout:5000}).catch(()=>{});await m.screenshot({path:'call-mobile.png'});console.log('HP video',await m.evaluate(()=>document.querySelector('#callStatus').textContent));
 console.log('errors',errs);await b.close()})();

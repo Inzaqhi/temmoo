@@ -14,6 +14,7 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 - **Aktivitas** (notifikasi)
 - **Profil:** postingan, balasan, galeri foto pribadi, riwayat event, dan Pusat Akun
 - **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio untuk banyak event dan anggota tim), dan Tim Temmoo (Admin Console)
+- **Kalender kurasi & klaim halaman:** Tim Temmoo mengisi kalender event dari sumber publik; promotor terverifikasi (Pemilik/Admin tim) mengklaim halamannya dengan bukti, lalu event masuk Promotor Studio tanpa kehilangan peminat
 - **Verifikasi bertingkat:** pengguna biasa dan Promotor Dasar (event gratis) tanpa KTP; Promotor Penuh (event berbayar & album) dan pemilik organisasi berbayar wajib verifikasi identitas sekali per orang (layar 73)
 
 ## Struktur proyek
@@ -23,8 +24,8 @@ index.html        Hasil build (satu file). Buka file ini di browser. Jangan died
 build.py          Menggabungkan src/ menjadi index.html
 src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
-  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 23-…css)
-  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 27-…js)
+  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 24-…css)
+  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 28-…js)
 tests/
   run.js          Menjalankan semua skenario dan membandingkan hasilnya dengan snapshot
   helpers.js      Membuka index.html dengan tanggal & angka acak yang dikunci
@@ -47,6 +48,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/25-promoter-insights.js` | Dashboard per event (layar 71): rencana kehadiran, alasan, tren, asal peserta, pengumuman |
 | `scripts/26-promoter-events.js` | Banyak event per akun promotor: daftar event (layar 64), pemilih event, antrean admin |
 | `scripts/27-promoter-team.js` | Anggota tim promotor (layar 72): undangan, peran, akses per event, "Lihat sebagai", pemindahan kepemilikan, log aktivitas |
+| `scripts/28-event-claim.js` | Kalender kurasi & klaim halaman: tanda di halaman event, form klaim (layar 74), Kalender kurasi di Admin Console (layar 75) |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja

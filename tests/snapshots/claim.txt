@@ -1,0 +1,74 @@
+1 banner kurasi: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman
+  klik Klaim (bukan promotor): Klaim halaman khusus promotor terverifikasi | tombol: Daftar sebagai promotor
+  banner diklaim pihak lain: ✓ | Halaman resmi | Dikelola Youth Lab Surabaya
+  banner di tab Posts: 1 | Ruang Event: 1
+2 kartu klaim di Studio: ◆ | Event-mu sudah ada di kalender Temmoo? | Klaim halamannya, tidak perlu membuat event dari awal | ›
+  pemilih event: [
+  '+62 Coffee R-I Fest 2026 Selesai',
+  'Hindia Live 2026',
+  'Pasar Seni Surabaya',
+  'Surabaya Food Market',
+  'Sunday Run Community',
+  'Indie Night Vol. 4',
+  'Nusantara Culture Week',
+  'LaLaLa Fest 2026 Selesai'
+]
+  cari "food": [ 'Surabaya Food Market' ]
+  form: 13 | DES | Surabaya Food Market | Grand City, Surabaya · Kuliner · Gratis | tautan terisi: https://instagram.com/ruangkolektif | email: halo@ruangkolektif.id
+  tautan salah -> valid: false | masih form: 1 | klaim tersimpan: 0
+  kirim -> Klaim dikirim ke Tim Temmoo | Klaim sedang ditinjau | Organisasi | Ruang Kolektif | Peran | Penyelenggara / EO | Bukti | https://instagram.com/ruangkolektif/p/foodmarket | Dokumen | ktp-small.png | Kontak | halo@ruangkolektif.id
+  banner saat ditinjau: ◆ | Dikurasi Tim Temmoo | Klaim oleh Ruang Kolektif sedang ditinjau | Lihat status klaim
+3 setujui -> Klaim disetujui. Event masuk Promotor Studio | Halaman ini sudah dikelola organisasimu
+  data: {
+  jumlah: 1,
+  id: 'surabaya-food-market',
+  harga: 'Gratis · Gratis',
+  kehadiran: 'going',
+  studio: [ 'Surabaya Food Market · published · 13 Desember 2026' ]
+}
+  banner resmi: ✓ | Halaman resmi | Dikelola Ruang Kolektif · organisasimu | Kelola di Studio
+  daftar Studio: [ 'Malam Puisi', 'Surabaya Food Market Diklaim' ]
+  setelah reload: {
+  jumlah: 1,
+  id: 'surabaya-food-market',
+  harga: 'Gratis · Gratis',
+  kehadiran: 'going',
+  studio: [ 'Surabaya Food Market · published · 13 Desember 2026' ]
+}
+  kartu katalog: 1
+  Kelola di Studio -> [ 71, 'Surabaya Food Market' ]
+4 admin statistik: [
+  'Event kurasi=9',
+  'Belum diklaim=6',
+  'Klaim menunggu=1',
+  'Sudah diklaim=2'
+]
+  klaim menunggu: [ 'Pasar Seni Surabaya' ]
+  pilihan alasan: 3
+  tolak -> Klaim ditolak | menunggu: 0
+  tambah kurasi -> Festival Rujak Uleg 2027 ditambahkan ke kalender
+  status di daftar: [
+  '+62 Coffee R-I Fest 2026 Selesai = Belum diklaim',
+  'Hindia Live 2026 = Belum diklaim',
+  'Pasar Seni Surabaya = Klaim ditolak',
+  'Surabaya Food Market = Diklaim Ruang Kolektif',
+  'Sunday Run Community = Belum diklaim',
+  'Indie Night Vol. 4 = Belum diklaim',
+  'Nusantara Culture Week = Belum diklaim',
+  'Youth Creative Festival = Diklaim Youth Lab Surabaya',
+  'LaLaLa Fest 2026 Selesai = Belum diklaim',
+  'Festival Rujak Uleg 2027 = Belum diklaim'
+]
+  promotor lihat Pasar Seni: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. Penyelenggara bisa mengklaim halaman ini. | Ajukan ulang
+  catatan penolakan: Klaim sebelumnya ditolak: Bukti tidak menyebut organisasi ini sebagai penyelenggara.
+  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. Penyelenggara bisa mengklaim halaman ini. | Klaim halaman || 14 MAR 2027 · 10.00–22.00
+5 setelah klaim & reload: {
+  jumlah: 1,
+  id: 'curated-festival-rujak-uleg-2027-20270314',
+  harga: 'Gratis',
+  studio: [ 'Surabaya Food Market', 'Festival Rujak Uleg 2027' ]
+}
+  di katalog: 1
+6 sebagai editor -> Hanya Pemilik atau Admin tim yang bisa mengklaim
+HP geser horizontal: tidak
+errors []

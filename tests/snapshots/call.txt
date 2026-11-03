@@ -17,5 +17,5 @@ riwayat: [
 kembali ke direct, baris: 2
 riwayat setelah reload: 5
 DM tombol: [ 'Telepon', 'Video' ]
-HP video 00:00
+HP video 00:0x
 errors []
