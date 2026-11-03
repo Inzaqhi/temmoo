@@ -15,6 +15,13 @@ const visit=async screens=>{for(const v of ['home','events','circle','chat','pro
 await boot('en');
 console.log('1 html lang:',await p.evaluate(()=>document.documentElement.lang),'| menu:',await p.$$eval('.sidebar nav>*:not([hidden])',x=>x.map(e=>e.textContent.trim().replace(/\d+$/,''))));
 console.log('  kartu event:',await p.evaluate(()=>{show('events');return document.querySelector('#eventsList .catalog-card .event-info').innerText.replace(/\n+/g,' | ')}));
+// Pencarian kategori/minat dalam English (data tetap berbahasa Indonesia)
+const catalog=async q=>{await p.evaluate(()=>{closeFlow();show('events')});await p.fill('#eventSearch',q);await W();return p.$$eval('#eventsList .catalog-card h4',x=>x.map(h=>h.textContent))};
+for(const q of ['music','food','arts','musik'])console.log(`  cari katalog "${q}":`,await catalog(q));
+await p.fill('#eventSearch','');
+const global=async q=>{await p.evaluate(q=>{closeFlow();openSearch(q)},q);await W(250);return p.evaluate(()=>[...document.querySelectorAll('.search-section')].map(s=>s.querySelector('h3')?.textContent+': '+[...s.querySelectorAll('.search-row b, .search-row strong, [data-open-profile] b')].map(b=>b.textContent).join(', ')).join(' || '))};
+for(const q of ['music','photography','concerts'])console.log(`  cari global "${q}":`,await global(q));
+console.log('  saran pencarian:',await p.evaluate(()=>{closeFlow();openSearch('');return [...document.querySelectorAll('[data-search-term]')].map(b=>b.textContent)}));
 await p.evaluate(()=>{activeEvent=1;openFlow(46)});await W();console.log('  Ruang Event Hindia:',await p.evaluate(()=>document.querySelector('.event-hub').innerText.replace(/\n+/g,' | ').slice(0,260)));
 await p.evaluate(()=>{activeEvent=0;openFlow(46)});await W();console.log('  Ruang Event Coffee (selesai):',await p.evaluate(()=>document.querySelector('.event-hub').innerText.replace(/\n+/g,' | ').slice(0,200)));
 await p.evaluate(()=>openFlow(44));await W();console.log('  Riwayat:',await p.evaluate(()=>document.querySelector('.history-summary').innerText.replace(/\n+/g,' ')));

@@ -11,12 +11,12 @@
   const RECENT='temmoo_recent_search_v1';
   let query='',tab='all',recent=read(RECENT,[]);
   const people=()=>Object.values(publicProfiles).map(p=>{const c=circles.find(c=>c[0]===p.name)||[];return {...p,match:c[3]||p.match||'',interests:c[4]||''}});
-  const hit=(q,...fields)=>fields.some(f=>norm(f).includes(q));
+  const hit=(q,...fields)=>fields.some(f=>norm(typeof withEnglish==='function'?withEnglish(f):f).includes(q));
   const mark=(text,q)=>{const t=esc(text);if(!q)return t;const i=norm(text).indexOf(q);return i<0?t:esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+q.length))+'</mark>'+esc(text.slice(i+q.length))};
   function rememberQuery(q){q=q.trim();if(!q)return;recent=[q,...recent.filter(x=>norm(x)!==norm(q))].slice(0,6);write(RECENT,recent)}
   function searchResults(){
     const q=norm(query.trim());
-    if(!q)return `<section class="search-section">${recent.length?`<header><h3>Pencarian terakhir</h3><button data-search-clear-recent>Hapus</button></header><div class="search-chips">${recent.map(r=>`<button data-search-term="${esc(r)}">↺ ${esc(r)}</button>`).join('')}</div>`:''}</section><section class="search-section"><header><h3>Coba cari</h3></header><div class="search-chips">${['festival','Surabaya','coffee','Hindia','kuliner','Nadia'].map(r=>`<button data-search-term="${r}">${r}</button>`).join('')}</div></section>`;
+    if(!q)return `<section class="search-section">${recent.length?`<header><h3>Pencarian terakhir</h3><button data-search-clear-recent>Hapus</button></header><div class="search-chips">${recent.map(r=>`<button data-search-term="${esc(r)}">↺ ${esc(r)}</button>`).join('')}</div>`:''}</section><section class="search-section"><header><h3>Coba cari</h3></header><div class="search-chips">${['festival','Surabaya','coffee','Hindia',typeof appLang==='function'&&appLang()==='en'?'food':'kuliner','Nadia'].map(r=>`<button data-search-term="${r}">${r}</button>`).join('')}</div></section>`;
     const ppl=people().filter(p=>hit(q,p.name,p.handle,p.interests,p.bio));
     const pst=posts.filter(p=>hit(q,p[0],p[1],plain(p[5]),p[6]));
     const evs=events.map((e,i)=>({e,i})).filter(({e})=>hit(q,e[0],e[2],e[4]));

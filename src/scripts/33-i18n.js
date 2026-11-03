@@ -16,6 +16,9 @@
   const base=template;
   template=function(n){const html=base(n);return n===56&&html.includes('<section')?html.replace('<section',panel()+'<section'):html};
   document.addEventListener('click',e=>{const b=e.target.closest('[data-lang-set]');if(b)setAppLang(b.dataset.langSet)});
+  // Pencarian dua bahasa: kategori & minat di data berbahasa Indonesia ("Musik", "Musik indie · Coffee") ikut dicari lewat
+  // padanan English-nya ("Music", "Indie music"), di kedua bahasa tampilan.
+  window.withEnglish=text=>{const s=String(text??''),d=window.I18N_EN?.dict||{};const en=s.split(/\s*·\s*/).map(p=>d[p.trim()]).filter(x=>x&&x!==s);return en.length?s+' '+en.join(' '):s};
   if(lang!=='en')return;
 
   /* ---------- Penerjemah ---------- */
