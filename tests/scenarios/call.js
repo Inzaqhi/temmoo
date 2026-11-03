@@ -9,7 +9,8 @@ await p.route(/^https?:/,r=>r.abort());await p.goto(APP+'');await p.evaluate(()=
 const st=()=>p.evaluate(()=>[document.querySelector('#callOverlay').hidden?'tutup':'buka',document.querySelector('#callStatus').textContent]);
 await p.evaluate(()=>{show('chat');selectChat(0)});await p.waitForTimeout(200);await p.screenshot({path:'call-header.png',clip:{x:690,y:0,width:750,height:80}});
 await p.click('.chat-person [data-call="voice"]');await p.waitForTimeout(300);console.log('suara awal',await st());await p.screenshot({path:'call-ringing.png'});
-await p.waitForTimeout(3300);console.log('suara tersambung',await st());
+await p.waitForTimeout(3300);// Tunggu detik pertama terhitung: di mesin lambat panggilan baru tersambung saat dibaca (masih 00:00).
+await p.waitForFunction(()=>/^\d\d:\d\d$/.test(document.querySelector('#callStatus')?.textContent)&&document.querySelector('#callStatus').textContent!=='00:00',null,{timeout:5000}).catch(()=>{});console.log('suara tersambung',await st());
 await p.click('[data-call-toggle="mute"]');await p.waitForTimeout(1200);console.log('bisu:',await p.$eval('[data-call-toggle="mute"]',b=>b.classList.contains('on')),'waktu',await st());await p.screenshot({path:'call-connected.png'});
 await p.click('[data-call-minimize]');await p.waitForTimeout(300);console.log('diperkecil, pill:',await p.$eval('#callPill',x=>!x.hidden&&x.textContent));await p.screenshot({path:'call-pill.png',clip:{x:400,y:0,width:640,height:90}});
 await p.evaluate(()=>show('home'));await p.click('#callPill .dot');await p.waitForTimeout(200);console.log('dipulihkan',await st());
