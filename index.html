@@ -218,13 +218,16 @@ document.addEventListener('submit',e=>{if(e.target.id!=='threadReply')return;e.p
 document.addEventListener('click',e=>{const like=e.target.closest('[data-like]');if(like&&!like.onclick){like.classList.toggle('liked');const count=like.querySelector('i');if(count)count.textContent=Number(count.textContent)+(like.classList.contains('liked')?1:-1)}const comment=e.target.closest('[data-comment]');if(comment){const card=comment.closest('.post');if(card){const name=card.querySelector('.post-head b')?.textContent.trim();activePost=Math.max(0,posts.findIndex(p=>p[0]===name));activePostData=posts[activePost]||null}}});
 </script><script>document.addEventListener('click',e=>{const comment=e.target.closest('[data-comment]'),card=comment?.closest('.post');if(!card)return;const name=card.querySelector('.post-head b')?.textContent.trim();activePost=Math.max(0,posts.findIndex(p=>p[0]===name));activePostData=posts[activePost]||null},true);</script><style>
 .history-dashboard{padding:20px}.history-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.history-summary>div{padding:16px 12px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}.history-summary b{display:block;font:800 22px Unbounded}.history-summary span{display:block;margin-top:5px;color:var(--muted);font-size:12px}.history-filter{display:flex;gap:8px;overflow-x:auto;margin-bottom:15px;scrollbar-width:none}.history-filter button{white-space:nowrap;padding:8px 13px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);font-weight:700;cursor:pointer}.history-filter button.active{background:var(--text);border-color:var(--text);color:var(--bg)}.history-list{display:grid;gap:16px}.history-card{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:var(--card)}.history-cover{height:150px;padding:15px 17px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 78% 25%,var(--orange),transparent 27%),linear-gradient(140deg,#392842,#18131d)}.history-cover.hindia{background:radial-gradient(circle at 25% 20%,var(--teal),transparent 27%),linear-gradient(140deg,#263244,#18131d)}.history-cover.indie{background:radial-gradient(circle at 72% 70%,var(--violet),transparent 28%),linear-gradient(140deg,#30243f,#18131d)}.history-cover>span{width:max-content;padding:5px 8px;border-radius:8px;background:#0b0910dd;font-size:11px;font-weight:800}.history-cover h3{margin:0;font:800 20px Unbounded}.history-card-body{padding:15px 16px}.history-status{display:inline-flex;padding:6px 9px;border-radius:99px;font-size:12px;font-weight:800}.history-status.attended{color:var(--teal);background:#34d9b418}.history-status.saved{color:#ff8a73;background:#ff6b4d18}.history-card-body p{margin:12px 0;color:var(--muted)}.history-meta{display:flex;gap:17px;color:var(--muted);font-size:12px}.history-actions{display:flex;gap:9px;margin-top:15px}.history-actions button{flex:1;height:39px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--text);font-weight:700;cursor:pointer}.history-actions button:first-child{background:var(--orange);border-color:var(--orange);color:white}@media(max-width:620px){.history-dashboard{padding:14px 12px}.history-summary{gap:6px}.history-summary>div{padding:13px 6px}.history-summary b{font-size:18px}.history-summary span{font-size:11px}.history-cover{height:135px}}
-</style><script>document.addEventListener('click',e=>{const filter=e.target.closest('[data-history-filter]');if(filter){$$('[data-history-filter]').forEach(x=>x.classList.toggle('active',x===filter));$$('[data-history-status]').forEach(x=>x.hidden=filter.dataset.historyFilter!=='all'&&x.dataset.historyStatus!==filter.dataset.historyFilter);updateEdgeScroll();return}if(e.target.closest('[data-history-album]'))return});</script><script>document.addEventListener('click',e=>{const b=e.target.closest('.event-save');if(!b)return;e.preventDefault();e.stopImmediatePropagation();b.classList.toggle('saved');b.textContent=b.classList.contains('saved')?'♥':'♡';toast(b.classList.contains('saved')?'Event disimpan':'Event dihapus dari simpanan')},true);</script><script>
-function updateAlbumPurchase(){const selected=$$('.official-photo-card.selected'),button=$('[data-buy-event-photos]'),label=$('#albumSelectionText'),price=$('#albumSelectionPrice');if(!button||!label||!price)return;const total=selected.reduce((sum,card)=>sum+([1,4,7].includes(Number(card.dataset.paidPhoto))?15000:10000),0);$$('.official-photo-card').forEach(card=>card.querySelector('[data-select-photo]')?.setAttribute('aria-checked',card.classList.contains('selected')));label.textContent=selected.length?`${selected.length} foto dipilih`:'Belum ada foto dipilih';price.textContent=`Rp${total.toLocaleString('id-ID')}`;button.disabled=!selected.length}
+</style><script>document.addEventListener('click',e=>{const filter=e.target.closest('[data-history-filter]');if(filter){$$('[data-history-filter]').forEach(x=>x.classList.toggle('active',x===filter));$$('[data-history-status]').forEach(x=>x.hidden=filter.dataset.historyFilter!=='all'&&x.dataset.historyStatus!==filter.dataset.historyFilter);updateEdgeScroll();return}if(e.target.closest('[data-history-album]'))return});</script><script>document.addEventListener('click',e=>{const b=e.target.closest('.event-save');if(!b)return;e.preventDefault();e.stopImmediatePropagation();b.classList.toggle('saved');b.textContent=b.classList.contains('saved')?'♥':'♡';toast(b.classList.contains('saved')?'Event disimpan':'Event dihapus dari simpanan')},true);</script><script>// Harga & jumlah foto dibaca dari kartu (data-price, jumlah kartu); album contoh tanpa data-price memakai harga lama.
+const albumPhotoPrice=card=>Number(card?.dataset.price)||([1,4,7].includes(Number(card?.dataset.paidPhoto))?15000:10000);
+const albumPhotoCount=()=>$$('.official-photo-card').length||8;
+
+function updateAlbumPurchase(){const selected=$$('.official-photo-card.selected'),button=$('[data-buy-event-photos]'),label=$('#albumSelectionText'),price=$('#albumSelectionPrice');if(!button||!label||!price)return;const total=selected.reduce((sum,card)=>sum+albumPhotoPrice(card),0);$$('.official-photo-card').forEach(card=>card.querySelector('[data-select-photo]')?.setAttribute('aria-checked',card.classList.contains('selected')));label.textContent=selected.length?`${selected.length} foto dipilih`:'Belum ada foto dipilih';price.textContent=`Rp${total.toLocaleString('id-ID')}`;button.disabled=!selected.length}
 function setAlbumPhotoSelected(id,selected){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;card.classList.toggle('selected',selected);updateAlbumPurchase();const preview=$('#albumPhotoPreview');if(preview&&preview.dataset.photoId===String(id)){preview.querySelector('[data-preview-select]').textContent=selected?'✓ Foto dipilih':'＋ Pilih foto';preview.querySelector('[data-preview-select]').classList.toggle('selected',selected)}}
-function openAlbumPhotoPreview(id){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;const tone=[...card.classList].find(x=>x.startsWith('photo-'))||'photo-0',price=[1,4,7].includes(Number(id))?'Rp15.000':'Rp10.000',selected=card.classList.contains('selected');$('#albumPhotoPreview')?.remove();document.body.insertAdjacentHTML('beforeend',`<div class="album-photo-preview" id="albumPhotoPreview" data-photo-id="${id}" role="dialog" aria-modal="true" aria-label="Pratinjau Foto ${String(id).padStart(2,'0')}"><button class="album-preview-close" data-close-photo-preview aria-label="Tutup pratinjau">×</button><button class="album-preview-nav prev" data-preview-photo-nav="-1" aria-label="Foto sebelumnya">‹</button><div class="album-preview-dialog"><div class="album-preview-image ${tone}"><span class="photo-watermark">TEMMOO PREVIEW</span></div><div class="album-preview-info"><div><small>Foto ${String(id).padStart(2,'0')} · Pratinjau ber-watermark</small><b>${price}</b></div><button class="${selected?'selected':''}" data-preview-select>${selected?'✓ Foto dipilih':'＋ Pilih foto'}</button></div></div><button class="album-preview-nav next" data-preview-photo-nav="1" aria-label="Foto berikutnya">›</button></div>`);document.body.style.overflow='hidden'}
+function openAlbumPhotoPreview(id){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;const tone=[...card.classList].find(x=>x.startsWith('photo-'))||'photo-0',price='Rp'+albumPhotoPrice(card).toLocaleString('id-ID'),photo=card.dataset.src,selected=card.classList.contains('selected');$('#albumPhotoPreview')?.remove();document.body.insertAdjacentHTML('beforeend',`<div class="album-photo-preview" id="albumPhotoPreview" data-photo-id="${id}" role="dialog" aria-modal="true" aria-label="Pratinjau Foto ${String(id).padStart(2,'0')}"><button class="album-preview-close" data-close-photo-preview aria-label="Tutup pratinjau">×</button><button class="album-preview-nav prev" data-preview-photo-nav="-1" aria-label="Foto sebelumnya">‹</button><div class="album-preview-dialog"><div class="album-preview-image ${photo?'has-photo':tone}" ${photo?`style="background-image:url(${photo})"`:''}><span class="photo-watermark">TEMMOO PREVIEW</span></div><div class="album-preview-info"><div><small>Foto ${String(id).padStart(2,'0')} · Pratinjau ber-watermark</small><b>${price}</b></div><button class="${selected?'selected':''}" data-preview-select>${selected?'✓ Foto dipilih':'＋ Pilih foto'}</button></div></div><button class="album-preview-nav next" data-preview-photo-nav="1" aria-label="Foto berikutnya">›</button></div>`);document.body.style.overflow='hidden'}
 function closeAlbumPhotoPreview(){const preview=$('#albumPhotoPreview');if(!preview)return;preview.remove();document.body.style.overflow=''}
-document.addEventListener('keydown',e=>{if(!$('#albumPhotoPreview'))return;if(e.key==='Escape')closeAlbumPhotoPreview();if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+(e.key==='ArrowRight'?1:-1)+8-1)%8+1;openAlbumPhotoPreview(next)}});
-document.addEventListener('click',e=>{const personal=e.target.closest('.personal-photo'),history=e.target.closest('[data-history-album]');if(personal||history){e.preventDefault();const title=history?history.closest('[data-history-status]')?.querySelector('.history-cover h3')?.textContent:personal.querySelector('b')?.textContent;const index=eventIndexByName(title);if(index>=0)activeEvent=index;openFlow(59);return}if(e.target.closest('[data-close-photo-preview]')||e.target.id==='albumPhotoPreview'){closeAlbumPhotoPreview();return}const nav=e.target.closest('[data-preview-photo-nav]');if(nav){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+Number(nav.dataset.previewPhotoNav)+8-1)%8+1;openAlbumPhotoPreview(next);return}const previewSelect=e.target.closest('[data-preview-select]');if(previewSelect){const id=$('#albumPhotoPreview').dataset.photoId,card=$(`[data-paid-photo="${id}"]`);setAlbumPhotoSelected(id,!card.classList.contains('selected'));return}const photo=e.target.closest('[data-paid-photo]');if(photo){if(e.target.closest('[data-select-photo]'))setAlbumPhotoSelected(photo.dataset.paidPhoto,!photo.classList.contains('selected'));else openAlbumPhotoPreview(photo.dataset.paidPhoto);return}if(e.target.closest('[data-album-select-all]')){const cards=$$('.official-photo-card'),allSelected=cards.every(x=>x.classList.contains('selected'));cards.forEach(x=>x.classList.toggle('selected',!allSelected));updateAlbumPurchase();return}if(e.target.closest('[data-album-help]')){toast('Klik foto untuk pratinjau besar. Gunakan centang untuk memilih beberapa foto.');return}const buy=e.target.closest('[data-buy-event-photos]');if(buy&&!buy.disabled){const count=$$('.official-photo-card.selected').length,total=$('#albumSelectionPrice').textContent;if(confirm(`Beli ${count} foto seharga ${total}?`)){toast('Pembayaran berhasil · foto masuk ke Album profil');$$('.official-photo-card.selected').forEach(x=>x.classList.remove('selected'));updateAlbumPurchase()}return}if(e.target.closest('[data-photo-library-filter]'))toast('Filter: semua foto')});
+document.addEventListener('keydown',e=>{if(!$('#albumPhotoPreview'))return;if(e.key==='Escape')closeAlbumPhotoPreview();if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+(e.key==='ArrowRight'?1:-1)+albumPhotoCount()-1)%albumPhotoCount()+1;openAlbumPhotoPreview(next)}});
+document.addEventListener('click',e=>{const personal=e.target.closest('.personal-photo'),history=e.target.closest('[data-history-album]');if(personal||history){e.preventDefault();const title=history?history.closest('[data-history-status]')?.querySelector('.history-cover h3')?.textContent:personal.querySelector('b')?.textContent;const index=eventIndexByName(title);if(index>=0)activeEvent=index;openFlow(59);return}if(e.target.closest('[data-close-photo-preview]')||e.target.id==='albumPhotoPreview'){closeAlbumPhotoPreview();return}const nav=e.target.closest('[data-preview-photo-nav]');if(nav){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+Number(nav.dataset.previewPhotoNav)+albumPhotoCount()-1)%albumPhotoCount()+1;openAlbumPhotoPreview(next);return}const previewSelect=e.target.closest('[data-preview-select]');if(previewSelect){const id=$('#albumPhotoPreview').dataset.photoId,card=$(`[data-paid-photo="${id}"]`);setAlbumPhotoSelected(id,!card.classList.contains('selected'));return}const photo=e.target.closest('[data-paid-photo]');if(photo){if(e.target.closest('[data-select-photo]'))setAlbumPhotoSelected(photo.dataset.paidPhoto,!photo.classList.contains('selected'));else openAlbumPhotoPreview(photo.dataset.paidPhoto);return}if(e.target.closest('[data-album-select-all]')){const cards=$$('.official-photo-card'),allSelected=cards.every(x=>x.classList.contains('selected'));cards.forEach(x=>x.classList.toggle('selected',!allSelected));updateAlbumPurchase();return}if(e.target.closest('[data-album-help]')){toast('Klik foto untuk pratinjau besar. Gunakan centang untuk memilih beberapa foto.');return}const buy=e.target.closest('[data-buy-event-photos]');if(buy&&!buy.disabled){const count=$$('.official-photo-card.selected').length,total=$('#albumSelectionPrice').textContent;if(confirm(`Beli ${count} foto seharga ${total}?`)){toast('Pembayaran berhasil · foto masuk ke Album profil');$$('.official-photo-card.selected').forEach(x=>x.classList.remove('selected'));updateAlbumPurchase()}return}if(e.target.closest('[data-photo-library-filter]'))toast('Filter: semua foto')});
 </script><script>document.addEventListener('click',e=>{const filter=e.target.closest('.photo-library-filters button');if(filter){const library=filter.closest('.personal-photo-library'),key=filter.textContent.trim().toLowerCase();library.querySelectorAll('.photo-library-filters button').forEach(x=>x.classList.toggle('active',x===filter));library.querySelectorAll('.personal-photo').forEach(card=>{card.hidden=key!=='semua'&&!card.classList.contains(key==='dibeli'?'bought':key==='disimpan'?'saved':'downloaded')});return}if(e.target.closest('.photo-search')){toast('Pencarian album siap digunakan');return}});</script>
 <script>
 openEvent=function(ref){activeEvent=eventIndexFromRef(ref);openFlow(18)};
@@ -2269,7 +2272,7 @@ html{scrollbar-gutter:stable}
     if(act==='announce'){const box=document.querySelector('#insAnnounce');box?.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>box?.querySelector('textarea')?.focus(),300)}
     if(act==='hub')openFlow(46);
     if(act==='groups')openFlow(19);
-    if(act==='album')openFlow(59);
+    if(act==='album')openFlow(76); // halaman unggah album untuk promotor (29-promoter-album.js)
   });
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-ins-announce]');if(!f)return;e.preventDefault();
@@ -3217,6 +3220,129 @@ html{scrollbar-gutter:stable}
   },true);
 
   window.eventClaims={info,decide,claims};
+})();
+</script>
+<style id="promoter-album-css">/* Album resmi promotor (29-promoter-album.js) */
+.album-manager{display:grid;gap:14px}
+.album-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.album-head>div:first-child{display:grid;gap:3px}
+.album-head b{font-size:18px}
+.album-head span{color:var(--muted);font-size:13px}
+.album-head .status-chip{justify-self:start}
+.status-chip.published{background:#e3f7f0;color:var(--teal-text)}
+.album-head .pro-actions{margin:0}
+.album-drop{position:relative;display:grid;gap:6px;justify-items:center;padding:26px 18px;border:2px dashed #c9c3ff;border-radius:16px;background:var(--indigo-light);text-align:center;cursor:pointer}
+.album-drop:hover{border-color:var(--indigo)}
+.album-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.album-drop input:disabled{cursor:not-allowed}
+.album-drop b{color:var(--indigo-dark);font-size:15px}
+.album-drop small{max-width:520px;color:#55525f;line-height:1.5}
+.album-drop.busy{opacity:.7}
+.album-price{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.album-price label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.album-price input{width:170px;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:11px;font:inherit}
+.album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.album-grid figure{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.album-thumb{position:relative;aspect-ratio:4/5;background:#1b1830 center/cover no-repeat}
+.album-thumb span{position:absolute;left:8px;top:8px;padding:3px 7px;border-radius:7px;background:#0b0910cc;color:#fff;font-size:11px;font-weight:800}
+.album-grid figcaption{display:grid;gap:7px;padding:9px}
+.album-grid figcaption small{overflow:hidden;color:var(--muted);font-size:11px;white-space:nowrap;text-overflow:ellipsis}
+.album-grid figcaption label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.album-grid figcaption input{width:100%;min-width:0;height:34px;padding:0 8px;border:1px solid var(--line);border-radius:9px;font:inherit}
+.album-grid figcaption button{height:32px;border:1px solid #f4b9bf;border-radius:9px;background:#fff7f7;color:var(--coral-text);font-weight:700;cursor:pointer}
+.official-photo-card.has-photo,.album-preview-image.has-photo{background-position:center;background-size:cover;background-repeat:no-repeat}
+.official-photo-card.has-photo:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.55));pointer-events:none}
+.album-empty{display:grid;gap:8px;justify-items:center;padding:40px 16px;text-align:center}
+.album-empty .pro-btn{margin-top:6px}
+@media(max-width:620px){.album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.album-price input{width:140px}}
+</style>
+<script id="promoter-album-js">// Album resmi promotor (layar 76): unggah foto event, atur harga per foto, terbitkan ke tab Album (layar 59).
+// Foto disimpan terpisah dari data promotor (temmoo_album_v1) supaya penyimpanan yang penuh tidak merusak data organisasi.
+(()=>{
+  const ALBUM=76,KEY='temmoo_album_v1',MAX=30,MAX_MB=10,EDGE=640;
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
+  let store={};try{store=JSON.parse(localStorage.getItem(KEY))||{}}catch{}
+  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(store));return true}catch{toast('Penyimpanan browser penuh. Hapus beberapa foto lalu coba lagi.');return false}};
+  const photos=ev=>store[ev.id]||(store[ev.id]=[]);
+  const meta=ev=>ev.album||(ev.album={status:'draft',defaultPrice:10000});
+  const can=a=>!!window.promoterTeam?.can(a);
+  const full=()=>window.promoterApp?.get?.().tier==='full';
+  const started=ev=>{const ph=window.promoterInsights?.phase(ev);return !!ph&&ph.key!=='upcoming'};
+  const ownAt=i=>(promoterState.events||[]).find(e=>e.status==='published'&&e.publishedIndex===i);
+  let busy=false;
+
+  function resize(file){return new Promise((resolve,reject)=>{
+    const r=new FileReader();r.onerror=reject;
+    r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve({src:c.toDataURL('image/jpeg',.72),w:img.width,h:img.height})};img.src=r.result};
+    r.readAsDataURL(file);
+  })}
+
+  function page(){
+    const ev=promoterState.event,m=meta(ev),list=photos(ev),pub=m.status==='published',edit=can('edit');
+    if(!full())return `<section class="team-card album-locked"><div class="ins-empty"><b>Penjualan album butuh Promotor Penuh</b><span>Tingkatkan akun dengan verifikasi identitas untuk menjual foto resmi event.</span></div><div class="pro-actions"><button class="pro-btn" data-tier-upgrade>Tingkatkan ke Promotor Penuh</button></div></section>`;
+    const total=list.reduce((a,p)=>a+Number(p.price||0),0);
+    const publish=!pub&&can('submit')?`<button class="pro-btn" data-album-publish ${list.length&&started(ev)?'':'disabled'}>Terbitkan album</button>`:'';
+    return `<section class="team-card album-manager">
+      <header class="album-head"><div><em class="status-chip ${pub?'published':'draft'}">${pub?'Terbit':'Draft'}</em><b>${list.length} foto</b><span>${list.length?`Total harga semua foto ${rp(total)}`:'Belum ada foto'}${pub&&m.publishedAt?` · terbit ${new Date(m.publishedAt).toLocaleDateString('id-ID',{day:'numeric',month:'long'})}`:''}</span></div>
+        <div class="pro-actions">${pub?`<button class="pro-btn secondary" data-album-view>Lihat sebagai peserta</button>${can('submit')?'<button class="pro-btn secondary" data-album-unpublish>Tarik dari publik</button>':''}`:publish}</div></header>
+      ${!started(ev)?`<p class="pro-hint">Event belum berlangsung. Kamu sudah bisa menyiapkan foto; album bisa diterbitkan mulai hari event.</p>`:''}
+      ${!pub&&!can('submit')?'<p class="pro-hint">Pemilik atau Admin tim yang menerbitkan album.</p>':''}
+      ${edit?`<label class="album-drop ${busy?'busy':''}"><input type="file" accept="image/jpeg,image/png,image/webp" multiple data-album-upload ${list.length>=MAX||busy?'disabled':''}><b>${busy?'Memproses foto…':list.length>=MAX?`Batas ${MAX} foto tercapai`:'▧ Pilih foto untuk diunggah'}</b><small>JPG, PNG, atau WebP · maks ${MAX_MB} MB per foto · hingga ${MAX} foto. Peserta melihat versi ber-watermark; file asli dikirim setelah pembayaran.</small></label>
+      <div class="album-price"><label>Harga default per foto<input type="number" min="0" step="1000" value="${m.defaultPrice}" data-album-default></label><button class="pro-btn secondary" data-album-apply ${list.length?'':'disabled'}>Terapkan ke semua foto</button></div>`:''}
+      ${list.length?`<div class="album-grid">${list.map((p,i)=>`<figure><div class="album-thumb" style="background-image:url(${p.src})"><span>${String(i+1).padStart(2,'0')}</span></div><figcaption><small title="${esc(p.name)}">${esc(p.name)}</small>${edit?`<label>Rp<input type="number" min="0" step="1000" value="${p.price}" data-album-price="${p.id}" aria-label="Harga ${esc(p.name)}"></label><button data-album-remove="${p.id}" aria-label="Hapus ${esc(p.name)}">Hapus</button>`:`<b>${rp(p.price)}</b>`}</figcaption></figure>`).join('')}</div>`:`<div class="ins-empty"><b>Belum ada foto</b><span>Unggah foto terbaik dari ${esc(ev.name)}. Peserta yang hadir akan mendapat kabar saat album terbit.</span></div>`}
+    </section>`;
+  }
+
+  // Tab Album untuk peserta: event milik promotor ini memakai foto yang diunggah, bukan foto contoh.
+  function publicAlbum(ev){
+    const m=meta(ev),list=photos(ev);
+    if(m.status!=='published'||!list.length)return `<section class="official-event-album"><div class="ins-empty album-empty"><b>Album resmi belum tersedia</b><span>Promotor akan mengunggah foto setelah event berlangsung.</span>${can('edit')?`<button class="pro-btn" data-go="${ALBUM}">Unggah album</button>`:''}</div></section>`;
+    return `<section class="official-event-album"><div class="album-shop-head"><div><span class="official-label">ALBUM RESMI</span><h2>Foto dari ${esc(ev.name)}</h2><p>Diunggah oleh ${esc(promoterState.organization)}. Klik foto untuk melihat pratinjau besar, lalu gunakan tombol centang untuk memilih.</p></div><button data-album-help aria-label="Informasi pembelian foto">?</button></div><div class="album-toolbar"><span><b>${list.length} foto</b> · kamu bisa memilih beberapa foto</span><button data-album-select-all>Pilih semua</button></div><div class="official-photo-grid">${list.map((p,i)=>`<button class="official-photo-card has-photo" style="background-image:url(${p.src})" data-src="${p.src}" data-price="${Number(p.price)||0}" data-paid-photo="${i+1}" aria-label="Lihat pratinjau ${esc(p.name)}"><span class="photo-watermark">TEMMOO PREVIEW</span><i data-select-photo role="checkbox" aria-label="Pilih foto ${i+1}" aria-checked="false">✓</i><small>Foto ${String(i+1).padStart(2,'0')}</small><b>${rp(p.price)}</b></button>`).join('')}</div><div class="album-purchase-bar"><div><small id="albumSelectionText">Belum ada foto dipilih</small><b id="albumSelectionPrice">Rp0</b></div><button data-buy-event-photos disabled>Beli & download</button></div></section>`;
+  }
+
+  const base=template;
+  template=function(n){
+    if(n===ALBUM){
+      if(!(typeof isPromoter==='function'&&isPromoter()))return base(64);
+      return window.promoterNav(promoterPage('Album resmi',`${esc(promoterState.event.name)} · ${esc(promoterState.event.date||'')}`,page()),71)
+        .replace(/(<small>[^<]*) · TERVERIFIKASI<\/small>/,`$1 · ${window.promoterApp?window.promoterApp.tierLabel().toUpperCase():'TERVERIFIKASI'}</small>`); // sama seperti halaman Studio lain
+    }
+    if(n===59){const ev=ownAt(activeEvent);if(ev)return eventHero()+eventTabs(59)+publicAlbum(ev)}
+    return base(n);
+  };
+  const rerender=()=>openFlow(ALBUM,false);
+
+  document.addEventListener('change',async e=>{
+    const input=e.target.closest('[data-album-upload]');
+    if(input){
+      const ev=promoterState.event,list=photos(ev),m=meta(ev),files=[...input.files];input.value='';
+      const ok=files.filter(f=>/^image\/(jpeg|png|webp)$/.test(f.type)&&f.size<=MAX_MB*1048576),room=MAX-list.length,take=ok.slice(0,room);
+      const skipped=files.length-take.length;
+      if(!take.length){toast(files.length?'Foto harus JPG, PNG, atau WebP dan maksimal 10 MB':'Tidak ada foto dipilih');return}
+      busy=true;rerender();
+      for(const f of take){try{const r=await resize(f);list.push({id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:f.name,price:m.defaultPrice,...r})}catch{}}
+      busy=false;
+      if(!persist())list.splice(list.length-take.length);
+      window.promoterTeam?.log(`mengunggah ${take.length} foto ke album “${ev.name}”`);
+      toast(`${take.length} foto ditambahkan${skipped?` · ${skipped} dilewati (format, ukuran, atau batas ${MAX} foto)`:''}`);rerender();return;
+    }
+    const price=e.target.closest('[data-album-price]');
+    if(price){const p=photos(promoterState.event).find(x=>x.id===price.dataset.albumPrice);if(p){p.price=Math.max(0,Math.round(Number(price.value)||0));persist();rerender()}return}
+    const def=e.target.closest('[data-album-default]');
+    if(def){meta(promoterState.event).defaultPrice=Math.max(0,Math.round(Number(def.value)||0));savePromoter();return}
+  });
+  document.addEventListener('click',e=>{
+    const ev=promoterState.event;
+    if(e.target.closest('[data-album-apply]')){const m=meta(ev),d=document.querySelector('[data-album-default]');if(d)m.defaultPrice=Math.max(0,Math.round(Number(d.value)||0));photos(ev).forEach(p=>p.price=m.defaultPrice);savePromoter();persist();toast(`Semua foto ${rp(m.defaultPrice)}`);rerender();return}
+    const rm=e.target.closest('[data-album-remove]');if(rm){const list=photos(ev),i=list.findIndex(p=>p.id===rm.dataset.albumRemove);if(i>=0)list.splice(i,1);if(!list.length&&meta(ev).status==='published'){meta(ev).status='draft';savePromoter()}persist();toast('Foto dihapus');rerender();return}
+    if(e.target.closest('[data-album-publish]')){const m=meta(ev);if(!photos(ev).length||!started(ev)||!can('submit'))return;m.status='published';m.publishedAt=Date.now();savePromoter();syncPublishedEvent();
+      window.promoterTeam?.log(`menerbitkan album resmi “${ev.name}” (${photos(ev).length} foto)`);
+      pushNotif({kind:'event',icon:'▧',who:promoterState.organization,av:promoterState.organization.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(),tone:'gold',text:`menerbitkan album resmi ${ev.name}`,quote:`${photos(ev).length} foto sudah bisa dibeli`,go:ev.publishedIndex!=null?{event:ev.publishedIndex}:{screen:64}});
+      toast('Album terbit di tab Album event');rerender();return}
+    if(e.target.closest('[data-album-unpublish]')){meta(ev).status='draft';savePromoter();window.promoterTeam?.log(`menarik album resmi “${ev.name}” dari publik`);toast('Album ditarik dari publik');rerender();return}
+    if(e.target.closest('[data-album-view]')){syncPublishedEvent();activeEvent=ev.publishedIndex??0;openFlow(59);return}
+  });
 })();
 </script>
 

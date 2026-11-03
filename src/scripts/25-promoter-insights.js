@@ -122,7 +122,7 @@
     if(act==='announce'){const box=document.querySelector('#insAnnounce');box?.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>box?.querySelector('textarea')?.focus(),300)}
     if(act==='hub')openFlow(46);
     if(act==='groups')openFlow(19);
-    if(act==='album')openFlow(59);
+    if(act==='album')openFlow(76); // halaman unggah album untuk promotor (29-promoter-album.js)
   });
   document.addEventListener('submit',e=>{
     const f=e.target.closest('[data-ins-announce]');if(!f)return;e.preventDefault();

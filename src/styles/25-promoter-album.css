@@ -1,0 +1,33 @@
+/* Album resmi promotor (29-promoter-album.js) */
+.album-manager{display:grid;gap:14px}
+.album-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.album-head>div:first-child{display:grid;gap:3px}
+.album-head b{font-size:18px}
+.album-head span{color:var(--muted);font-size:13px}
+.album-head .status-chip{justify-self:start}
+.status-chip.published{background:#e3f7f0;color:var(--teal-text)}
+.album-head .pro-actions{margin:0}
+.album-drop{position:relative;display:grid;gap:6px;justify-items:center;padding:26px 18px;border:2px dashed #c9c3ff;border-radius:16px;background:var(--indigo-light);text-align:center;cursor:pointer}
+.album-drop:hover{border-color:var(--indigo)}
+.album-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.album-drop input:disabled{cursor:not-allowed}
+.album-drop b{color:var(--indigo-dark);font-size:15px}
+.album-drop small{max-width:520px;color:#55525f;line-height:1.5}
+.album-drop.busy{opacity:.7}
+.album-price{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.album-price label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.album-price input{width:170px;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:11px;font:inherit}
+.album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.album-grid figure{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.album-thumb{position:relative;aspect-ratio:4/5;background:#1b1830 center/cover no-repeat}
+.album-thumb span{position:absolute;left:8px;top:8px;padding:3px 7px;border-radius:7px;background:#0b0910cc;color:#fff;font-size:11px;font-weight:800}
+.album-grid figcaption{display:grid;gap:7px;padding:9px}
+.album-grid figcaption small{overflow:hidden;color:var(--muted);font-size:11px;white-space:nowrap;text-overflow:ellipsis}
+.album-grid figcaption label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.album-grid figcaption input{width:100%;min-width:0;height:34px;padding:0 8px;border:1px solid var(--line);border-radius:9px;font:inherit}
+.album-grid figcaption button{height:32px;border:1px solid #f4b9bf;border-radius:9px;background:#fff7f7;color:var(--coral-text);font-weight:700;cursor:pointer}
+.official-photo-card.has-photo,.album-preview-image.has-photo{background-position:center;background-size:cover;background-repeat:no-repeat}
+.official-photo-card.has-photo:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.55));pointer-events:none}
+.album-empty{display:grid;gap:8px;justify-items:center;padding:40px 16px;text-align:center}
+.album-empty .pro-btn{margin-top:6px}
+@media(max-width:620px){.album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.album-price input{width:140px}}
