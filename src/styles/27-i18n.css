@@ -1,0 +1,15 @@
+/* Bahasa: teks hukum dua bahasa (legalText) dan pengaturan bahasa di Pusat Akun (33-i18n.js) */
+.legal-text{display:inline-grid;gap:3px;vertical-align:top}
+.legal-text>span{display:block}
+html[lang="en"] .legal-text>[lang="en"]{order:-1}
+html[lang="en"] .legal-text>[lang="id"],html[lang="id"] .legal-text>[lang="en"]{color:var(--muted);font-size:.88em;font-style:italic}
+label:has(>.legal-text){align-items:flex-start}
+.lang-setting{margin-top:16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--card)}
+.lang-setting h3{margin:0;padding:13px 15px;border-bottom:1px solid var(--line);font-size:14px}
+.lang-setting button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:14px 15px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--text);text-align:left;font-weight:800;cursor:pointer}
+.lang-setting button:last-child{border:0}
+.lang-setting button small{color:var(--muted);font-weight:500}
+.lang-setting button.active{background:var(--indigo-light)}
+.lang-setting button.active small{color:var(--indigo-dark);font-weight:700}
+.lang-setting button.active:before{content:'✓';order:2;color:var(--indigo-dark)}
+.checkout-terms{margin:14px 0 0;font-size:12px;line-height:1.5}

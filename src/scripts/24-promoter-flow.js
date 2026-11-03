@@ -54,7 +54,7 @@
         ${idOk()?`<div class="pro-id ok"><i>✓</i><span><b>Identitas terverifikasi</b><small>NIK ${esc(window.temmooIdentity.get().nik)} · diverifikasi sekali untuk akunmu</small></span></div>`
           :`<div class="pro-id"><i>▧</i><span><b>Verifikasi identitas (KTP)</b><small>Wajib untuk Promotor Penuh. Cukup sekali; isian form ini tetap tersimpan.</small></span><button type="button" class="pro-id-btn" data-id-verify="${APPLY}">Verifikasi sekarang</button></div>`}
         <label class="pro-file">▤ Legalitas usaha (NIB / akta) <small>Wajib untuk Perusahaan / EO</small>${a.legal?`<small>(tersimpan: ${esc(a.legal)})</small>`:''}<input type="file" name="legal" accept="image/*,.pdf"></label></div>
-        <label class="pro-check"><input type="checkbox" name="agree" required ${a.status==='changes'?'checked':''}> Saya menjamin data ini benar dan menyetujui Ketentuan Promotor Temmoo, termasuk larangan event fiktif dan penjualan tiket palsu.</label>
+        <label class="pro-check"><input type="checkbox" name="agree" required ${a.status==='changes'?'checked':''}> ${legalText('Saya menjamin data ini benar dan menyetujui Ketentuan Promotor Temmoo, termasuk larangan event fiktif dan penjualan tiket palsu.','I confirm this information is accurate and agree to the Temmoo Promoter Terms, including the ban on fictitious events and fake ticket sales.')}</label>
         <button class="pro-btn" type="submit">${a.status==='changes'?'Kirim ulang pengajuan':'Kirim pengajuan'}</button>
       </form></div>`;
   }

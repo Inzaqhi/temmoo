@@ -24,8 +24,8 @@ index.html        Hasil build (satu file). Buka file ini di browser. Jangan died
 build.py          Menggabungkan src/ menjadi index.html
 src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
-  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 26-…css)
-  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 31-…js)
+  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 27-…css)
+  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 33-…js)
 tests/
   run.js          Menjalankan semua skenario dan membandingkan hasilnya dengan snapshot
   helpers.js      Membuka index.html dengan tanggal & angka acak yang dikunci
@@ -52,6 +52,8 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/29-promoter-album.js` | Album resmi promotor (layar 76): unggah foto, harga per foto, terbitkan ke tab Album event. Foto disimpan di `temmoo_album_v1` |
 | `scripts/30-dialogs.js` | Dialog di dalam halaman (`askConfirm`, `openAppDialog`). Jangan pakai `confirm()`/`alert()`: diblokir di pratinjau Claude |
 | `scripts/31-photo-purchases.js` | Checkout foto album, pembelian tersimpan di `temmoo_purchases_v1`, tanda Dimiliki, Foto Saya → Dibeli |
+| `scripts/32-i18n-en.js` | Kamus Bahasa Indonesia → English (teks persis, pola angka `#`, aturan untuk teks bernama) |
+| `scripts/33-i18n.js` | Mesin bahasa: menerjemahkan teks antarmuka yang tampil, pengaturan bahasa di Pusat Akun |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja
@@ -65,6 +67,15 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 4. Buka atau bagikan `index.html` (satu file, cocok untuk preview dan hosting statis seperti GitHub Pages).
 
 Build tidak butuh dependensi; cukup Python 3.
+
+## Bahasa (English / Bahasa Indonesia)
+
+- **Default English**; pengguna bisa pindah ke Bahasa Indonesia di **Pusat Akun → Language · Bahasa** (tersimpan di `temmoo_lang_v1`).
+- Teks di kode tetap **Bahasa Indonesia** (bahasa sumber). Saat English, `33-i18n.js` menerjemahkan setiap teks antarmuka yang tampil memakai kamus `32-i18n-en.js`. Konten pengguna (postingan, chat, nama event/orang) tidak ada di kamus sehingga dibiarkan.
+- **Menambah teks baru:** tulis seperti biasa dalam Bahasa Indonesia, lalu tambahkan terjemahannya di `dict`. Angka ditulis `#` dan bentuk tunggal/jamak `{photo|photos}`, misalnya `'# foto dipilih':'# {photo|photos} selected'`. Teks yang memuat nama memakai `rules` (regex).
+- **Jangan** menjalankan logika dari teks di layar (`textContent==='Semua'`): di English teksnya berubah. Pakai atribut `data-*`. Data yang disimpan juga harus dari sumbernya, bukan dari teks yang tampil.
+- **Teks hukum** (persetujuan, ketentuan, pembayaran, KTP) memakai `legalText(id, en)` dan selalu tampil dua bahasa; bahasa yang dipakai tampil di atas.
+- Tes: skenario lama berjalan dalam Bahasa Indonesia; `tests/scenarios/i18n.js` membuka semua layar dalam English dan mencetak teks antarmuka yang belum ada di kamus (harus hanya konten contoh). `TEMMOO_LANG=en node tests/run.js` menjalankan semua skenario dalam English (banyak yang akan berbeda dari snapshot; berguna untuk mencari teks yang belum diterjemahkan).
 
 ## Tes
 

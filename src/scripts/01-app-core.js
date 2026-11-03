@@ -8,6 +8,8 @@ const eventIndexByName=name=>events.findIndex(event=>normalizeEventName(event[0]
 const eventEndIso=i=>{try{if(eventEndDates[i])return eventEndDates[i]}catch(e){}try{return eventMeta[i]?.date||''}catch(e){return ''}};
 const eventEnded=i=>{const iso=eventEndIso(i);if(!iso)return false;const t=new Date();t.setHours(0,0,0,0);return new Date(iso+'T00:00:00')<t};
 const endedBadge=i=>eventEnded(i)?'<span class="event-ended">Selesai</span>':'';
+// Teks hukum (persetujuan, ketentuan, pembayaran) selalu tampil dua bahasa; bahasa yang dipakai di atas. Tidak ikut diterjemahkan otomatis.
+function legalText(id,en){return `<span class="legal-text" data-no-translate><span lang="id">${id}</span><span lang="en">${en}</span></span>`}
 const eventSlug=index=>events[index]?events[index][0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
 const eventIndexFromRef=ref=>{const numeric=String(ref??'').match(/^\d+$/)?Number(ref):-1;if(numeric>=0&&events[numeric])return numeric;const bySlug=events.findIndex((event,index)=>eventSlug(index)===String(ref||''));if(bySlug>=0)return bySlug;const byName=eventIndexByName(ref);return byName>=0?byName:0};
 const circles=[['Nadia Aulia','NA','teal','88% cocok','Musik indie · Coffee · Surabaya'],['Kevin Ardana','KA','gold','84% cocok','Festival · Fotografi · Jakarta'],['Salsa Putri','SP','','79% cocok','Konser · Kuliner · Surabaya'],['Dimas Raka','DR','teal','76% cocok','Seni · Workshop · Malang']];

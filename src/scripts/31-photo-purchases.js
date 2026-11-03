@@ -33,14 +33,14 @@
       <div class="checkout-items">${items.slice(0,6).map(x=>`<div class="checkout-thumb ${x.src?'':x.tone}" ${x.src?`style="background-image:url(${x.src})"`:''}><span>${esc(x.label)}</span></div>`).join('')}${items.length>6?`<div class="checkout-more">+${items.length-6}</div>`:''}</div>
       <div class="checkout-lines"><div><span>${items.length} foto resolusi penuh tanpa watermark</span><b>${rp(total)}</b></div><div><span>Biaya layanan</span><b>Rp0</b></div><div class="total"><span>Total</span><b>${rp(total)}</b></div></div>
       <fieldset class="checkout-methods"><legend>Metode pembayaran</legend>${METHODS.map(([v,t,s])=>`<label><input type="radio" name="checkout-method" value="${v}" ${v===method?'checked':''}><span><b>${t}</b><small>${s}</small></span></label>`).join('')}</fieldset>
-      <p class="checkout-note">Prototipe: pembayaran disimulasikan, tidak ada uang yang ditarik.</p>
+      <p class="checkout-terms">${legalText('Dengan membayar, kamu menyetujui Ketentuan Pembelian Foto dan Kebijakan Privasi Temmoo.','By paying, you agree to the Temmoo Photo Purchase Terms and Privacy Policy.')}</p><p class="checkout-note">Prototipe: pembayaran disimulasikan, tidak ada uang yang ditarik.</p>
       <footer><button type="button" data-checkout-close>Batal</button><button type="button" class="primary" data-checkout-pay>Bayar ${rp(total)}</button></footer>`;
   }
 
   window.openPhotoCheckout=function(){
     const cards=[...document.querySelectorAll('.official-photo-card.selected:not(.owned)')];if(!cards.length)return;
     const event=events[activeEvent]?.[0]||'Event',eid=eventId(activeEvent);
-    const items=cards.map(card=>({key:keyOf(card),eventId:eid,event,label:card.querySelector('small')?.textContent||'Foto',price:albumPhotoPrice(card),src:card.dataset.src||'',tone:[...card.classList].find(c=>/^photo-\d$/.test(c))||'photo-0'}));
+    const items=cards.map(card=>({key:keyOf(card),eventId:eid,event,label:'Foto '+String(card.dataset.paidPhoto).padStart(2,'0'),price:albumPhotoPrice(card),src:card.dataset.src||'',tone:[...card.classList].find(c=>/^photo-\d$/.test(c))||'photo-0'}));
     let method='qris';
     const d=openAppDialog({label:'Checkout foto',className:'checkout',html:checkoutHtml(items,method)});
     const bind=()=>{

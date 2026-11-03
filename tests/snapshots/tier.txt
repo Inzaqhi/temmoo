@@ -20,7 +20,14 @@
   kembali ke Daftar sebagai Promotor | isian tetap: Ruang Kolektif full | identitas: Identitas terverifikasi
   EO tanpa legalitas -> Perusahaan / EO wajib melampirkan legalitas usaha
   kirim -> Organisasi Ruang Kolektif Tingkat Promotor Penuh Jenis Perusahaan / EO
-  Pusat Akun: [ 'Akun', 'Privasi', 'Identitas', 'Promotor', 'Uji coba prototipe' ] | Verifikasi identitas (KTP) NIK 3578••••••••0004 · cukup sekali untuk akunmu Terverifikasi
+  Pusat Akun: [
+  'Language · Bahasa',
+  'Akun',
+  'Privasi',
+  'Identitas',
+  'Promotor',
+  'Uji coba prototipe'
+] | Verifikasi identitas (KTP) NIK 3578••••••••0004 · cukup sekali untuk akunmu Terverifikasi
   layar 73: Identitas terverifikasi
 5 data lama -> tingkat full
 HP geser horizontal: tidak

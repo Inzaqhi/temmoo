@@ -1,0 +1,39 @@
+1 html lang: en | menu: [
+  'For you', 'Search',
+  'Events',  'Circle',
+  'Chat',    'Activity',
+  'Account', 'Profile'
+]
+  kartu event: MUSIC | Hindia Live 2026 | ▣ 21 Nov 2026 | ⌖ Surabaya Expo Center | ◆ Rp150.000 | 94 people interested | View ›
+  Ruang Event Hindia: ♡ | YOUR ATTENDANCE | Interested | Change | EVENT STARTS IN | 18 days | 21 NOV 2026 · 19.00 WIB | Event saved | Choose Going to unlock Circle suggestions, event groups, and check-in prep. | I'm goingChange status | Promoter announcement | Gates open at 18.00.
+  Ruang Event Coffee (selesai): ◷ | YOUR ATTENDANCE | Not checked in | EVENT HAS ENDED | 24 days ago | 10 OCT 2026 · 10.00 WIB | This event has ended | See the official coverage and stories from other attendees. | View official albu
+  Riwayat: 5 Events joined 2 Attended 14 Friends met
+  checkout: PHOTO CHECKOUT | LaLaLa Fest 2026 | × | Photo 03 | 1 full-resolution photo without watermark | Rp10.000 | Service fee | Rp0 | Total | Rp10.000 | Payment method | QRIS | Scan from your bank or e-wallet app | E-wallet | GoPay, OVO, DANA, ShopeePay | Bank transfer | Virtual account BCA, BNI, BRI, Mandiri | Dengan membayar, kamu menyetujui Ketentuan Pembelian Foto dan Kebijakan Privasi Temmoo. | By paying, you agree to the Temmoo Photo Purchase Terms and Privacy Policy. | Prototype: payment is simulated; no money is charged. | Cancel | Pay Rp10.000
+  teks hukum (bahasa aktif di atas): [
+  'id: Dengan membayar, kamu menyetujui Ketentuan Pembelian Foto dan Kebijakan Privasi Temmoo.',
+  'en↑: By paying, you agree to the Temmoo Photo Purchase Terms and Privacy Policy.'
+]
+  daftar akun, teks hukum: [
+  'Saya setuju dengan Ketentuan dan Kebijakan Privasi. / I agree to the Terms and Privacy Policy.'
+]
+2 Studio: RUANG KOLEKTIF · FULL PROMOTER | Overview | All the events you manage in one place | RK | Active events | 0 | Published & upcoming | Awaiting review | 0 | Checked by the Temmoo team | Total interest | 218 | From 1 published event | Going | 11 | Upcoming events | ◆ | Is your event already on the Temm
+  klaim, teks hukum: [
+  'Saya berwenang mewakili Ruang Kolektif untuk event ini. Klaim palsu dapat membuat akun promotor dinonaktifkan. / I am authorized to represent Ruang Kolektif for this event. False claims may result in the promoter account being deactivated.'
+]
+3 Admin kalender: TEMMOO ADMIN · SUPER ADMIN | Curated calendar | Events added by the Temmoo team and page claims by organizers | TO | [ 'Curated events', 'Unclaimed', 'Pending claims', 'Claimed' ]
+4 belum diterjemahkan: 9 [
+  'Admin Nabila',
+  'Admin Reza',
+  'Boleh, kita ketemu jam 7 ya.',
+  'Circle-nya asik banget pas LaLaLa Fest. Langsung akrab padahal baru kenal 🙌',
+  'Langit Production',
+  'Siap, nanti aku kabari lagi ☕',
+  'fomo, dateng kalau ada yang nemenin 🎪',
+  'temm',
+  '▣ LaLaLa Fest'
+]
+5 Pusat Akun: Language · Bahasa | English | In use | Bahasa Indonesia | Use Indonesian
+  setelah pilih Bahasa Indonesia: [ 'id', 'id' ] | menu: [ 'Untukmu', 'Cari', 'Events', 'Circle', 'Chat', 'Aktivitas' ]
+  teks hukum (id): [ 'id', 'en' ]
+  kembali ke English: en | For you
+errors []

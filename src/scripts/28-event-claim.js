@@ -73,7 +73,7 @@
         <label class="pro-file">▤ Dokumen pendukung (opsional) <small>Surat kerja sama, kontrak venue, atau surat penunjukan · mempercepat peninjauan</small><input type="file" name="doc" accept="image/*,.pdf"></label>
         <label>Email kerja untuk dihubungi Tim Temmoo<input name="email" type="email" required value="${esc(c?.email||app.email||'')}"></label>
         <label>Catatan untuk Tim Temmoo (opsional)<textarea name="note" rows="3" maxlength="300" placeholder="Contoh: info tanggal di halaman ini sudah berubah, gate dibuka jam 15.00">${esc(c?.message||'')}</textarea></label>
-        <label class="pro-check"><input type="checkbox" name="agree" required> Saya berwenang mewakili ${esc(promoterState.organization)} untuk event ini. Klaim palsu dapat membuat akun promotor dinonaktifkan.</label>
+        <label class="pro-check"><input type="checkbox" name="agree" required> ${legalText(`Saya berwenang mewakili ${esc(promoterState.organization)} untuk event ini. Klaim palsu dapat membuat akun promotor dinonaktifkan.`,`I am authorized to represent ${esc(promoterState.organization)} for this event. False claims may result in the promoter account being deactivated.`)}</label>
         <div class="pro-actions"><button class="pro-btn" type="submit">Ajukan klaim</button><button class="pro-btn secondary" type="button" data-go="${CLAIM}" data-claim-pick>Pilih event lain</button></div>
       </form>`;
   }

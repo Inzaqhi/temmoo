@@ -138,7 +138,7 @@
       <fieldset><legend>Setelah dipindahkan, kamu</legend><label class="team-pick"><input type="radio" name="keepAs" value="admin" checked><span><b>Tetap di tim sebagai Admin</b><small>Masih bisa mengelola event dan anggota</small></span></label><label class="team-pick"><input type="radio" name="keepAs" value="leave"><span><b>Keluar dari tim</b><small>Kehilangan akses ke Promotor Studio ${esc(promoterState.organization)}</small></span></label></fieldset>
       <ul class="team-consequences"><li>Pemilik baru memegang kendali penuh, termasuk menghapus atau mengubah peranmu.</li><li>Pemilik baru harus menerima dalam 7 hari dan memverifikasi identitas (KTP).</li><li>Setelah diterima, kamu tidak bisa membatalkannya sendiri.</li></ul>
       <label class="team-confirm"><span>Ketik <b>${esc(promoterState.organization)}</b> untuk konfirmasi</span><input name="confirm" autocomplete="off" required></label>
-      <label class="team-check"><input type="checkbox" name="agree" required> Saya memahami akibat pemindahan kepemilikan ini.</label>
+      <label class="team-check"><input type="checkbox" name="agree" required> ${legalText('Saya memahami akibat pemindahan kepemilikan ini.','I understand the consequences of this ownership transfer.')}</label>
       <div class="team-form-actions"><button type="button" class="ghost" data-transfer-toggle>Batal</button><button type="submit" class="danger-solid">Kirim permintaan pemindahan</button></div></form></section>`;
   }
   function teamPage(){
@@ -266,7 +266,7 @@
       <form class="kyc-form" data-kyc-form novalidate>
         <div class="kyc-files">${file('ktp','Foto KTP','Seluruh kartu terlihat jelas, tidak buram atau terpotong')}${file('selfie','Selfie dengan KTP','Wajah dan KTP terlihat dalam satu foto')}</div>
         <div class="team-grid"><label>NIK<input name="nik" inputmode="numeric" maxlength="16" autocomplete="off" value="${esc(k.nik||'')}" placeholder="16 digit sesuai KTP" ${uploading?'disabled':''}></label><label>Nama lengkap sesuai KTP<input name="fullName" maxlength="60" value="${esc(k.fullName||'')}" placeholder="Seperti tertulis di KTP" ${uploading?'disabled':''}></label></div>
-        <label class="team-check"><input type="checkbox" name="consent" ${k.consent?'checked':''} ${uploading?'disabled':''}> Saya setuju data KTP dan foto diproses untuk verifikasi identitas sesuai Kebijakan Privasi Temmoo dan UU Pelindungan Data Pribadi.</label>
+        <label class="team-check"><input type="checkbox" name="consent" ${k.consent?'checked':''} ${uploading?'disabled':''}> ${legalText('Saya setuju data KTP dan foto diproses untuk verifikasi identitas sesuai Kebijakan Privasi Temmoo dan UU Pelindungan Data Pribadi.','I consent to my ID card (KTP) data and photos being processed for identity verification under the Temmoo Privacy Policy and the Indonesian Personal Data Protection Law (UU PDP).')}</label>
         <p class="team-otp-error" role="alert">${esc(k.error||'')}</p>${results}
         <div class="pro-demo"><small>FITUR UJI COBA PROTOTIPE: pemeriksaan hanya format & kualitas foto; pencocokan wajah dan data Dukcapil butuh layanan e-KYC</small><div><button type="button" data-kyc-sample>Isi NIK & nama contoh</button></div></div>
         <div class="team-form-actions"><button type="button" class="ghost" data-kyc-back>Kembali</button><button type="submit" class="accept-solid" ${uploading?'disabled':''}>${uploading?'Memeriksa dokumen…':self?'Periksa identitas':'Periksa & lanjut ke OTP'}</button></div>
