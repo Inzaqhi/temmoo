@@ -1,0 +1,49 @@
+/* Dialog di dalam halaman (30-dialogs.js) dan checkout foto (31-photo-purchases.js) */
+.app-dialog-backdrop{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(24,20,48,.42);backdrop-filter:blur(4px);animation:dialogFade .14s ease-out}
+.app-dialog{width:min(420px,100%);max-height:calc(100vh - 36px);overflow:auto;padding:22px;border-radius:20px;background:#fff;color:var(--text);box-shadow:0 24px 60px rgba(30,22,80,.25)}
+.app-dialog h3{margin:0 0 8px;font-size:18px}
+.app-dialog p{margin:0;color:var(--muted);line-height:1.55}
+.app-dialog footer{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+.app-dialog footer button{min-height:42px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);font-weight:800;cursor:pointer}
+.app-dialog footer button.primary{border:0;background:var(--temmoo-gradient);color:#fff}
+.app-dialog footer button.is-danger{border:0;background:#dc3f4d;color:#fff}
+.app-dialog footer button:disabled{opacity:.6;cursor:progress}
+.app-dialog button:focus-visible{outline:3px solid #b8b0ff;outline-offset:2px}
+@keyframes dialogFade{from{opacity:0}to{opacity:1}}
+.app-dialog.checkout{width:min(480px,100%)}
+.app-dialog.checkout header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.app-dialog.checkout header small{color:var(--indigo);font-size:11px;font-weight:800;letter-spacing:.04em}
+.app-dialog.checkout header h3{margin:4px 0 0}
+.dialog-x{width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:50%;background:#fff;font-size:20px;cursor:pointer}
+.checkout-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin:16px 0}
+.checkout-thumb,.checkout-more{position:relative;aspect-ratio:1;border-radius:11px;overflow:hidden;background:#2a2550 center/cover no-repeat}
+.checkout-thumb.photo-0{background:radial-gradient(circle at 30% 30%,#ff6b6b,transparent 45%),linear-gradient(145deg,#30243f,#15121b)}
+.checkout-thumb.photo-1{background:radial-gradient(circle at 70% 30%,#34d9b4,transparent 45%),linear-gradient(145deg,#263244,#15121b)}
+.checkout-thumb.photo-2{background:radial-gradient(circle at 40% 70%,#f5b942,transparent 45%),linear-gradient(145deg,#30243f,#15121b)}
+.checkout-thumb.photo-3{background:radial-gradient(circle at 60% 40%,#8f83ff,transparent 45%),linear-gradient(145deg,#2b2039,#15121b)}
+.checkout-thumb span{position:absolute;left:5px;bottom:4px;color:#fff;font-size:9px;font-weight:800;text-shadow:0 1px 4px #000}
+.checkout-more{display:grid;place-items:center;background:var(--indigo-light);color:var(--indigo-dark);font-weight:900}
+.checkout-lines{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fafafe}
+.checkout-lines div{display:flex;justify-content:space-between;gap:12px;font-size:13px}
+.checkout-lines span{color:var(--muted)}
+.checkout-lines .total{padding-top:8px;border-top:1px solid var(--line);font-size:15px}
+.checkout-lines .total span{color:var(--text);font-weight:700}
+.checkout-methods{display:grid;gap:8px;margin:16px 0 0;padding:0;border:0}
+.checkout-methods legend{margin-bottom:8px;font-size:13px;font-weight:800}
+.checkout-methods label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.checkout-methods label:has(input:checked){border-color:var(--indigo);background:var(--indigo-light)}
+.checkout-methods input{flex:none;width:auto;accent-color:var(--indigo)}
+.checkout-methods span{display:grid;gap:2px}
+.checkout-methods small{color:var(--muted);font-size:12px}
+.checkout-note{margin-top:12px!important;font-size:12px}
+.checkout-done{text-align:center}
+.checkout-done .success-mark{margin:4px auto 12px}
+.checkout-done .checkout-lines{margin-top:16px;text-align:left}
+.checkout-done footer{justify-content:center;flex-wrap:wrap}
+.official-photo-card.owned{outline:3px solid var(--teal);outline-offset:-3px}
+.official-photo-card.owned b{color:#c8f7e9}
+.album-owned-count{color:var(--teal-text);font-style:normal;font-weight:700}
+.album-sold{color:var(--teal-text)!important;font-weight:700}
+.photo-bought{position:absolute;top:9px;left:9px;z-index:1;padding:3px 8px;border-radius:99px;background:#0b0910cc;color:#fff;font-size:10px;font-weight:800}
+.user-photo-preview .button-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+@media(max-width:620px){.app-dialog-backdrop{align-items:flex-end;padding:0}.app-dialog{width:100%;max-height:92vh;border-radius:20px 20px 0 0}}

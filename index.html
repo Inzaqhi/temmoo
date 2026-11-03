@@ -223,11 +223,11 @@ const albumPhotoPrice=card=>Number(card?.dataset.price)||([1,4,7].includes(Numbe
 const albumPhotoCount=()=>$$('.official-photo-card').length||8;
 
 function updateAlbumPurchase(){const selected=$$('.official-photo-card.selected'),button=$('[data-buy-event-photos]'),label=$('#albumSelectionText'),price=$('#albumSelectionPrice');if(!button||!label||!price)return;const total=selected.reduce((sum,card)=>sum+albumPhotoPrice(card),0);$$('.official-photo-card').forEach(card=>card.querySelector('[data-select-photo]')?.setAttribute('aria-checked',card.classList.contains('selected')));label.textContent=selected.length?`${selected.length} foto dipilih`:'Belum ada foto dipilih';price.textContent=`Rp${total.toLocaleString('id-ID')}`;button.disabled=!selected.length}
-function setAlbumPhotoSelected(id,selected){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;card.classList.toggle('selected',selected);updateAlbumPurchase();const preview=$('#albumPhotoPreview');if(preview&&preview.dataset.photoId===String(id)){preview.querySelector('[data-preview-select]').textContent=selected?'✓ Foto dipilih':'＋ Pilih foto';preview.querySelector('[data-preview-select]').classList.toggle('selected',selected)}}
-function openAlbumPhotoPreview(id){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;const tone=[...card.classList].find(x=>x.startsWith('photo-'))||'photo-0',price='Rp'+albumPhotoPrice(card).toLocaleString('id-ID'),photo=card.dataset.src,selected=card.classList.contains('selected');$('#albumPhotoPreview')?.remove();document.body.insertAdjacentHTML('beforeend',`<div class="album-photo-preview" id="albumPhotoPreview" data-photo-id="${id}" role="dialog" aria-modal="true" aria-label="Pratinjau Foto ${String(id).padStart(2,'0')}"><button class="album-preview-close" data-close-photo-preview aria-label="Tutup pratinjau">×</button><button class="album-preview-nav prev" data-preview-photo-nav="-1" aria-label="Foto sebelumnya">‹</button><div class="album-preview-dialog"><div class="album-preview-image ${photo?'has-photo':tone}" ${photo?`style="background-image:url(${photo})"`:''}><span class="photo-watermark">TEMMOO PREVIEW</span></div><div class="album-preview-info"><div><small>Foto ${String(id).padStart(2,'0')} · Pratinjau ber-watermark</small><b>${price}</b></div><button class="${selected?'selected':''}" data-preview-select>${selected?'✓ Foto dipilih':'＋ Pilih foto'}</button></div></div><button class="album-preview-nav next" data-preview-photo-nav="1" aria-label="Foto berikutnya">›</button></div>`);document.body.style.overflow='hidden'}
+function setAlbumPhotoSelected(id,selected){const card=$(`[data-paid-photo="${id}"]`);if(!card||card.classList.contains('owned'))return;card.classList.toggle('selected',selected);updateAlbumPurchase();const preview=$('#albumPhotoPreview');if(preview&&preview.dataset.photoId===String(id)){preview.querySelector('[data-preview-select]').textContent=selected?'✓ Foto dipilih':'＋ Pilih foto';preview.querySelector('[data-preview-select]').classList.toggle('selected',selected)}}
+function openAlbumPhotoPreview(id){const card=$(`[data-paid-photo="${id}"]`);if(!card)return;const tone=[...card.classList].find(x=>x.startsWith('photo-'))||'photo-0',owned=card.classList.contains('owned'),price=owned?'Sudah kamu miliki':'Rp'+albumPhotoPrice(card).toLocaleString('id-ID'),photo=card.dataset.src,selected=card.classList.contains('selected');$('#albumPhotoPreview')?.remove();document.body.insertAdjacentHTML('beforeend',`<div class="album-photo-preview" id="albumPhotoPreview" data-photo-id="${id}" role="dialog" aria-modal="true" aria-label="Pratinjau Foto ${String(id).padStart(2,'0')}"><button class="album-preview-close" data-close-photo-preview aria-label="Tutup pratinjau">×</button><button class="album-preview-nav prev" data-preview-photo-nav="-1" aria-label="Foto sebelumnya">‹</button><div class="album-preview-dialog"><div class="album-preview-image ${photo?'has-photo':tone}" ${photo?`style="background-image:url(${photo})"`:''}><span class="photo-watermark">TEMMOO PREVIEW</span></div><div class="album-preview-info"><div><small>Foto ${String(id).padStart(2,'0')} · Pratinjau ber-watermark</small><b>${price}</b></div>${owned?'<button class="selected" disabled>✓ Dimiliki</button>':`<button class="${selected?'selected':''}" data-preview-select>${selected?'✓ Foto dipilih':'＋ Pilih foto'}</button>`}</div></div><button class="album-preview-nav next" data-preview-photo-nav="1" aria-label="Foto berikutnya">›</button></div>`);document.body.style.overflow='hidden'}
 function closeAlbumPhotoPreview(){const preview=$('#albumPhotoPreview');if(!preview)return;preview.remove();document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(!$('#albumPhotoPreview'))return;if(e.key==='Escape')closeAlbumPhotoPreview();if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+(e.key==='ArrowRight'?1:-1)+albumPhotoCount()-1)%albumPhotoCount()+1;openAlbumPhotoPreview(next)}});
-document.addEventListener('click',e=>{const personal=e.target.closest('.personal-photo'),history=e.target.closest('[data-history-album]');if(personal||history){e.preventDefault();const title=history?history.closest('[data-history-status]')?.querySelector('.history-cover h3')?.textContent:personal.querySelector('b')?.textContent;const index=eventIndexByName(title);if(index>=0)activeEvent=index;openFlow(59);return}if(e.target.closest('[data-close-photo-preview]')||e.target.id==='albumPhotoPreview'){closeAlbumPhotoPreview();return}const nav=e.target.closest('[data-preview-photo-nav]');if(nav){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+Number(nav.dataset.previewPhotoNav)+albumPhotoCount()-1)%albumPhotoCount()+1;openAlbumPhotoPreview(next);return}const previewSelect=e.target.closest('[data-preview-select]');if(previewSelect){const id=$('#albumPhotoPreview').dataset.photoId,card=$(`[data-paid-photo="${id}"]`);setAlbumPhotoSelected(id,!card.classList.contains('selected'));return}const photo=e.target.closest('[data-paid-photo]');if(photo){if(e.target.closest('[data-select-photo]'))setAlbumPhotoSelected(photo.dataset.paidPhoto,!photo.classList.contains('selected'));else openAlbumPhotoPreview(photo.dataset.paidPhoto);return}if(e.target.closest('[data-album-select-all]')){const cards=$$('.official-photo-card'),allSelected=cards.every(x=>x.classList.contains('selected'));cards.forEach(x=>x.classList.toggle('selected',!allSelected));updateAlbumPurchase();return}if(e.target.closest('[data-album-help]')){toast('Klik foto untuk pratinjau besar. Gunakan centang untuk memilih beberapa foto.');return}const buy=e.target.closest('[data-buy-event-photos]');if(buy&&!buy.disabled){const count=$$('.official-photo-card.selected').length,total=$('#albumSelectionPrice').textContent;if(confirm(`Beli ${count} foto seharga ${total}?`)){toast('Pembayaran berhasil · foto masuk ke Album profil');$$('.official-photo-card.selected').forEach(x=>x.classList.remove('selected'));updateAlbumPurchase()}return}if(e.target.closest('[data-photo-library-filter]'))toast('Filter: semua foto')});
+document.addEventListener('click',e=>{const personal=e.target.closest('.personal-photo'),history=e.target.closest('[data-history-album]');if(personal||history){e.preventDefault();const title=history?history.closest('[data-history-status]')?.querySelector('.history-cover h3')?.textContent:personal.querySelector('b')?.textContent;const index=eventIndexByName(title);if(index>=0)activeEvent=index;openFlow(59);return}if(e.target.closest('[data-close-photo-preview]')||e.target.id==='albumPhotoPreview'){closeAlbumPhotoPreview();return}const nav=e.target.closest('[data-preview-photo-nav]');if(nav){const current=Number($('#albumPhotoPreview').dataset.photoId),next=(current+Number(nav.dataset.previewPhotoNav)+albumPhotoCount()-1)%albumPhotoCount()+1;openAlbumPhotoPreview(next);return}const previewSelect=e.target.closest('[data-preview-select]');if(previewSelect){const id=$('#albumPhotoPreview').dataset.photoId,card=$(`[data-paid-photo="${id}"]`);setAlbumPhotoSelected(id,!card.classList.contains('selected'));return}const photo=e.target.closest('[data-paid-photo]');if(photo){if(e.target.closest('[data-select-photo]'))setAlbumPhotoSelected(photo.dataset.paidPhoto,!photo.classList.contains('selected'));else openAlbumPhotoPreview(photo.dataset.paidPhoto);return}if(e.target.closest('[data-album-select-all]')){const cards=$$('.official-photo-card:not(.owned)'),allSelected=cards.every(x=>x.classList.contains('selected'));cards.forEach(x=>x.classList.toggle('selected',!allSelected));updateAlbumPurchase();return}if(e.target.closest('[data-album-help]')){toast('Klik foto untuk pratinjau besar. Gunakan centang untuk memilih beberapa foto.');return}const buy=e.target.closest('[data-buy-event-photos]');if(buy&&!buy.disabled){window.openPhotoCheckout?.();return}if(e.target.closest('[data-photo-library-filter]'))toast('Filter: semua foto')});
 </script><script>document.addEventListener('click',e=>{const filter=e.target.closest('.photo-library-filters button');if(filter){const library=filter.closest('.personal-photo-library'),key=filter.textContent.trim().toLowerCase();library.querySelectorAll('.photo-library-filters button').forEach(x=>x.classList.toggle('active',x===filter));library.querySelectorAll('.personal-photo').forEach(card=>{card.hidden=key!=='semua'&&!card.classList.contains(key==='dibeli'?'bought':key==='disimpan'?'saved':'downloaded')});return}if(e.target.closest('.photo-search')){toast('Pencarian album siap digunakan');return}});</script>
 <script>
 openEvent=function(ref){activeEvent=eventIndexFromRef(ref);openFlow(18)};
@@ -256,30 +256,35 @@ document.addEventListener('click',event=>{
     {id:'a3',name:'Circle Coffee Fest',count:6,privacy:'Dibagikan',tone:'tone-gold'}
   ];
   const esc=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  const nav=[['photos','Foto'],['albums','Album'],['favorites','Favorit'],['shared','Dibagikan'],['archive','Arsip'],['trash','Sampah']];
+  const nav=[['photos','Foto'],['bought','Dibeli'],['albums','Album'],['favorites','Favorit'],['shared','Dibagikan'],['archive','Arsip'],['trash','Sampah']];
 
+  const boughtCache=new Map(),TONE={'photo-0':'tone-coral','photo-1':'tone-indigo','photo-2':'tone-teal','photo-3':'tone-gold'};
+  function boughtPhotos(){return (window.photoPurchases?.list()||[]).map(p=>{if(!boughtCache.has(p.key))boughtCache.set(p.key,{id:'buy-'+p.key,name:`${p.label} · ${p.event}`,date:new Date(p.at).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}),album:p.event,tone:TONE[p.tone]||'tone-indigo',src:p.src,bought:true,order:p.order});return boughtCache.get(p.key)})}
+  const allPhotos=()=>[...boughtPhotos(),...photos];
   function visiblePhotos(){
-    return photos.filter(photo=>{
+    return allPhotos().filter(photo=>{
+      if(activeView==='bought'&&!photo.bought)return false;
       if(activeView==='favorites'&&!photo.favorite)return false;
       if(activeView==='shared'&&!photo.shared)return false;
       if(activeView==='archive'&&!photo.archived)return false;
       if(activeView==='trash'&&!photo.trashed)return false;
-      if(['photos','favorites','shared'].includes(activeView)&&(photo.archived||photo.trashed))return false;
+      if(['photos','bought','favorites','shared'].includes(activeView)&&(photo.archived||photo.trashed))return false;
       return !query||`${photo.name} ${photo.album} ${photo.date}`.toLowerCase().includes(query);
     });
   }
   function photoCard(photo){
     const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
-    return `<article class="user-photo-card ${photo.tone}" data-user-photo="${photo.id}" ${style}><button class="photo-select ${selection.has(photo.id)?'selected':''}" data-select-user-photo="${photo.id}" aria-label="Pilih foto">${selection.has(photo.id)?'✓':'○'}</button>${photo.favorite?'<span class="photo-favorite">♥</span>':''}<div><b>${esc(photo.name)}</b><small>${esc(photo.album)}</small></div></article>`;
+    return `<article class="user-photo-card ${photo.tone}" data-user-photo="${photo.id}" ${style}><button class="photo-select ${selection.has(photo.id)?'selected':''}" data-select-user-photo="${photo.id}" aria-label="Pilih foto">${selection.has(photo.id)?'✓':'○'}</button>${photo.favorite?'<span class="photo-favorite">♥</span>':''}${photo.bought?'<span class="photo-bought">Dibeli</span>':''}<div><b>${esc(photo.name)}</b><small>${esc(photo.album)}</small></div></article>`;
   }
   function albumCard(album){return `<button class="user-album-card ${album.tone}" data-user-album="${album.id}"><div class="album-cover-stack"><i></i><i></i><i></i></div><b>${esc(album.name)}</b><span>${album.count} foto · ${esc(album.privacy)}</span></button>`}
   function content(){
     if(activeView==='albums')return `<div class="user-album-grid">${albums.filter(a=>!query||a.name.toLowerCase().includes(query)).map(albumCard).join('')}</div>`;
     const list=visiblePhotos();
-    if(!list.length)return `<div class="photo-empty"><i>▧</i><h3>Belum ada foto</h3><p>Upload foto atau pilih tampilan lain.</p></div>`;
+    if(!list.length)return activeView==='bought'?`<div class="photo-empty"><i>▧</i><h3>Belum ada foto yang dibeli</h3><p>Foto yang kamu beli dari album resmi event akan tersimpan di sini tanpa watermark.</p></div>`:`<div class="photo-empty"><i>▧</i><h3>Belum ada foto</h3><p>Upload foto atau pilih tampilan lain.</p></div>`;
     return `<p class="photo-date-label">Terbaru</p><div class="user-photo-grid">${list.map(photoCard).join('')}</div>`;
   }
   function libraryMarkup(){return `<section class="user-photo-library"><header class="photo-library-head"><div><h3>Foto Saya</h3><p>Foto dan album yang kamu unggah.</p></div><div class="photo-head-actions"><button data-create-user-album>＋ Buat album</button><button class="primary" data-upload-user-photo>↑ Upload</button><input type="file" id="userPhotoUpload" accept="image/*" multiple hidden></div></header><div class="photo-search-row"><label><span>⌕</span><input id="userPhotoSearch" value="${esc(query)}" placeholder="Cari foto, album, atau event"></label></div><nav class="photo-library-nav">${nav.map(([id,label])=>`<button class="${activeView===id?'active':''}" data-photo-view="${id}">${label}</button>`).join('')}</nav><div class="photo-selection-bar ${selection.size?'show':''}"><b>${selection.size} dipilih</b><button data-photo-bulk="favorite">♥ Favorit</button><button data-photo-bulk="archive">Arsipkan</button><button data-photo-bulk="trash">Hapus</button><button data-photo-clear>×</button></div><div class="photo-library-content">${content()}</div></section>`}
+  window.openPhotoLibraryView=view=>{activeView=view;query='';selection.clear();window.renderOwnPhotoLibrary()};
   window.renderOwnPhotoLibrary=function(){const target=document.querySelector('#profilePost');if(target)target.innerHTML=libraryMarkup()};
   window.renderPublicPhotoLibrary=function(){
     const target=document.querySelector('#publicProfileContent');if(!target)return;
@@ -293,7 +298,7 @@ document.addEventListener('click',event=>{
   function previewPhoto(photo){
     document.querySelector('#userPhotoPreview')?.remove();
     const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
-    document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="userPhotoPreview"><div class="user-photo-preview"><header><div><b>${esc(photo.name)}</b><span>${esc(photo.date)} · ${esc(photo.album)}</span></div><button data-close-gallery-modal>×</button></header><div class="preview-user-image ${photo.tone}" ${style}></div><footer><button data-toggle-favorite="${photo.id}">${photo.favorite?'♥ Favorit':'♡ Favorit'}</button><button>Bagikan</button><button>Unduh</button><button data-move-archive="${photo.id}">Arsipkan</button></footer></div></div>`);
+    document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="userPhotoPreview"><div class="user-photo-preview"><header><div><b>${esc(photo.name)}</b><span>${esc(photo.date)} · ${esc(photo.album)}${photo.order?` · pesanan ${esc(photo.order)}`:''}</span></div><button data-close-gallery-modal>×</button></header><div class="preview-user-image ${photo.tone}" ${style}></div><footer><button data-toggle-favorite="${photo.id}">${photo.favorite?'♥ Favorit':'♡ Favorit'}</button><button>Bagikan</button>${photo.src?`<a class="button-link" href="${photo.src}" download="${esc(photo.name)}.jpg">Unduh</a>`:'<button>Unduh</button>'}<button data-move-archive="${photo.id}">Arsipkan</button></footer></div></div>`);
   }
   document.addEventListener('click',e=>{
     const profileAlbum=e.target.closest('[data-profile-tab="album"]');if(profileAlbum)setTimeout(()=>{activeView='photos';renderOwnPhotoLibrary()},0);
@@ -303,10 +308,10 @@ document.addEventListener('click',event=>{
     if(e.target.closest('[data-create-user-album]')){createAlbumDialog();return}
     if(e.target.closest('[data-close-gallery-modal]')||e.target.classList.contains('user-gallery-modal')){e.target.closest('.user-gallery-modal')?.remove();return}
     const select=e.target.closest('[data-select-user-photo]');if(select){e.stopPropagation();const id=select.dataset.selectUserPhoto;selection.has(id)?selection.delete(id):selection.add(id);rerender();return}
-    const card=e.target.closest('[data-user-photo]');if(card){const photo=photos.find(p=>p.id===card.dataset.userPhoto);if(photo)previewPhoto(photo);return}
-    const favorite=e.target.closest('[data-toggle-favorite]');if(favorite){const photo=photos.find(p=>p.id===favorite.dataset.toggleFavorite);if(photo){photo.favorite=!photo.favorite;document.querySelector('#userPhotoPreview')?.remove();rerender();toast(photo.favorite?'Ditambahkan ke Favorit':'Dihapus dari Favorit')}return}
-    const archive=e.target.closest('[data-move-archive]');if(archive){const photo=photos.find(p=>p.id===archive.dataset.moveArchive);if(photo){photo.archived=true;document.querySelector('#userPhotoPreview')?.remove();rerender();toast('Foto dipindahkan ke Arsip')}return}
-    const bulk=e.target.closest('[data-photo-bulk]');if(bulk){photos.filter(p=>selection.has(p.id)).forEach(p=>{if(bulk.dataset.photoBulk==='favorite')p.favorite=true;if(bulk.dataset.photoBulk==='archive')p.archived=true;if(bulk.dataset.photoBulk==='trash')p.trashed=true});selection.clear();rerender();toast('Koleksi diperbarui');return}
+    const card=e.target.closest('[data-user-photo]');if(card){const photo=allPhotos().find(p=>p.id===card.dataset.userPhoto);if(photo)previewPhoto(photo);return}
+    const favorite=e.target.closest('[data-toggle-favorite]');if(favorite){const photo=allPhotos().find(p=>p.id===favorite.dataset.toggleFavorite);if(photo){photo.favorite=!photo.favorite;document.querySelector('#userPhotoPreview')?.remove();rerender();toast(photo.favorite?'Ditambahkan ke Favorit':'Dihapus dari Favorit')}return}
+    const archive=e.target.closest('[data-move-archive]');if(archive){const photo=allPhotos().find(p=>p.id===archive.dataset.moveArchive);if(photo){photo.archived=true;document.querySelector('#userPhotoPreview')?.remove();rerender();toast('Foto dipindahkan ke Arsip')}return}
+    const bulk=e.target.closest('[data-photo-bulk]');if(bulk){allPhotos().filter(p=>selection.has(p.id)).forEach(p=>{if(bulk.dataset.photoBulk==='favorite')p.favorite=true;if(bulk.dataset.photoBulk==='archive')p.archived=true;if(bulk.dataset.photoBulk==='trash')p.trashed=true});selection.clear();rerender();toast('Koleksi diperbarui');return}
     if(e.target.closest('[data-photo-clear]')){selection.clear();rerender();return}
     const album=e.target.closest('[data-user-album]');if(album){activeView='photos';query=(albums.find(a=>a.id===album.dataset.userAlbum)?.name||'').replace(/ 2026$/,'').toLowerCase();rerender();return}
   },true);
@@ -963,7 +968,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(e.target.closest('[data-admin-logout]')){accountState={...accountDefaults};saveAccount();location.hash='tim-temmoo';openFlow(63,false);toast('Sesi admin berakhir');return}
     const protectedAdminAction=e.target.closest('[data-admin-dismiss-report],[data-admin-action-report],[data-admin-resolve-report],[data-admin-approve-event],[data-admin-approve-promoter],[data-admin-verified-menu],[data-admin-user-menu],[data-admin-review-event],[data-admin-request-changes],[data-admin-publish-event]');
     if(protectedAdminAction&&accountState.accountType!=='temmoo_official'){openFlow(63,false);toast('Akses ditolak. Masuk dengan akun Temmoo Official.');return}
-    if(e.target.closest('[data-cancel-subscription]')){if(!confirm('Hentikan perpanjangan otomatis? Centang biru tetap aktif sampai akhir periode.'))return;accountState.subscriptionStatus='canceling';localStorage.setItem(accountKey,JSON.stringify(accountState));adminLog(`Perpanjangan ${accountState.handle} dihentikan`);toast('Perpanjangan otomatis dihentikan');openFlow(55,false);return}
+    if(e.target.closest('[data-cancel-subscription]')){askConfirm({title:'Hentikan perpanjangan otomatis?',text:'Centang biru tetap aktif sampai akhir periode.',confirm:'Hentikan perpanjangan',danger:true}).then(ok=>{if(!ok)return;accountState.subscriptionStatus='canceling';localStorage.setItem(accountKey,JSON.stringify(accountState));adminLog(`Perpanjangan ${accountState.handle} dihentikan`);toast('Perpanjangan otomatis dihentikan');openFlow(55,false)});return}
     const dismiss=e.target.closest('[data-admin-dismiss-report]');if(dismiss){const report=adminState.reports.splice(Number(dismiss.dataset.adminDismissReport),1)[0];adminLog(`Laporan ${report.target} ditutup tanpa tindakan`);openFlow(59,false);toast('Laporan ditutup');return}
     const actionReport=e.target.closest('[data-admin-action-report],[data-admin-resolve-report]');if(actionReport){const index=Number(actionReport.dataset.adminActionReport??actionReport.dataset.adminResolveReport),report=adminState.reports.splice(index,1)[0];if(report)adminLog(`Tindakan moderasi diterapkan pada ${report.target}`);openFlow(59,false);toast('Tindakan diterapkan dan dicatat');return}
     if(e.target.closest('[data-admin-approve-event]')){adminLog('Event Surabaya Creative Week disetujui');toast('Event disetujui dan dipublikasikan');return}
@@ -1014,8 +1019,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(reportMember){openSafetyReport(reportMember.dataset.reportMember,'member',reportMember.dataset.reportMember);return}
     if(e.target.closest('[data-toggle-group-admin]')){const row=e.target.closest('.group-member'),index=Number(row.dataset.groupMember);activeEventGroup.membersList=activeEventGroup.membersList||defaultGroupMembers();const member=activeEventGroup.membersList[index],promoting=member.role!=='admin';member.role=promoting?'admin':'member';addGroupSystemEvent(activeEventGroup,`${member.name} ${promoting?'dijadikan admin':'tidak lagi menjadi admin'} oleh iwang`);toast('Peran anggota diperbarui');openGroupInfo();return}
     if(e.target.closest('[data-remove-group-member]')){const row=e.target.closest('.group-member'),index=Number(row.dataset.groupMember);activeEventGroup.membersList=activeEventGroup.membersList||defaultGroupMembers();const member=activeEventGroup.membersList[index];activeEventGroup.membersList.splice(index,1);activeEventGroup.members=Math.max(1,activeEventGroup.members-1);addGroupSystemEvent(activeEventGroup,`${member.name} dikeluarkan dari grup oleh admin`);toast('Anggota dikeluarkan dari grup');openGroupInfo();return}
-    if(e.target.closest('[data-toggle-close-group]')){const closing=!activeEventGroup.closed;if(!confirm(closing?'Tutup grup? Anggota tidak dapat mengirim pesan atau bergabung sementara.':'Buka kembali grup?'))return;activeEventGroup.closed=closing;saveGroupInfo(activeEventGroup);document.querySelector('#groupSettingsOverlay')?.remove();toast(closing?'Grup ditutup':'Grup dibuka kembali');openGroupInfo();return}
-    if(e.target.closest('[data-delete-group]')){if(!confirm('Hapus grup secara permanen? Tindakan ini tidak dapat dibatalkan.'))return;activeEventGroup.deleted=true;saveGroupInfo(activeEventGroup);groupFlowState.memberships[activeEventGroup.kind]='none';saveGroupFlow();document.querySelector('#groupSettingsOverlay')?.remove();document.querySelector('#groupInfoOverlay')?.remove();toast('Grup dihapus');activeEventGroup=null;openFlow(19,false);return}
+    if(e.target.closest('[data-toggle-close-group]')){const closing=!activeEventGroup.closed;askConfirm(closing?{title:'Tutup grup?',text:'Anggota tidak dapat mengirim pesan atau bergabung sementara.',confirm:'Tutup grup',danger:true}:{title:'Buka kembali grup?',text:'Anggota bisa mengirim pesan dan bergabung lagi.',confirm:'Buka grup'}).then(ok=>{if(!ok)return;activeEventGroup.closed=closing;saveGroupInfo(activeEventGroup);document.querySelector('#groupSettingsOverlay')?.remove();toast(closing?'Grup ditutup':'Grup dibuka kembali');openGroupInfo()});return}
+    if(e.target.closest('[data-delete-group]')){askConfirm({title:'Hapus grup secara permanen?',text:'Semua pesan dan anggota grup akan hilang. Tindakan ini tidak dapat dibatalkan.',confirm:'Hapus grup',danger:true}).then(ok=>{if(!ok)return;activeEventGroup.deleted=true;saveGroupInfo(activeEventGroup);groupFlowState.memberships[activeEventGroup.kind]='none';saveGroupFlow();document.querySelector('#groupSettingsOverlay')?.remove();document.querySelector('#groupInfoOverlay')?.remove();toast('Grup dihapus');activeEventGroup=null;openFlow(19,false)});return}
     if(e.target.closest('[data-leave-group]')){document.querySelector('#groupInfoOverlay')?.remove();toast('Kamu keluar dari grup');return}
     const eventGroup=e.target.closest('[data-open-event-group]');
     if(eventGroup){openEventGroup(Number(eventGroup.dataset.openEventGroup));return}
@@ -3281,10 +3286,10 @@ html{scrollbar-gutter:stable}
   function page(){
     const ev=promoterState.event,m=meta(ev),list=photos(ev),pub=m.status==='published',edit=can('edit');
     if(!full())return `<section class="team-card album-locked"><div class="ins-empty"><b>Penjualan album butuh Promotor Penuh</b><span>Tingkatkan akun dengan verifikasi identitas untuk menjual foto resmi event.</span></div><div class="pro-actions"><button class="pro-btn" data-tier-upgrade>Tingkatkan ke Promotor Penuh</button></div></section>`;
-    const total=list.reduce((a,p)=>a+Number(p.price||0),0);
+    const total=list.reduce((a,p)=>a+Number(p.price||0),0),sold=ev.publishedIndex!=null&&window.photoPurchases?window.photoPurchases.forEvent(eventId(ev.publishedIndex)):{count:0,total:0};
     const publish=!pub&&can('submit')?`<button class="pro-btn" data-album-publish ${list.length&&started(ev)?'':'disabled'}>Terbitkan album</button>`:'';
     return `<section class="team-card album-manager">
-      <header class="album-head"><div><em class="status-chip ${pub?'published':'draft'}">${pub?'Terbit':'Draft'}</em><b>${list.length} foto</b><span>${list.length?`Total harga semua foto ${rp(total)}`:'Belum ada foto'}${pub&&m.publishedAt?` · terbit ${new Date(m.publishedAt).toLocaleDateString('id-ID',{day:'numeric',month:'long'})}`:''}</span></div>
+      <header class="album-head"><div><em class="status-chip ${pub?'published':'draft'}">${pub?'Terbit':'Draft'}</em><b>${list.length} foto</b><span>${list.length?`Total harga semua foto ${rp(total)}`:'Belum ada foto'}${pub&&m.publishedAt?` · terbit ${new Date(m.publishedAt).toLocaleDateString('id-ID',{day:'numeric',month:'long'})}`:''}</span>${sold.count?`<span class="album-sold">Terjual ${sold.count} foto · ${rp(sold.total)}</span>`:''}</div>
         <div class="pro-actions">${pub?`<button class="pro-btn secondary" data-album-view>Lihat sebagai peserta</button>${can('submit')?'<button class="pro-btn secondary" data-album-unpublish>Tarik dari publik</button>':''}`:publish}</div></header>
       ${!started(ev)?`<p class="pro-hint">Event belum berlangsung. Kamu sudah bisa menyiapkan foto; album bisa diterbitkan mulai hari event.</p>`:''}
       ${!pub&&!can('submit')?'<p class="pro-hint">Pemilik atau Admin tim yang menerbitkan album.</p>':''}
@@ -3298,7 +3303,7 @@ html{scrollbar-gutter:stable}
   function publicAlbum(ev){
     const m=meta(ev),list=photos(ev);
     if(m.status!=='published'||!list.length)return `<section class="official-event-album"><div class="ins-empty album-empty"><b>Album resmi belum tersedia</b><span>Promotor akan mengunggah foto setelah event berlangsung.</span>${can('edit')?`<button class="pro-btn" data-go="${ALBUM}">Unggah album</button>`:''}</div></section>`;
-    return `<section class="official-event-album"><div class="album-shop-head"><div><span class="official-label">ALBUM RESMI</span><h2>Foto dari ${esc(ev.name)}</h2><p>Diunggah oleh ${esc(promoterState.organization)}. Klik foto untuk melihat pratinjau besar, lalu gunakan tombol centang untuk memilih.</p></div><button data-album-help aria-label="Informasi pembelian foto">?</button></div><div class="album-toolbar"><span><b>${list.length} foto</b> · kamu bisa memilih beberapa foto</span><button data-album-select-all>Pilih semua</button></div><div class="official-photo-grid">${list.map((p,i)=>`<button class="official-photo-card has-photo" style="background-image:url(${p.src})" data-src="${p.src}" data-price="${Number(p.price)||0}" data-paid-photo="${i+1}" aria-label="Lihat pratinjau ${esc(p.name)}"><span class="photo-watermark">TEMMOO PREVIEW</span><i data-select-photo role="checkbox" aria-label="Pilih foto ${i+1}" aria-checked="false">✓</i><small>Foto ${String(i+1).padStart(2,'0')}</small><b>${rp(p.price)}</b></button>`).join('')}</div><div class="album-purchase-bar"><div><small id="albumSelectionText">Belum ada foto dipilih</small><b id="albumSelectionPrice">Rp0</b></div><button data-buy-event-photos disabled>Beli & download</button></div></section>`;
+    return `<section class="official-event-album"><div class="album-shop-head"><div><span class="official-label">ALBUM RESMI</span><h2>Foto dari ${esc(ev.name)}</h2><p>Diunggah oleh ${esc(promoterState.organization)}. Klik foto untuk melihat pratinjau besar, lalu gunakan tombol centang untuk memilih.</p></div><button data-album-help aria-label="Informasi pembelian foto">?</button></div><div class="album-toolbar"><span><b>${list.length} foto</b> · kamu bisa memilih beberapa foto</span><button data-album-select-all>Pilih semua</button></div><div class="official-photo-grid">${list.map((p,i)=>`<button class="official-photo-card has-photo" style="background-image:url(${p.src})" data-src="${p.src}" data-photo-key="${p.id}" data-price="${Number(p.price)||0}" data-paid-photo="${i+1}" aria-label="Lihat pratinjau ${esc(p.name)}"><span class="photo-watermark">TEMMOO PREVIEW</span><i data-select-photo role="checkbox" aria-label="Pilih foto ${i+1}" aria-checked="false">✓</i><small>Foto ${String(i+1).padStart(2,'0')}</small><b>${rp(p.price)}</b></button>`).join('')}</div><div class="album-purchase-bar"><div><small id="albumSelectionText">Belum ada foto dipilih</small><b id="albumSelectionPrice">Rp0</b></div><button data-buy-event-photos disabled>Beli & download</button></div></section>`;
   }
 
   const base=template;
@@ -3343,6 +3348,152 @@ html{scrollbar-gutter:stable}
     if(e.target.closest('[data-album-unpublish]')){meta(ev).status='draft';savePromoter();window.promoterTeam?.log(`menarik album resmi “${ev.name}” dari publik`);toast('Album ditarik dari publik');rerender();return}
     if(e.target.closest('[data-album-view]')){syncPublishedEvent();activeEvent=ev.publishedIndex??0;openFlow(59);return}
   });
+})();
+</script>
+<style id="dialogs-css">/* Dialog di dalam halaman (30-dialogs.js) dan checkout foto (31-photo-purchases.js) */
+.app-dialog-backdrop{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(24,20,48,.42);backdrop-filter:blur(4px);animation:dialogFade .14s ease-out}
+.app-dialog{width:min(420px,100%);max-height:calc(100vh - 36px);overflow:auto;padding:22px;border-radius:20px;background:#fff;color:var(--text);box-shadow:0 24px 60px rgba(30,22,80,.25)}
+.app-dialog h3{margin:0 0 8px;font-size:18px}
+.app-dialog p{margin:0;color:var(--muted);line-height:1.55}
+.app-dialog footer{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+.app-dialog footer button{min-height:42px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);font-weight:800;cursor:pointer}
+.app-dialog footer button.primary{border:0;background:var(--temmoo-gradient);color:#fff}
+.app-dialog footer button.is-danger{border:0;background:#dc3f4d;color:#fff}
+.app-dialog footer button:disabled{opacity:.6;cursor:progress}
+.app-dialog button:focus-visible{outline:3px solid #b8b0ff;outline-offset:2px}
+@keyframes dialogFade{from{opacity:0}to{opacity:1}}
+.app-dialog.checkout{width:min(480px,100%)}
+.app-dialog.checkout header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.app-dialog.checkout header small{color:var(--indigo);font-size:11px;font-weight:800;letter-spacing:.04em}
+.app-dialog.checkout header h3{margin:4px 0 0}
+.dialog-x{width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:50%;background:#fff;font-size:20px;cursor:pointer}
+.checkout-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin:16px 0}
+.checkout-thumb,.checkout-more{position:relative;aspect-ratio:1;border-radius:11px;overflow:hidden;background:#2a2550 center/cover no-repeat}
+.checkout-thumb.photo-0{background:radial-gradient(circle at 30% 30%,#ff6b6b,transparent 45%),linear-gradient(145deg,#30243f,#15121b)}
+.checkout-thumb.photo-1{background:radial-gradient(circle at 70% 30%,#34d9b4,transparent 45%),linear-gradient(145deg,#263244,#15121b)}
+.checkout-thumb.photo-2{background:radial-gradient(circle at 40% 70%,#f5b942,transparent 45%),linear-gradient(145deg,#30243f,#15121b)}
+.checkout-thumb.photo-3{background:radial-gradient(circle at 60% 40%,#8f83ff,transparent 45%),linear-gradient(145deg,#2b2039,#15121b)}
+.checkout-thumb span{position:absolute;left:5px;bottom:4px;color:#fff;font-size:9px;font-weight:800;text-shadow:0 1px 4px #000}
+.checkout-more{display:grid;place-items:center;background:var(--indigo-light);color:var(--indigo-dark);font-weight:900}
+.checkout-lines{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fafafe}
+.checkout-lines div{display:flex;justify-content:space-between;gap:12px;font-size:13px}
+.checkout-lines span{color:var(--muted)}
+.checkout-lines .total{padding-top:8px;border-top:1px solid var(--line);font-size:15px}
+.checkout-lines .total span{color:var(--text);font-weight:700}
+.checkout-methods{display:grid;gap:8px;margin:16px 0 0;padding:0;border:0}
+.checkout-methods legend{margin-bottom:8px;font-size:13px;font-weight:800}
+.checkout-methods label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.checkout-methods label:has(input:checked){border-color:var(--indigo);background:var(--indigo-light)}
+.checkout-methods input{flex:none;width:auto;accent-color:var(--indigo)}
+.checkout-methods span{display:grid;gap:2px}
+.checkout-methods small{color:var(--muted);font-size:12px}
+.checkout-note{margin-top:12px!important;font-size:12px}
+.checkout-done{text-align:center}
+.checkout-done .success-mark{margin:4px auto 12px}
+.checkout-done .checkout-lines{margin-top:16px;text-align:left}
+.checkout-done footer{justify-content:center;flex-wrap:wrap}
+.official-photo-card.owned{outline:3px solid var(--teal);outline-offset:-3px}
+.official-photo-card.owned b{color:#c8f7e9}
+.album-owned-count{color:var(--teal-text);font-style:normal;font-weight:700}
+.album-sold{color:var(--teal-text)!important;font-weight:700}
+.photo-bought{position:absolute;top:9px;left:9px;z-index:1;padding:3px 8px;border-radius:99px;background:#0b0910cc;color:#fff;font-size:10px;font-weight:800}
+.user-photo-preview .button-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+@media(max-width:620px){.app-dialog-backdrop{align-items:flex-end;padding:0}.app-dialog{width:100%;max-height:92vh;border-radius:20px 20px 0 0}}
+</style>
+<script id="dialogs-js">// Dialog di dalam halaman sebagai pengganti confirm()/alert() bawaan browser.
+// Pratinjau Claude berjalan di iframe sandbox tanpa allow-modals: confirm() di sana langsung dianggap "batal" tanpa jendela apa pun.
+(()=>{
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // Kerangka dialog umum: dipakai askConfirm dan checkout foto. onClose(value) dipanggil sekali saat dialog ditutup.
+  window.openAppDialog=function({html,label,className='',onClose}){
+    document.querySelector('.app-dialog-backdrop')?.remove();
+    const back=document.activeElement;
+    document.body.insertAdjacentHTML('beforeend',`<div class="app-dialog-backdrop"><div class="app-dialog ${className}" role="dialog" aria-modal="true" aria-label="${esc(label)}">${html}</div></div>`);
+    const root=document.querySelector('.app-dialog-backdrop'),box=root.querySelector('.app-dialog');
+    let done=false;
+    const close=value=>{if(done)return;done=true;root.remove();document.removeEventListener('keydown',key,true);try{back?.focus?.()}catch{}onClose?.(value)};
+    const key=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close(false);return}
+      if(e.key==='Tab'){const f=[...box.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href]')];if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}};
+    document.addEventListener('keydown',key,true);
+    root.addEventListener('click',e=>{if(e.target===root)close(false)});
+    return {root,box,close};
+  };
+  window.askConfirm=function({title,text='',confirm='Ya, lanjutkan',cancel='Batal',danger=false}){
+    return new Promise(resolve=>{
+      const d=openAppDialog({label:title,className:'confirm',onClose:resolve,html:`<h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:''}<footer><button type="button" data-dialog-cancel>${esc(cancel)}</button><button type="button" class="${danger?'is-danger':'primary'}" data-dialog-ok>${esc(confirm)}</button></footer>`});
+      d.box.querySelector('[data-dialog-cancel]').onclick=()=>d.close(false);
+      d.box.querySelector('[data-dialog-ok]').onclick=()=>d.close(true);
+      d.box.querySelector('[data-dialog-ok]').focus();
+    });
+  };
+})();
+</script>
+<script id="photo-purchases-js">// Pembelian foto album resmi: checkout di dalam halaman, pembelian tersimpan (temmoo_purchases_v1),
+// foto yang sudah dibeli ditandai "Dimiliki" di album dan muncul di Foto Saya → Dibeli. Promotor melihat penjualannya.
+(()=>{
+  const KEY='temmoo_purchases_v1';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
+  let list=[];try{list=JSON.parse(localStorage.getItem(KEY))||[]}catch{}
+  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(list));return true}catch{toast('Penyimpanan browser penuh. Pembelian tidak bisa disimpan.');return false}};
+  // Kunci foto: event + foto. Foto unggahan promotor punya data-photo-key; foto album contoh memakai nomor urutnya.
+  const keyOf=card=>`${eventId(activeEvent)}|${card.dataset.photoKey||'sample-'+card.dataset.paidPhoto}`;
+  const owned=key=>list.some(p=>p.key===key);
+  const METHODS=[['qris','QRIS','Scan dari aplikasi bank atau e-wallet'],['ewallet','E-wallet','GoPay, OVO, DANA, ShopeePay'],['va','Transfer bank','Virtual account BCA, BNI, BRI, Mandiri']];
+
+  window.photoPurchases={
+    list:()=>list.slice(),
+    forEvent:id=>{const xs=list.filter(p=>p.eventId===id);return {count:xs.length,total:xs.reduce((a,p)=>a+p.price,0)}},
+  };
+
+  // Tandai foto yang sudah dimiliki di tab Album (layar 59).
+  const base=template;
+  template=function(n){
+    const html=base(n);
+    if(n!==59||!list.length)return html;
+    const box=document.createElement('div');box.innerHTML=html;let mine=0;
+    box.querySelectorAll('.official-photo-card').forEach(card=>{if(!owned(keyOf(card)))return;mine++;card.classList.add('owned');card.querySelector('[data-select-photo]')?.remove();const b=card.querySelector('b');if(b)b.textContent='✓ Dimiliki'});
+    const bar=box.querySelector('.album-toolbar span');if(bar&&mine)bar.insertAdjacentHTML('beforeend',` · <em class="album-owned-count">${mine} sudah kamu miliki</em>`);
+    return box.innerHTML;
+  };
+
+  function checkoutHtml(items,method){
+    const total=items.reduce((a,x)=>a+x.price,0);
+    return `<header><div><small>CHECKOUT FOTO</small><h3>${esc(items[0].event)}</h3></div><button type="button" class="dialog-x" data-checkout-close aria-label="Tutup">×</button></header>
+      <div class="checkout-items">${items.slice(0,6).map(x=>`<div class="checkout-thumb ${x.src?'':x.tone}" ${x.src?`style="background-image:url(${x.src})"`:''}><span>${esc(x.label)}</span></div>`).join('')}${items.length>6?`<div class="checkout-more">+${items.length-6}</div>`:''}</div>
+      <div class="checkout-lines"><div><span>${items.length} foto resolusi penuh tanpa watermark</span><b>${rp(total)}</b></div><div><span>Biaya layanan</span><b>Rp0</b></div><div class="total"><span>Total</span><b>${rp(total)}</b></div></div>
+      <fieldset class="checkout-methods"><legend>Metode pembayaran</legend>${METHODS.map(([v,t,s])=>`<label><input type="radio" name="checkout-method" value="${v}" ${v===method?'checked':''}><span><b>${t}</b><small>${s}</small></span></label>`).join('')}</fieldset>
+      <p class="checkout-note">Prototipe: pembayaran disimulasikan, tidak ada uang yang ditarik.</p>
+      <footer><button type="button" data-checkout-close>Batal</button><button type="button" class="primary" data-checkout-pay>Bayar ${rp(total)}</button></footer>`;
+  }
+
+  window.openPhotoCheckout=function(){
+    const cards=[...document.querySelectorAll('.official-photo-card.selected:not(.owned)')];if(!cards.length)return;
+    const event=events[activeEvent]?.[0]||'Event',eid=eventId(activeEvent);
+    const items=cards.map(card=>({key:keyOf(card),eventId:eid,event,label:card.querySelector('small')?.textContent||'Foto',price:albumPhotoPrice(card),src:card.dataset.src||'',tone:[...card.classList].find(c=>/^photo-\d$/.test(c))||'photo-0'}));
+    let method='qris';
+    const d=openAppDialog({label:'Checkout foto',className:'checkout',html:checkoutHtml(items,method)});
+    const bind=()=>{
+      d.box.querySelectorAll('[data-checkout-close]').forEach(b=>b.onclick=()=>d.close(false));
+      d.box.querySelectorAll('[name=checkout-method]').forEach(r=>r.onchange=()=>{method=r.value});
+      const pay=d.box.querySelector('[data-checkout-pay]');
+      if(pay){pay.focus();pay.onclick=()=>{
+        pay.disabled=true;pay.textContent='Memproses pembayaran…';
+        setTimeout(()=>{
+          const order='TMO-'+Date.now().toString(36).toUpperCase().slice(-6),at=Date.now(),fresh=items.filter(x=>!owned(x.key));
+          list.unshift(...fresh.map(x=>({...x,order,method,at})));
+          if(!persist()){list.splice(0,fresh.length);d.close(false);return}
+          const total=fresh.reduce((a,x)=>a+x.price,0);
+          d.box.innerHTML=`<div class="checkout-done"><div class="success-mark">✓</div><h3>Pembayaran berhasil</h3><p>${fresh.length} foto dari ${esc(event)} sudah jadi milikmu, tanpa watermark.</p><div class="checkout-lines"><div><span>Nomor pesanan</span><b>${order}</b></div><div><span>Dibayar lewat ${METHODS.find(m=>m[0]===method)[1]}</span><b>${rp(total)}</b></div></div><footer><button type="button" data-checkout-close>Kembali ke album</button><button type="button" class="primary" data-checkout-gallery>Lihat di Foto Saya</button></footer></div>`;
+          d.box.querySelectorAll('[data-checkout-close]').forEach(b=>b.onclick=()=>d.close(true));
+          const go=d.box.querySelector('[data-checkout-gallery]');go.focus();
+          go.onclick=()=>{d.close(true);closeFlow();show('profile');document.querySelector('[data-profile-tab="album"]')?.click();setTimeout(()=>window.openPhotoLibraryView?.('bought'),20)};
+          openFlow(59,false);
+        },700);
+      }}
+    };
+    bind();
+  };
 })();
 </script>
 

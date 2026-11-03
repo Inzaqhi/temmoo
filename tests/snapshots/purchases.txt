@@ -1,0 +1,31 @@
+1 confirm() bawaan di sandbox: false
+  pesan Chrome: Ignored call to 'confirm()'. The document is sandboxed, and the 'allow-modals' keyword is not set.
+2 dipilih: 2 foto dipilih | Rp25.000
+  checkout: 2 foto resolusi penuh tanpa watermark | Rp25.000 | Biaya layanan | Rp0 | Total | Rp25.000 | metode: [ 'qris*', 'ewallet', 'va' ]
+  Esc -> dialog tertutup: true | pilihan tetap: 2 foto dipilih
+  tombol saat proses: Memproses pembayaran…
+  selesai: ✓ | Pembayaran berhasil | 2 foto dari LaLaLa Fest 2026 sudah jadi milikmu, tanpa watermark. | Nomor pesanan | TMO-… | Dibayar lewat E-wallet | Rp25.000 | Kembali ke album | Lihat di Foto Saya
+  tersimpan: [
+  'lalala-fest-2026|sample-1 15000 ewallet',
+  'lalala-fest-2026|sample-2 10000 ewallet'
+]
+  album di belakang: [ '✓ Dimiliki', '✓ Dimiliki', 'Rp10.000' ] | 24 foto · kamu bisa memilih beberapa foto · 2 sudah kamu miliki
+  Lihat di Foto Saya -> [ 'profile', 'Dibeli' ] | [
+  'Foto 01 · LaLaLa Fest 2026 [Dibeli]',
+  'Foto 02 · LaLaLa Fest 2026 [Dibeli]'
+]
+3 pilih semua -> 6 foto dipilih | Rp70.000 | foto dimiliki terpilih: 0
+  pratinjau foto dimiliki: Foto 01 · Pratinjau ber-watermark | Sudah kamu miliki | ✓ Dimiliki
+4 hapus grup -> Hapus grup secara permanen? | Semua pesan dan anggota grup akan hilang. Tindakan ini tidak dapat dibatalkan. | Batal | Hapus grup
+  tombol Hapus terbaca (teks beda dari latar): true
+  Batal -> grup masih ada: true
+  Hapus -> Grup dihapus | tersimpan terhapus: true
+  langganan -> Hentikan perpanjangan otomatis?
+  klik di luar -> status: active
+  Enter (tombol utama terfokus) -> canceling
+5 beli foto promotor: Nomor pesanan | TMO-… | Dibayar lewat QRIS | Rp15.000
+  halaman album promotor: Terjual 1 foto · Rp15.000
+  setelah reload: [ 'Rp20.000', '✓ Dimiliki' ]
+HP checkout menempel di bawah: true
+confirm() lain yang diblokir: 0
+errors []

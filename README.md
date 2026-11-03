@@ -24,8 +24,8 @@ index.html        Hasil build (satu file). Buka file ini di browser. Jangan died
 build.py          Menggabungkan src/ menjadi index.html
 src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
-  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 25-…css)
-  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 29-…js)
+  styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 26-…css)
+  scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 31-…js)
 tests/
   run.js          Menjalankan semua skenario dan membandingkan hasilnya dengan snapshot
   helpers.js      Membuka index.html dengan tanggal & angka acak yang dikunci
@@ -50,6 +50,8 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/27-promoter-team.js` | Anggota tim promotor (layar 72): undangan, peran, akses per event, "Lihat sebagai", pemindahan kepemilikan, log aktivitas |
 | `scripts/28-event-claim.js` | Kalender kurasi & klaim halaman: tanda di halaman event, form klaim (layar 74), Kalender kurasi di Admin Console (layar 75) |
 | `scripts/29-promoter-album.js` | Album resmi promotor (layar 76): unggah foto, harga per foto, terbitkan ke tab Album event. Foto disimpan di `temmoo_album_v1` |
+| `scripts/30-dialogs.js` | Dialog di dalam halaman (`askConfirm`, `openAppDialog`). Jangan pakai `confirm()`/`alert()`: diblokir di pratinjau Claude |
+| `scripts/31-photo-purchases.js` | Checkout foto album, pembelian tersimpan di `temmoo_purchases_v1`, tanda Dimiliki, Foto Saya → Dibeli |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja
