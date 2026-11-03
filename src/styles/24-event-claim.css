@@ -43,3 +43,13 @@ a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-dec
 .admin-list-row .pro-admin-actions:empty{display:none}
 
 .admin-list-row:has(.claim-assign),.admin-list-row:has(.claim-reject){align-items:flex-start}
+/* Detail event: deskripsi & tiket; layar keluar ke platform tiket */
+.event-about p{white-space:pre-line;line-height:1.6}
+.event-about small,.event-ticket .muted{color:var(--muted);font-size:12px}
+.event-ticket p{margin:4px 0}
+.ticket-out{text-align:center}
+.ticket-out .big{font-size:34px}
+.ticket-url{margin:6px auto 0;max-width:520px;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.ticket-terms{max-width:520px;margin:14px auto 4px;font-size:12px;line-height:1.5;text-align:left}
+a.wide{display:flex;align-items:center;justify-content:center;text-decoration:none}
+

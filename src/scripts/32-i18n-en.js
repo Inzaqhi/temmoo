@@ -118,6 +118,11 @@ window.I18N_EN={
     [/^verifikasi WhatsApp (.+)$/,'WhatsApp verified $1'],
     [/^diminta (.+)$/,(m,d)=>`requested ${date(d)}`],
     [/^oleh (.+)$/,'by $1'],
+    [/^Dijual di (.+)$/,'Sold on $1'],
+    [/^Beli tiket di (.+)$/,'Buy tickets on $1'],
+    [/^Buka (.+) ↗$/,'Open $1 ↗'],
+    [/^Tiket (.+) dijual oleh penyelenggara di (.+)\.$/,'Tickets for $1 are sold by the organizer on $2.'],
+    [/^Oleh (.+)$/,'By $1'],
     [/^terbit (.+)$/,(m,d)=>`published ${date(d)}`],
     [/^sumber: (.+)$/,'source: $1'],
     [/^Video call (.+)$/,'Video call $1'],
@@ -396,6 +401,13 @@ window.I18N_EN={
     'Diserahkan':'Handed over','Tidak bisa diverifikasi lewat WhatsApp':"Couldn't be verified via WhatsApp",'Tidak bisa diverifikasi lewat WhatsApp.':"Couldn't be verified via WhatsApp.",'Nomor resmi penyelenggara tidak cocok':"The organizer's official number doesn't match",'Event dikelola organisasi lain':'The event is managed by another organization',
     'Penyelenggara resmi meminta pengalihan':'The official organizer requested a transfer','Diserahkan ke organisasi yang salah':'Handed over to the wrong organization','Kerja sama dengan penyelenggara berakhir':'The partnership with the organizer ended','Pengelolaan halaman dicabut':'Page management revoked',
     'Lengkapi organisasi, nomor WhatsApp resmi, dan sumbernya':'Fill in the organization, official WhatsApp number, and its source','Centang konfirmasi verifikasi WhatsApp dulu':'Tick the WhatsApp verification confirmation first','Dikelola #':'Managed by #','Ketik untuk mencari event':'Type to search events','food':'food',
+
+    /* ---------- Deskripsi & tiket di halaman event ---------- */
+    'Tentang event':'About the event','Tiket':'Tickets','Tidak perlu tiket':'No ticket needed','Event ini gratis':'This event is free',
+    'Tidak perlu tiket. Pilih Mau datang supaya mendapat pengingat dan rekomendasi Circle.':'No ticket needed. Choose Going to get reminders and Circle suggestions.',
+    'Tautan tiket belum ditambahkan penyelenggara':"The organizer hasn't added a ticket link yet",'Tautan tiket belum tersedia':'Ticket link not available yet',
+    'Penyelenggara belum menambahkan tautan pembelian tiket. Simpan event ini; pengumuman penyelenggara akan muncul di Ruang Event.':"The organizer hasn't added a ticket link yet. Save this event; organizer announcements will appear in the Event Room.",
+    'Deskripsi singkat (opsional)':'Short description (optional)','Apa yang bisa ditemui pengunjung di event ini?':'What can visitors expect at this event?',
 
     /* ---------- Admin Console ---------- */
     'ADMIN CONSOLE':'ADMIN CONSOLE','Dashboard Admin':'Admin Dashboard','Verified':'Verified','Moderasi':'Moderation','Pengguna':'Users','Event & Promotor':'Events & Promoters','Audit log':'Audit log','Audit Log':'Audit Log','Keluar admin':'Exit admin','Sesi admin berakhir':'Admin session ended',

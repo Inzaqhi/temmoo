@@ -14,6 +14,7 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 - **Aktivitas** (notifikasi)
 - **Profil:** postingan, balasan, galeri foto pribadi, riwayat event, dan Pusat Akun
 - **Peran akun:** Pengguna, Promotor (daftar, ditinjau, lalu Promotor Studio untuk banyak event dan anggota tim), dan Tim Temmoo (Admin Console)
+- **Info event untuk peserta:** halaman Detail menampilkan deskripsi (dari promotor, Tim Temmoo, atau data contoh) dan kartu Tiket; "Beli tiket" membuka situs tiket resmi di tab baru (hanya tautan http/https) dengan keterangan dua bahasa bahwa pembayaran diatur platform tiket
 - **Kalender kurasi & penyerahan halaman:** Tim Temmoo mengisi kalender event dari sumber publik. Promotor terverifikasi (Pemilik/Admin tim) menghubungi Tim Temmoo lewat WhatsApp; Tim Temmoo memverifikasi ke nomor resmi penyelenggara lalu menyerahkan (atau mencabut) halaman dari Admin Console. Event masuk Promotor Studio tanpa kehilangan peminat. Nomor WhatsApp Tim Temmoo diatur di `TEMMOO_WA` (`28-event-claim.js`)
 - **Verifikasi bertingkat:** pengguna biasa dan Promotor Dasar (event gratis) tanpa KTP; Promotor Penuh (event berbayar & album) dan pemilik organisasi berbayar wajib verifikasi identitas sekali per orang (layar 73)
 

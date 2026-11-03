@@ -1,12 +1,12 @@
 
 let activeCategory='Semua',activePrice='Semua';
 const eventMeta=[
- {date:'2026-10-10',time:'10.00',city:'Jakarta',price:'Berbayar',amount:'Rp75.000'},
- {date:'2026-11-21',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp150.000'},
- {date:'2026-12-06',time:'10.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2026-12-13',time:'16.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2026-12-20',time:'06.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2027-01-09',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp95.000'},
+ {date:'2026-10-10',time:'10.00',city:'Jakarta',price:'Berbayar',amount:'Rp75.000',about:'Festival kopi dan kuliner dengan puluhan roaster lokal, kelas seduh manual, dan panggung musik akustik.'},
+ {date:'2026-11-21',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp150.000',about:'Konser malam Hindia dengan lagu-lagu dari album terbaru dan beberapa kejutan untuk pendengar lama.'},
+ {date:'2026-12-06',time:'10.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Pameran karya seniman Surabaya, lapak kriya, dan lokakarya terbuka untuk umum.'},
+ {date:'2026-12-13',time:'16.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Pasar kuliner sore hingga malam dengan lebih dari 80 tenant makanan khas dan kekinian.'},
+ {date:'2026-12-20',time:'06.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Lari pagi santai 5K bersama komunitas lari Surabaya, terbuka untuk semua level.'},
+ {date:'2027-01-09',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp95.000',about:'Malam musik indie dengan empat band lokal dan satu penampil tamu dari Jakarta.'},
  {date:'2027-01-17',time:'10.00',city:'Surabaya',price:'Berbayar',amount:'Rp35.000'},
  {date:'2027-01-24',time:'09.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
  {date:'2026-08-24',time:'13.00',city:'Bandung',price:'Berbayar',amount:'Rp350.000',met:8}

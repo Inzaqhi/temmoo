@@ -45,7 +45,7 @@ await p.evaluate(()=>openFlow(75));await W();console.log('3 Admin kalender:',awa
 
 // 4. Teks antarmuka yang belum diterjemahkan (konten contoh: postingan, chat, nama, tempat, event — tidak dihitung)
 const left=await p.evaluate(()=>{
-  const content=[...posts.flatMap(x=>[x[0],x[5],x[6]]),...chats.flatMap(c=>[c[0],c[3]]),...events.flatMap(e=>[e[0],e[2]]),...circles.flatMap(c=>[c[0],c[4]]),...Object.values(publicProfiles).flatMap(x=>[x.name,x.bio]),
+  const content=[...posts.flatMap(x=>[x[0],x[5],x[6]]),...chats.flatMap(c=>[c[0],c[3]]),...events.flatMap(e=>[e[0],e[2]]),...circles.flatMap(c=>[c[0],c[4]]),...Object.values(publicProfiles).flatMap(x=>[x.name,x.bio]),...eventMeta.map(m=>m?.about),
     'Ruang Kolektif','Mootiara Surabaya','OMD Event','Youth Lab Surabaya','iwang','Temmoo','Malam Puisi','Workshop Zine','Surabaya','Jakarta','Bandung','Malang','Sidoarjo','Gresik','Jakarta Selatan'].filter(Boolean).map(String);
   const isContent=t=>content.some(c=>c===t||c.includes(t)||t.includes(c))||/^[@#↺]|@\w|https?:|\.(png|jpe?g)$|^TMO-|^[A-Z0-9 .·,]+$/.test(t);
   return window.i18nMissing().map(([t])=>t).filter(t=>!isContent(t)).sort();

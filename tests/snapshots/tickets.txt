@@ -1,0 +1,25 @@
+1 Detail: Tentang event | Konser jazz sore di taman kota. | Bawa tikar sendiri, ada area kuliner. | Oleh Ruang Kolektif || Tiket | Berbayar | Dijual di loket.com | tombol Beli tiket: 1
+  layar tiket: Beli tiket di loket.com || Tiket Jazz di Taman dijual oleh penyelenggara di loket.com. || https://www.loket.com/event/jazz-di-taman
+  tautan: [
+  'https://www.loket.com/event/jazz-di-taman',
+  '_blank',
+  'noopener noreferrer',
+  'Buka loket.com ↗'
+]
+  teks hukum: [
+  'id: Pembelian, pembayaran, dan pengembalian dana diatur oleh platform tiket tersebut, bukan Temmoo.',
+  'en: Purchases, payments, and refunds are handled by that ticket platform, not Temmoo.'
+]
+  klik -> tab baru terbuka: true
+2 Detail gratis: Tiket | Gratis | Tidak perlu tiket | tombol Beli tiket: 0
+  layar tiket: Event ini gratis
+3 javascript: -> Tiket | Berbayar | Tautan tiket belum ditambahkan penyelenggara
+  layar tiket: Tautan tiket belum tersedia | ada tautan: 0
+4 Hindia: Tentang event | Konser malam Hindia dengan lagu-lagu dari album terbaru dan beberapa kejutan untuk pendengar lama. || Tiket | Rp150.000 | Tautan tiket belum ditambahkan penyelenggara
+  layar tiket: Tautan tiket belum tersedia
+  Food Market: Tiket | Gratis | Tidak perlu tiket | tombol Beli tiket: 0
+5 kurasi: Tentang event | Parade rujak uleg dan pasar jajanan khas Surabaya. || Tiket | Berbayar | Dijual di tiket.example.id
+  setelah reload, tautan: https://tiket.example.id/rujak-uleg
+6 Coffee (selesai): Penjualan tiket sudah ditutup
+HP geser horizontal: tidak
+errors []

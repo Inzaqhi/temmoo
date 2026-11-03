@@ -151,12 +151,12 @@ $('.account').style.cursor='pointer';$('.account').onclick=()=>show('profile');$
 </script><script>
 let activeCategory='Semua',activePrice='Semua';
 const eventMeta=[
- {date:'2026-10-10',time:'10.00',city:'Jakarta',price:'Berbayar',amount:'Rp75.000'},
- {date:'2026-11-21',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp150.000'},
- {date:'2026-12-06',time:'10.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2026-12-13',time:'16.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2026-12-20',time:'06.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
- {date:'2027-01-09',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp95.000'},
+ {date:'2026-10-10',time:'10.00',city:'Jakarta',price:'Berbayar',amount:'Rp75.000',about:'Festival kopi dan kuliner dengan puluhan roaster lokal, kelas seduh manual, dan panggung musik akustik.'},
+ {date:'2026-11-21',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp150.000',about:'Konser malam Hindia dengan lagu-lagu dari album terbaru dan beberapa kejutan untuk pendengar lama.'},
+ {date:'2026-12-06',time:'10.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Pameran karya seniman Surabaya, lapak kriya, dan lokakarya terbuka untuk umum.'},
+ {date:'2026-12-13',time:'16.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Pasar kuliner sore hingga malam dengan lebih dari 80 tenant makanan khas dan kekinian.'},
+ {date:'2026-12-20',time:'06.00',city:'Surabaya',price:'Gratis',amount:'Gratis',about:'Lari pagi santai 5K bersama komunitas lari Surabaya, terbuka untuk semua level.'},
+ {date:'2027-01-09',time:'19.00',city:'Surabaya',price:'Berbayar',amount:'Rp95.000',about:'Malam musik indie dengan empat band lokal dan satu penampil tamu dari Jakarta.'},
  {date:'2027-01-17',time:'10.00',city:'Surabaya',price:'Berbayar',amount:'Rp35.000'},
  {date:'2027-01-24',time:'09.00',city:'Surabaya',price:'Gratis',amount:'Gratis'},
  {date:'2026-08-24',time:'13.00',city:'Bandung',price:'Berbayar',amount:'Rp350.000',met:8}
@@ -709,6 +709,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--indigo)!important;box
 @media(max-width:1080px){.nav-group-label{height:1px;margin:14px 10px;background:var(--line);font-size:0;overflow:hidden}}
 @media(max-width:620px){.nav-group-label{display:none}}
 
+/* Toast tidak bisa diklik; tanpa ini toast yang sudah hilang (opacity 0) tetap menghalangi tombol di bawahnya. */
+.toast{pointer-events:none}
 </style>
 <script id="audit-js">
 const eventEndDates=['2026-10-11','2026-11-22','2026-12-07','2026-12-14','2026-12-21','2027-01-10','2027-01-18','2027-01-25','2026-08-25'];
@@ -3076,6 +3078,16 @@ a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-dec
 .admin-list-row .pro-admin-actions:empty{display:none}
 
 .admin-list-row:has(.claim-assign),.admin-list-row:has(.claim-reject){align-items:flex-start}
+/* Detail event: deskripsi & tiket; layar keluar ke platform tiket */
+.event-about p{white-space:pre-line;line-height:1.6}
+.event-about small,.event-ticket .muted{color:var(--muted);font-size:12px}
+.event-ticket p{margin:4px 0}
+.ticket-out{text-align:center}
+.ticket-out .big{font-size:34px}
+.ticket-url{margin:6px auto 0;max-width:520px;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.ticket-terms{max-width:520px;margin:14px auto 4px;font-size:12px;line-height:1.5;text-align:left}
+a.wide{display:flex;align-items:center;justify-content:center;text-decoration:none}
+
 </style>
 <script id="event-claim-js">// Kalender kurasi & penyerahan halaman event.
 // Tim Temmoo mengisi kalender (event contoh + event tambahan di layar 75). Halaman event kurasi TIDAK diklaim sendiri oleh promotor:
@@ -3234,18 +3246,42 @@ a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-dec
         <div class="pro-grid"><label>Venue<input name="venue" required maxlength="80" placeholder="Taman Bungkul"></label><label>Kota<select name="city"><option>Surabaya</option><option>Jakarta</option><option>Bandung</option></select></label></div>
         <div class="pro-grid"><label>Kategori<select name="category">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label><label>Harga<select name="price"><option>Gratis</option><option>Berbayar</option></select></label></div>
         <label>Kisaran harga atau tautan tiket (opsional)<input name="ticket" maxlength="200" placeholder="Rp50.000 atau https://..."></label>
+        <label>Deskripsi singkat (opsional)<textarea name="description" rows="3" maxlength="400" placeholder="Apa yang bisa ditemui pengunjung di event ini?"></textarea></label>
         <label>Sumber informasi<input name="source" required maxlength="80" placeholder="Contoh: kalender Disbudpar Surabaya"></label>
         <div class="pro-actions"><button class="pro-btn" type="submit">Tambahkan ke kalender</button></div></form></section>
       <section class="admin-panel claim-admin"><h3>Semua event kurasi</h3>${rows.map(({e,i,x})=>{const c=claims[x.id];return `<div class="admin-list-row"><i class="event-admin-icon">${esc(e[1].split(' ')[0])}</i><div><b>${esc(e[0])} ${endedBadge(i)}</b><span>${esc(e[1])} · ${esc(e[2])}${curatedEntry(x.id)?` · sumber: ${esc(curatedEntry(x.id).source)}`:''}${x.kind==='official'&&c?.phone?` · verifikasi WhatsApp ${esc(c.phone)}`:''}</span>${open(x.id,'assign')&&x.kind==='curated'&&c?.status!=='requested'?assignForm(x.id,c?.org):''}${open(x.id,'revoke')?reasons(REVOKE,'claim-revoke-reason',x.id):''}</div><em class="claim-state ${x.kind==='official'?'approved':c?.status==='requested'?'pending':c?.status==='declined'?'rejected':'open'}">${x.kind==='official'?`Dikelola ${esc(x.org)}`:c?.status==='requested'?'Permintaan masuk':c?.status==='declined'?'Permintaan ditolak':'Belum dikelola'}</em><div class="pro-admin-actions">${x.kind==='official'?`<button data-claim-admin="revoke" data-id="${esc(x.id)}">Cabut</button>`:c?.status==='requested'?'':`<button data-claim-admin="assign" data-id="${esc(x.id)}">Serahkan</button>`}</div></div>`}).join('')}</section>`);
   }
 
+  /* ---------- Info event untuk peserta: deskripsi & tautan tiket ---------- */
+  // Hanya tautan http(s) yang ditampilkan: input type=url juga menerima "javascript:...".
+  const safeUrl=u=>{try{const x=new URL(String(u||'').trim());return /^https?:$/.test(x.protocol)?x.href:''}catch{return ''}};
+  function details(i){
+    const id=eventId(i),own=ownEvent(id),cur=curatedEntry(id),m=eventMeta[i]||{},x=info(i);
+    const ticketUrl=safeUrl(own?own.ticketUrl:cur?.ticketUrl);
+    return {about:String(own?.description||cur?.description||m.about||'').trim(),ticketUrl,host:ticketUrl?new URL(ticketUrl).hostname.replace(/^www\./,''):'',free:(m.price||'Gratis')==='Gratis'&&!ticketUrl,amount:m.amount||'',org:x.kind==='official'?x.org:''};
+  }
+  window.eventDetails=details;
+  function detailCards(i){
+    const d=details(i);
+    return `${d.about?`<div class="info-card event-about"><h3>Tentang event</h3><p>${esc(d.about)}</p>${d.org?`<small>Oleh ${esc(d.org)}</small>`:''}</div>`:''}<div class="info-card event-ticket"><h3>Tiket</h3><p><b>${d.free?'Gratis':esc(d.amount&&d.amount!=='Lihat tautan tiket'?d.amount:'Berbayar')}</b></p><p class="muted">${d.ticketUrl?`Dijual di ${esc(d.host)}`:d.free?'Tidak perlu tiket':'Tautan tiket belum ditambahkan penyelenggara'}</p></div>`;
+  }
+  function ticketScreen(i){
+    const d=details(i),name=esc(events[i][0]);
+    if(d.ticketUrl)return `${eventHero()}<div class="flow-body ticket-out"><div class="big">↗</div><h2>Beli tiket di ${esc(d.host)}</h2><p class="helper">Tiket ${name} dijual oleh penyelenggara di ${esc(d.host)}.</p><p class="ticket-url">${esc(d.ticketUrl)}</p><p class="ticket-terms">${legalText('Pembelian, pembayaran, dan pengembalian dana diatur oleh platform tiket tersebut, bukan Temmoo.','Purchases, payments, and refunds are handled by that ticket platform, not Temmoo.')}</p><a class="wide" href="${esc(d.ticketUrl)}" target="_blank" rel="noopener noreferrer" data-ticket-out>Buka ${esc(d.host)} ↗</a>${btn('Kembali ke event',20,'wide secondary')}</div>`;
+    if(d.free)return `${eventHero()}<div class="flow-body ticket-out"><div class="big">✓</div><h2>Event ini gratis</h2><p class="helper">Tidak perlu tiket. Pilih Mau datang supaya mendapat pengingat dan rekomendasi Circle.</p>${btn('Kembali ke event',20,'wide secondary')}</div>`;
+    return `${eventHero()}<div class="flow-body ticket-out"><div class="big">◷</div><h2>Tautan tiket belum tersedia</h2><p class="helper">Penyelenggara belum menambahkan tautan pembelian tiket. Simpan event ini; pengumuman penyelenggara akan muncul di Ruang Event.</p>${btn('Kembali ke event',20,'wide secondary')}</div>`;
+  }
+
   /* ---------- Template ---------- */
   const base=template;
   template=function(n){
+    if(n===21&&!(typeof eventIsOver==='function'&&eventIsOver())){document.querySelector('#flowTitle').textContent='Beli tiket';document.querySelector('#flowIndex').textContent=events[activeEvent]?.[0]||'';return ticketScreen(activeEvent)}
     if(n===CLAIM){const fl=document.querySelector('#flowLayer');if(innerWidth>620)fl.classList.add('embedded');document.querySelector('#flowTitle').textContent='Kelola halaman event';document.querySelector('#flowIndex').textContent='Kalender kurasi Temmoo';return claimScreen()}
     if(n===CAL){if(accountState.accountType!=='temmoo_official')return base(68);return calendarPage()}
     const html=base(n);
-    if([18,20,46].includes(n)){const hero=eventHero();if(html.includes(hero))return html.replace(hero,hero+banner(activeEvent))}
+    if([18,20,46].includes(n)){const hero=eventHero();let out=html.includes(hero)?html.replace(hero,hero+banner(activeEvent)):html;
+      if(n===20){out=out.replace('<div class="info-card"><h3>Rundown</h3>',detailCards(activeEvent)+'<div class="info-card"><h3>Rundown</h3>');const d=details(activeEvent);if(d.free)out=out.replace(btn('Beli tiket',21,'wide secondary'),'')}
+      return out}
     if(n===64&&promoter()&&html.includes('<section class="pe-list">'))return html.replace('<section class="pe-list">',`<button class="claim-entry" data-go="${CLAIM}" data-claim-pick><span>◆</span><div><b>Event-mu sudah ada di kalender Temmoo?</b><small>Minta Tim Temmoo menyerahkan halamannya, tidak perlu membuat event dari awal</small></div><i>›</i></button><section class="pe-list">`);
     return html;
   };
@@ -3276,7 +3312,7 @@ a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-dec
       if(!name||!date)return;
       const id='curated-'+name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+date.replace(/-/g,'');
       if(eventIndexById(id)>=0){toast('Event dengan nama dan tanggal ini sudah ada');return}
-      const c={id,name,date,time:String(d.get('time')||'10.00'),venue:String(d.get('venue')).trim(),city:d.get('city'),category:d.get('category'),price,amount:price==='Gratis'?'Gratis':/^https?:/.test(ticket)?'Lihat tautan tiket':ticket||'Harga menyusul',ticketUrl:/^https?:/.test(ticket)?ticket:'',source:String(d.get('source')).trim(),addedAt:Date.now()};
+      const c={id,name,date,time:String(d.get('time')||'10.00'),venue:String(d.get('venue')).trim(),city:d.get('city'),category:d.get('category'),price,amount:price==='Gratis'?'Gratis':/^https?:/.test(ticket)?'Lihat tautan tiket':ticket||'Harga menyusul',ticketUrl:/^https?:/.test(ticket)?ticket:'',description:String(d.get('description')||'').trim(),source:String(d.get('source')).trim(),addedAt:Date.now()};
       curated.push(c);addToCatalog(c);save();refreshCatalog();adminLog(`${name} ditambahkan ke kalender kurasi (sumber: ${c.source})`);toast(`${name} ditambahkan ke kalender`);openFlow(CAL,false);return}
   },true);
 
@@ -3688,6 +3724,11 @@ window.I18N_EN={
     [/^verifikasi WhatsApp (.+)$/,'WhatsApp verified $1'],
     [/^diminta (.+)$/,(m,d)=>`requested ${date(d)}`],
     [/^oleh (.+)$/,'by $1'],
+    [/^Dijual di (.+)$/,'Sold on $1'],
+    [/^Beli tiket di (.+)$/,'Buy tickets on $1'],
+    [/^Buka (.+) ↗$/,'Open $1 ↗'],
+    [/^Tiket (.+) dijual oleh penyelenggara di (.+)\.$/,'Tickets for $1 are sold by the organizer on $2.'],
+    [/^Oleh (.+)$/,'By $1'],
     [/^terbit (.+)$/,(m,d)=>`published ${date(d)}`],
     [/^sumber: (.+)$/,'source: $1'],
     [/^Video call (.+)$/,'Video call $1'],
@@ -3966,6 +4007,13 @@ window.I18N_EN={
     'Diserahkan':'Handed over','Tidak bisa diverifikasi lewat WhatsApp':"Couldn't be verified via WhatsApp",'Tidak bisa diverifikasi lewat WhatsApp.':"Couldn't be verified via WhatsApp.",'Nomor resmi penyelenggara tidak cocok':"The organizer's official number doesn't match",'Event dikelola organisasi lain':'The event is managed by another organization',
     'Penyelenggara resmi meminta pengalihan':'The official organizer requested a transfer','Diserahkan ke organisasi yang salah':'Handed over to the wrong organization','Kerja sama dengan penyelenggara berakhir':'The partnership with the organizer ended','Pengelolaan halaman dicabut':'Page management revoked',
     'Lengkapi organisasi, nomor WhatsApp resmi, dan sumbernya':'Fill in the organization, official WhatsApp number, and its source','Centang konfirmasi verifikasi WhatsApp dulu':'Tick the WhatsApp verification confirmation first','Dikelola #':'Managed by #','Ketik untuk mencari event':'Type to search events','food':'food',
+
+    /* ---------- Deskripsi & tiket di halaman event ---------- */
+    'Tentang event':'About the event','Tiket':'Tickets','Tidak perlu tiket':'No ticket needed','Event ini gratis':'This event is free',
+    'Tidak perlu tiket. Pilih Mau datang supaya mendapat pengingat dan rekomendasi Circle.':'No ticket needed. Choose Going to get reminders and Circle suggestions.',
+    'Tautan tiket belum ditambahkan penyelenggara':"The organizer hasn't added a ticket link yet",'Tautan tiket belum tersedia':'Ticket link not available yet',
+    'Penyelenggara belum menambahkan tautan pembelian tiket. Simpan event ini; pengumuman penyelenggara akan muncul di Ruang Event.':"The organizer hasn't added a ticket link yet. Save this event; organizer announcements will appear in the Event Room.",
+    'Deskripsi singkat (opsional)':'Short description (optional)','Apa yang bisa ditemui pengunjung di event ini?':'What can visitors expect at this event?',
 
     /* ---------- Admin Console ---------- */
     'ADMIN CONSOLE':'ADMIN CONSOLE','Dashboard Admin':'Admin Dashboard','Verified':'Verified','Moderasi':'Moderation','Pengguna':'Users','Event & Promotor':'Events & Promoters','Audit log':'Audit log','Audit Log':'Audit Log','Keluar admin':'Exit admin','Sesi admin berakhir':'Admin session ended',

@@ -380,3 +380,5 @@ input:focus,textarea:focus,select:focus{border-color:var(--indigo)!important;box
 @media(max-width:1080px){.nav-group-label{height:1px;margin:14px 10px;background:var(--line);font-size:0;overflow:hidden}}
 @media(max-width:620px){.nav-group-label{display:none}}
 
+/* Toast tidak bisa diklik; tanpa ini toast yang sudah hilang (opacity 0) tetap menghalangi tombol di bawahnya. */
+.toast{pointer-events:none}
