@@ -1,0 +1,40 @@
+const {chromium,APP,INDEX}=require('../helpers');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});
+const errs=[];p.on('pageerror',e=>errs.push(e.stack.split('\n').slice(0,9).join(' | ')));p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED|net::/.test(m.text()))errs.push(m.text())});
+await p.route(/^https?:/,r=>r.abort());
+await p.goto(APP+'');await p.evaluate(()=>{localStorage.clear();localStorage.setItem('temmoo_onboarded','1');sessionStorage.clear()});await p.goto(APP+'#/home');await p.waitForTimeout(400);
+const W=ms=>p.waitForTimeout(ms||250);
+// --- Search
+console.log('badge awal:',await p.$$eval('[data-notif-count]',x=>x.map(b=>b.hidden?'hidden':b.textContent)));
+await p.click('[data-rail-search]');await W();
+console.log('search open:',await p.evaluate(()=>[flowCurrent,document.querySelector('#flowTitle').textContent,document.activeElement.id,document.querySelector('.nav.active')?.textContent.trim()]));
+await p.screenshot({path:'s-empty.png'});
+await p.keyboard.type('surabaya');await W();
+console.log('hasil "surabaya":',await p.$$eval('.search-section h3',x=>x.map(h=>h.textContent)));
+await p.screenshot({path:'s-surabaya.png'});
+await p.click('[data-search-tab="events"]');await W();console.log('tab event:',await p.$$eval('#searchResults .search-row b',x=>x.map(b=>b.textContent)));
+await p.click('#searchResults [data-event-index] >> nth=0');await W();console.log('klik event ->',await p.evaluate(()=>document.querySelector('#flowTitle').textContent));
+await p.click('#flowBack');await W();console.log('back ->',await p.evaluate(()=>[flowCurrent,document.querySelector('#globalSearch')?.value]));
+await p.fill('#globalSearch','zzzz');await W();console.log('kosong:',await p.$eval('#searchResults',x=>x.textContent.slice(0,40)));
+await p.fill('#globalSearch','nadia');await p.click('[data-search-tab="all"]');await W();console.log('di tab Event sebelumnya muncul pesan kategori kosong: ok');await p.click('#searchResults [data-open-profile] >> nth=0');await W();console.log('klik orang ->',await p.evaluate(()=>document.querySelector('#flowTitle').textContent));
+await p.evaluate(()=>{closeFlow();openSearch('')});await W();console.log('recent:',await p.$$eval('[data-search-term]',x=>x.slice(0,3).map(b=>b.textContent)));
+// --- Notif
+await p.click('.nav[data-open-screen="11"]');await W();await p.screenshot({path:'n-page.png'});
+console.log('notif:',await p.evaluate(()=>[document.querySelector('#flowTitle').textContent,document.querySelectorAll('.notif-item.unread').length,document.querySelector('.nav.active')?.textContent.trim()]));
+await p.click('[data-follow-back]');await W();
+await p.click('[data-notif="n4"]');await W();console.log('klik notif event ->',await p.evaluate(()=>document.querySelector('#flowTitle').textContent),'badge',await p.$eval('.nav [data-notif-count]',b=>b.textContent));
+await p.evaluate(()=>openFlow(11));await W();await p.click('[data-notif-read-all]');await W();console.log('setelah tandai semua:',await p.$$eval('[data-notif-count]',x=>x.map(b=>b.hidden)));
+// --- Temui, follow, chat
+await p.evaluate(()=>{closeFlow();show('home')});await W();
+await p.click('.suggest [data-meet] >> nth=0');await W();
+await p.evaluate(()=>openPublicProfile('Kevin Ardana'));await W();await p.click('[data-follow-profile]');await W();
+await p.evaluate(()=>{closeFlow();show('chat');selectChat(0)});await W();
+await p.fill('#chatMessage','pesan tersimpan desktop');await p.press('#chatMessage','Enter');await W();
+await p.reload();await W(500);await p.evaluate(()=>{closeFlow();show('home')});await W();
+console.log('--- setelah reload ---');
+console.log('Temui:',await p.$$eval('.suggest [data-meet]',x=>x.map(b=>b.textContent)));
+await p.evaluate(()=>openPublicProfile('Kevin Ardana'));await W();console.log('Follow Kevin:',await p.$eval('[data-follow-profile]',b=>b.textContent));
+await p.evaluate(()=>openPublicProfile('Dimas Raka'));await W();console.log('Follow Dimas (dari notif):',await p.$eval('[data-follow-profile]',b=>b.textContent));
+await p.evaluate(()=>{closeFlow();show('chat');selectChat(0)});await W();console.log('Chat terakhir:',await p.$$eval('#chatThread .bubble.outgoing',x=>x.at(-1).textContent));
+console.log('badge:',await p.$$eval('[data-notif-count]',x=>x.map(b=>b.hidden)),'notif dibaca tersimpan');
+console.log('errors',errs);await b.close();})();

@@ -1,0 +1,27 @@
+1 default tingkat: basic | blok identitas tersembunyi: none
+  tanpa tautan -> Promotor Dasar wajib mencantumkan Instagram atau website
+  kirim -> Status Pengajuan Promotor | Organisasi Ruang Kolektif Tingkat Promotor Dasar Jenis Peror
+  studio badge: RUANG KOLEKTIF · PROMOTOR DASAR | kartu peningkatan: Kamu Promotor Dasar: khusus event gratis
+  tiket dikunci: true Khusus Promotor Penuh
+  aksi album diganti: 0 / -
+  transfer Dasar banner: memasukkan kode OTP sebelum menerima. Setelah diterima, iwang tetap di tim sebag
+  terima -> langsung OTP | Ruang Kolektif adalah Promotor Dasar (event gratis), jadi cukup kode OTP tanpa KTP.
+3 tombol ajukan nonaktif: true
+  -> Verifikasi identitas
+  setelah KTP -> Login Temmoo Official | checklist: [ 'ok:✓ Identitas pemilik terverifikasi (KTP) NIK 3578••••••••0004' ]
+  ajukan -> Peningkatan ke Promotor Penuh sedang ditinjau
+  disetujui -> badge RUANG KOLEKTIF · PROMOTOR PENUH | kartu hilang: true
+  tiket terbuka: true
+  transfer Penuh -> KTP
+  setelah KTP -> OTP
+  permintaan baru ke Dina (sudah terverifikasi) -> langsung OTP | Identitas Dina Pratama sudah terverifikasi sebelumnya (NIK 3578••••••••0004), jadi cukup k
+4 Penuh tanpa identitas -> Promotor Penuh wajib verifikasi identitas (KTP) terlebih dahulu
+  -> Verifikasi identitas
+  kembali ke Daftar sebagai Promotor | isian tetap: Ruang Kolektif full | identitas: Identitas terverifikasi
+  EO tanpa legalitas -> Perusahaan / EO wajib melampirkan legalitas usaha
+  kirim -> Organisasi Ruang Kolektif Tingkat Promotor Penuh Jenis Perusahaan / EO
+  Pusat Akun: [ 'Akun', 'Privasi', 'Identitas', 'Promotor', 'Uji coba prototipe' ] | Verifikasi identitas (KTP) NIK 3578••••••••0004 · cukup sekali untuk akunmu Terverifikasi
+  layar 73: Identitas terverifikasi
+5 data lama -> tingkat full
+HP geser horizontal: tidak
+errors []

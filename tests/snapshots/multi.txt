@@ -1,0 +1,41 @@
+migrasi: {"n":1,"first":"Surabaya Creative Week","ann":1,"ptr":"Surabaya Creative Week","stored":["organization","verified","events","activeEventId","team"]}
+Studio -> Ringkasan | Login Temmoo Official [64]
+  baris: [
+  '18 OKT Surabaya Creative Week 18 Oktober 2026 · selesai · Balai Pemuda, Surabaya 638 pemin'
+]
+Buat baru -> Kelola Event | Dashboard Promotor [65] | nama kosong: true
+Ajukan -> Status Pengajuan | Buat Event [66]
+Terbitkan -> Jazz di Taman published
+Simpan draft -> Ringkasan | Login Temmoo Official [64]
+Ringkasan KPI: [
+  'Event aktif=1',
+  'Menunggu tinjauan=0',
+  'Total peminat=874',
+  'Mau datang=133'
+]
+  tab: [ 'Semua 3', 'Aktif 1', 'Menunggu 0', 'Draft & revisi 1', 'Selesai 1' ]
+  urutan: [
+  'Surabaya Creative Week',
+  '638',
+  '205',
+  'Jazz di Taman',
+  '236',
+  '100',
+  'Lari Pagi Komunitas'
+]
+  filter Aktif: [ 'Jazz di Taman', '236', '100' ]
+Buka SCW -> Dashboard event |  [71] | KPI2: Sudah hadir | pengumuman lama: 1
+Switcher -> Jazz di Taman Dashboard event |  [71]
+Hapus 1x: Yakin hapus?
+Hapus 2x, jumlah event: 2
+Katalog memuat: [
+  'Surabaya Creative Week=true',
+  'Jazz di Taman=true',
+  'Lari Pagi Komunitas=false'
+]
+Admin antrean: [ 'Jazz di Taman', 'Pasar Kreatif', 'Langit Production' ] | menunggu 2
+Periksa Pasar Kreatif -> Pasar Kreatif / review
+Terbit -> Surabaya Creative Week:published, Jazz di Taman:submitted, Pasar Kreatif:published
+Setelah reload: Surabaya Creative Week:published, Jazz di Taman:submitted, Pasar Kreatif:published | pointer Pasar Kreatif
+HP geser horizontal: tidak
+errors []

@@ -25,6 +25,12 @@ src/
   index.html      Kerangka HTML. Memuat file CSS/JS di bawah sesuai urutan.
   styles/         CSS, diberi nomor sesuai urutan muat (01-…css sampai 23-…css)
   scripts/        JavaScript, diberi nomor sesuai urutan muat (01-…js sampai 27-…js)
+tests/
+  run.js          Menjalankan semua skenario dan membandingkan hasilnya dengan snapshot
+  helpers.js      Membuka index.html dengan tanggal & angka acak yang dikunci
+  scenarios/      Skenario tes (Playwright), satu file per fitur
+  snapshots/      Keluaran yang sudah diperiksa benar, satu file per skenario
+  fixtures/       Contoh foto KTP/selfie untuk tes verifikasi identitas
 ```
 
 Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebelumnya (misalnya `show`, `openFlow`, dan `template`), dan CSS yang dimuat belakangan menimpa yang sebelumnya. Jangan mengubah urutan nomor tanpa alasan yang jelas.
@@ -53,7 +59,23 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
    ```
 4. Buka atau bagikan `index.html` (satu file, cocok untuk preview dan hosting statis seperti GitHub Pages).
 
-Tidak ada dependensi; cukup Python 3.
+Build tidak butuh dependensi; cukup Python 3.
+
+## Tes
+
+Tes membuka `index.html` di Chromium (Playwright), menjalankan alur seperti pengguna sungguhan, lalu mencetak hasilnya. Keluaran itu dibandingkan dengan `tests/snapshots/`. Skenario dianggap gagal kalau ada error JavaScript di halaman, kalau skripnya error, atau kalau hasilnya beda dari snapshot.
+
+```bash
+npm ci                                  # sekali saja: memasang Playwright
+npx playwright install chromium         # sekali saja: memasang browser
+python3 build.py && npm test            # build lalu jalankan semua skenario (±4 menit)
+node tests/run.js otp kyc               # hanya skenario yang namanya mengandung "otp" atau "kyc"
+```
+
+- Tanggal dikunci di **3 November 2026**, dan `Math.random` dibuat tetap. Karena itu label "Selesai", hitung mundur, dan kode OTP selalu sama. Tanggal lain bisa dicoba lewat `TEMMOO_NOW=2026-12-25T10:00:00+07:00`.
+- Kalau perubahanmu **memang** mengubah tampilan atau perilaku, jalankan `npm run test:update` (atau `node tests/run.js --update nama`). Baca diff `tests/snapshots/` dengan teliti sebelum commit, karena snapshot adalah definisi "benar".
+- Screenshot dan file sementara dari setiap skenario tersimpan di `tests/.output/<nama>/` (tidak ikut di-commit).
+- GitHub Actions (`.github/workflows/test.yml`) menjalankan semua tes setiap ada push ke `main` dan setiap pull request. Workflow itu juga gagal kalau `index.html` belum dibuild ulang dari `src/`.
 
 ## Langkah berikutnya
 

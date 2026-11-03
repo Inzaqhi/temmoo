@@ -1,0 +1,21 @@
+suara awal [ 'buka', 'Memanggil…' ]
+suara tersambung [ 'buka', '00:0x' ]
+bisu: true waktu [ 'buka', '00:0x' ]
+diperkecil, pill: Nadia00:0x✕
+dipulihkan [ 'buka', '00:0x' ]
+diakhiri [ 'tutup', '00:0x' ] toast Panggilan selesai · 00:0x
+video: kamera aktif true
+kamera dimatikan, track: ended
+Salsa [ 'buka', 'Tidak menjawab' ] tombol: [ 'Telepon lagi', 'Kirim pesan', 'Tutup' ]
+riwayat: [
+  'Salsa Putri | ↗ Tidak dijawab · Panggilan suara',
+  'Nadia Aulia | ↗ Keluar · Panggilan video · 00:0x',
+  'Nadia Aulia | ↗ Keluar · Panggilan suara · 00:0x',
+  'Nadia Aulia | ↗ Keluar · Panggilan video · 04:12',
+  'Kevin Ardana | ↙ Tidak terjawab · Panggilan suara'
+]
+kembali ke direct, baris: 2
+riwayat setelah reload: 5
+DM tombol: [ 'Telepon', 'Video' ]
+HP video 00:00
+errors []

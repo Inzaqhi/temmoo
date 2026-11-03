@@ -1,0 +1,17 @@
+menu Promotor terlihat (awal): false
+buka studio tanpa izin -> Promotor Studio | ▣Promotor Studio khusus promotor terverifikasiDaftarkan orga
+Pusat Akun bagian promotor: Uji coba prototipePortal tim TemmooMasuk ke Admin Console: gunakan email apa pun berakhiran @temmoo.id›
+-> Daftar sebagai Promotor
+kirim kosong, masih di form: 1
+EO tingkat Dasar tanpa legalitas -> terkirim: true
+terkirim -> Status Pengajuan Promotor | Pengajuan sedang ditinjau
+studio saat ditinjau -> Pengajuanmu sedang ditinjau. Promotor Studio akan
+admin antrean: [ 'Ruang Kolektif', 'Langit Production' ]
+revisi -> Pengajuan perlu diperbaiki | notif 8
+form terisi ulang: Ruang Kolektif | catatan Perlu perbaikan: Foto KTP kurang jelas.
+kirim ulang -> Pengajuan sedang ditinjau
+disetujui -> Ruang Kolektif sudah terverifikasi | menu promotor terlihat true
+menu -> studio: true RUANG KOLEKTIF · PROMOTOR DASARRingkasanSemua event yang kamu kelola di satu tem
+notif teratas: T✓Tim Temmoo menyetujui Ruang Kolektif sebagai Promotor Dasar. Promotor Studio sudah bisa
+setelah reload: menu true | label profil iwang ✓▣ Promotor
+errors []

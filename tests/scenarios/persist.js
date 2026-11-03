@@ -1,0 +1,20 @@
+const {chromium,APP,INDEX}=require('../helpers');
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:1440,height:900}});const p=await ctx.newPage();
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route(/^https?:/,r=>r.abort());
+await p.goto(APP+'');await p.evaluate(()=>{localStorage.clear();localStorage.setItem('temmoo_onboarded','1')});await p.reload();await p.waitForTimeout(400);
+const feed=()=>p.$$eval('#feed .post',x=>x.map(c=>c.querySelector('.post-head b').textContent+' ['+c.querySelector('.post-head .muted').textContent.split('· ')[1]+'] like='+c.querySelector('[data-like] i').textContent+(c.querySelector('[data-like]').classList.contains('liked')?'♥':'')));
+console.log('awal  ',await feed());
+await p.click('.compose-side');await p.fill('#postText','Halo, ini postingan tes simpan!');await p.click('#send');await p.waitForTimeout(300);
+await p.click('#feed .post:nth-child(2) [data-like]');await p.waitForTimeout(100);
+console.log('ubah  ',await feed());
+await p.click('#feed .post:nth-child(3) .post-text');await p.waitForTimeout(300);
+await p.fill('#threadReplyInput','balasan tersimpan');await p.press('#threadReplyInput','Enter');await p.waitForTimeout(200);
+await p.reload();await p.waitForTimeout(400);await p.evaluate(()=>{closeFlow();show('home')});
+console.log('reload',await feed());
+await p.waitForTimeout(2500);await p.click('#feed .post:nth-child(3) .post-text');await p.waitForTimeout(300);
+console.log('thread milik:',await p.$eval('.thread-main .post-head b',x=>x.textContent));console.log('balasan pertama di thread:',await p.$eval('#threadComments .thread-comment p',x=>x.textContent).catch(()=>'-'));
+await p.evaluate(()=>closeFlow());
+// unlike persists
+await p.click('#feed .post:nth-child(2) [data-like]');await p.reload();await p.waitForTimeout(300);await p.evaluate(()=>{closeFlow();show('home')});console.log('unlike',await feed());
+console.log('errors',errs);await b.close();})();

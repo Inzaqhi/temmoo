@@ -1,0 +1,14 @@
+langkah OTP: Kami mengirim kode 6 digit ke +62 812-••••-7890 lewat SMS/WhatsApp. | fokus kotak 1: true | belum ada permintaan: true
+kirim ulang: Kirim ulang dalam 1:00 (nonaktif) | kedaluwarsa dalam 5:00
+salah -> Kode salah. Sisa 4 percobaan. | kotak dikosongkan: true
+backspace -> ||||| | fokus kotak ke 1
+ganti saluran saat jeda -> Berhasil | tombol nonaktif: true
+ganti saluran -> Kami mengirim kode 6 digit ke iw•••@gmail.com lewat email. | kode baru beda: true
+setelah 6 menit: label kedaluwarsa | kirim ulang aktif: true
+kode lama setelah kedaluwarsa -> Kode sudah kedaluwarsa. Kirim ulang kode baru.
+kirim ulang -> Kode baru dikirim | tombol: Kirim ulang dalam 1:00
+tempel kode benar -> Kode benar. Permintaan pemindahan dikirim | permintaan dibuat: true | log: iwang Pemilik memverifikasi OTP dan meminta Dina Pratama menjadi Pemilik baru ba
+5x salah -> Terlalu banyak percobaan. Ulangi pemindahan dari awal. | kembali ke awal: true | permintaan: false | log: iwang Pemilik gagal memasukkan kode OTP 5 kali saat memindahkan kepemilikan baru
+Kembali -> form pemindahan true
+HP geser horizontal: tidak
+errors []

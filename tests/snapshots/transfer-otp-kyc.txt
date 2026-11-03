@@ -1,0 +1,16 @@
+A tanpa admin: Belum ada Admin aktif
+B pilihan pemilik baru: 1
+  konfirmasi salah -> Ketik “Mootiara Surabaya” persis untuk konfirmasi
+  terkirim -> Menunggu Dina Pratama menerima kepemilikan | baris Dina: Calon pemilik baru · menunggu diterima | kartu pindah disembunyikan: true
+  batalkan -> Permintaan dibatalkan | pending: 0
+C ditolak -> Permintaan ditolak | iwang:owner, Dina Pratama:admin
+D turun ke editor -> pending batal: true
+E diterima (tetap Admin) -> Kepemilikan diterima | iwang:admin, Dina Pratama:owner
+  iwang sekarang: admin | bisa kelola tim: true | kartu pindah (bukan pemilik): 0 | Lihat sebagai: 0
+  baris Dina bisa diubah iwang? 0 | aktivitas: Dina Pratama Pemilik menerima kepemilikan Mootiara Surabaya dari iwang · identitas NIK 357
+  setelah reload: iwang:admin, Dina Pratama:owner | me admin
+F keluar -> Kepemilikan diterima. Pemilik lama keluar dari tim. | Dina Pratama:owner
+  halaman: Kamu sudah keluar dari tim Mootiara Surabaya | menu Promotor Studio terlihat: false
+  paksa buka Kelola event -> Kamu sudah keluar dari tim Mootiara Surabaya
+  pulihkan -> iwang:owner, Dina Pratama:admin | menu true
+errors []

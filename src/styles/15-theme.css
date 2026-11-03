@@ -374,3 +374,4 @@ input:focus,textarea:focus,select:focus{border-color:var(--indigo)!important;box
 .event-status-strip.missed>span{background:var(--soft);color:var(--muted)}
 .event-status-strip em{display:block;margin-top:2px;color:var(--muted);font-size:12px;font-style:normal}
 .hub-countdown small{color:#ffffffd9!important}.hub-countdown span{color:#fff!important;opacity:.9}
+.group-life.active{color:var(--teal-text)!important}

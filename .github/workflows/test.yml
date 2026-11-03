@@ -1,0 +1,38 @@
+name: Tes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pasang Playwright dan Chromium
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Pastikan index.html sudah dibuild dari src/
+        run: |
+          python3 build.py
+          git diff --exit-code -- index.html || (echo "::error::index.html belum dibuild ulang. Jalankan python3 build.py lalu commit hasilnya." && exit 1)
+
+      - name: Jalankan tes
+        run: npm test
+
+      - name: Simpan keluaran tes yang gagal
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keluaran-tes
+          path: tests/.output/
+          retention-days: 7

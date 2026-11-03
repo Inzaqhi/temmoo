@@ -1,0 +1,45 @@
+sidebar Event mendatang: [ 'Hindia Live 2026', 'Pasar Seni Surabaya' ]
+katalog: [
+  'Hindia Live 2026',
+  'Pasar Seni Surabaya',
+  'Surabaya Food Market',
+  'Sunday Run Community',
+  'Indie Night Vol. 4',
+  'Nusantara Culture Week',
+  'Youth Creative Festival',
+  '+62 Coffee R-I Fest 2026 [Selesai]',
+  'LaLaLa Fest 2026 [Selesai]'
+]
+katalog tetap terkategori setelah render(): 9
+kalender berlabel Selesai: [ '+62 Coffee R-I Fest 2026', 'LaLaLa Fest 2026' ]
+riwayat: [
+  'Hindia Live 2026 · ♡ Tertarik',
+  'Surabaya Food Market · ✓ Mau datang',
+  'LaLaLa Fest 2026 · ✓ Sudah check-in',
+  'Hindia Live 2025 · ✓ Sudah check-in',
+  'Indie Night Vol. 4 · ♡ Tertarik'
+]
+Hindia 2026 (akan datang): ♡ | STATUS KEHADIRANMU | Tertarik | Ubah || EVENT DIMULAI DALAM | 18 hari | 21 NOV 2026 · 10.00
+LaLaLa (hadir): ✓ | STATUS KEHADIRANMU | Sudah hadir || EVENT TELAH KAMU HADIRI | Momen tersimpan | 24 AGU 2026 · 10.00
+Coffee (selesai, tidak hadir): ◷ | STATUS KEHADIRANMU | Tidak tercatat hadir || EVENT SUDAH SELESAI | 24 hari lalu | 10 OKT 2026 · 10.00 || Event ini sudah selesai | Lihat dokumentasi resmi dan cerita dari peserta lain. | Lihat album resmiBuka grup pasca-event
+  tombol ajakan datang: 0 | pengumuman: Terima kasih sudah meramaikan +62 Coffee R-I Fest 2026! Album resmi sudah bisa dilihat di tab Album.
+  layar 21: Penjualan tiket sudah ditutup | Event ini sudah berlangsung. Simpan event serupa dari hala
+  layar 22: ◷ | STATUS KEHADIRANMU | Tidak tercatat hadir | Event sudah selesai | Status kehadiran dik
+  layar 26: Check-in sudah ditutup | Check-in hanya bisa dilakukan di venue saat event berlangsung. |
+  paksa ubah status -> Event sudah selesai. Status kehadiran tidak bisa diubah lagi. | status: none
+Indie Night tahun di detail: 9 JAN 2027 · 10.00–22.00
+status setelah migrasi: [
+  '62-coffee-r-i-fest-2026',
+  'hindia-live-2026',
+  'indie-night-vol-4',
+  'lalala-fest-2026',
+  'promoter-a',
+  'surabaya-food-market'
+]
+Malam Puisi (promotor) status: going || EVENT DIMULAI DALAM | 39 hari | 12 DES 2026 · 10.00
+kartu Malam Puisi: [
+  'SENI & BUDAYA | Malam Puisi | ▣ 12 Des 2026 | ⌖ Balai Pemuda, Surabaya | ◆ Gratis | 0 orang tertarik | Lihat ›'
+]
+ganti nama setelah terbit: { before: 9, after: 9, dobel: 1, status: 'going' }
+event promotor 18 Okt dianggap selesai: true
+errors []

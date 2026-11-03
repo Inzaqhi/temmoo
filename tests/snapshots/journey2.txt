@@ -1,0 +1,25 @@
+Profil                             → view profile
+Akun & verifikasi                  → Pusat Akun
+Daftar sebagai promotor            → Daftar sebagai Promotor
+Kirim pengajuan                    → Status Pengajuan Promotor
+Simulasi: Setujui                  → Status Pengajuan Promotor
+Buka Promotor Studio               → Ringkasan
+Lanjutkan draft                    → Kelola Event
+Simpan & kirim pengajuan           → Status Pengajuan
+   kotak simulasi event ada? 2
+Simulasi: Setujui & terbitkan      → Status Pengajuan
+   status: published
+Buka Event Hub aktif               → Ruang Event
+   di Temukan Event? true
+Ajukan event kedua                 → Status Pengajuan
+Portal tim Temmoo                  → Audit Log
+   form admin: email:email*, password:password*, otp:text*
+Masuk admin                        → Ringkasan
+Event & Promotor                   → Event & Promotor
+Periksa event                      → Tinjau Event
+Setujui & terbitkan (admin)        → Event & Promotor
+   status: published
+Keluar admin                       → Audit Log
+   akun sekarang: iwang / user
+Kembali ke aplikasi                → view home | nama sidebar: iwang
+errors []

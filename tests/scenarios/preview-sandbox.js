@@ -1,0 +1,11 @@
+const {chromium,APP,INDEX}=require('../helpers');const fs=require('fs');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED|net::/.test(m.text()))errs.push(m.text())});
+await p.route(/^https?:/,r=>r.request().url().startsWith('https://www.claudeusercontent.com/')?r.fulfill({contentType:'text/html',body:'<iframe id=f style="width:1400px;height:880px;border:0"></iframe>'}):r.abort());
+const html=fs.readFileSync(INDEX,'utf8');
+await p.goto('https://www.claudeusercontent.com/?contentType=text%2Fhtml');
+await p.$eval('#f',(f,h)=>f.srcdoc=h,html);await p.waitForTimeout(800);
+const f=p.frames()[1];
+await f.evaluate(()=>{openFlow(2);openFlow(4);closeFlow();openEvent(0)});await f.evaluate(()=>show('events'));await f.evaluate(()=>show('profile'));
+await f.click('#flowBack').catch(()=>{});
+console.log('errors:',errs.length,errs.slice(0,3));await b.close();})();

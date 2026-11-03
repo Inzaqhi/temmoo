@@ -1,0 +1,16 @@
+banner pemilik: Menunggu Dina Pratama menerima kepemilikan | tombol [
+  'Batalkan permintaan',
+  'Simulasikan diterima',
+  'Simulasikan ditolak'
+]
+1 OTP: Kami mengirim kode 6 digit ke di••@mootiara.id lewat email. | Kode OTP untuk Dina Pratama: 528140 | ganti saluran? 0
+  salah -> Kode salah. Sisa 4 percobaan. | belum pindah: iwang:owner, Dina Pratama:admin
+  benar -> Kepemilikan diterima | iwang:admin, Dina Pratama:owner | log: Dina Pratama Pemilik menerima kepemilikan Mootiara Surabaya dari iwang · identit
+2 banner Dina: iwang meminta kamu menjadi Pemilik Mootiara Surabaya | tombol [ 'Terima kepemilikan', 'Tolak' ]
+  judul: Terima kepemilikan Mootiara Surabaya | teks Identitas sudah diperiksa (NIK 3578••••••••00
+  benar -> Kepemilikan diterima | iwang:admin, Dina Pratama:owner | bertindak sebagai (setelah): iwang/admin
+3 5x salah -> Terlalu banyak percobaan. Permintaan tetap menunggu; coba terima lagi. | permintaan masih ada: true | banner kembali: 1 | log: Dina Pratama Admin gagal memasukkan kode OTP 5 kali saat menerima kepemilikan baru sa
+4 Dina tolak -> Permintaan ditolak | iwang:owner, Dina Pratama:admin
+5 dibatalkan saat OTP -> form OTP hilang: true
+6 keluar -> Kepemilikan diterima. Pemilik lama keluar dari tim. | Dina Pratama:owner | halaman Kamu sudah keluar dari tim Mootiara Surabaya
+errors []

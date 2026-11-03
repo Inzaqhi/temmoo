@@ -1,0 +1,12 @@
+{
+  "name": "temmoo",
+  "private": true,
+  "scripts": {
+    "build": "python3 build.py",
+    "test": "node tests/run.js",
+    "test:update": "node tests/run.js --update"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

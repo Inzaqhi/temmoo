@@ -1,0 +1,13 @@
+1440 profil dari chat {"flow":[692,1425],"list":[302,692],"pane":[692,1425],"title":"@salsaputri"}
+1440 back -> [ false, 'chat', 'Salsa Putri' ]
+1440 notif dari chat [ 302, 1425, 302 ]
+1440 profil dari home (normal): [ false, '320.5px', 321 ]
+1920 profil dari chat {"flow":[692,1905],"list":[302,692],"pane":[692,1905],"title":"@salsaputri"}
+1920 back -> [ false, 'chat', 'Salsa Putri' ]
+1920 notif dari chat [ 302, 1905, 302 ]
+1920 profil dari home (normal): [ false, '560.5px', 561 ]
+1000 profil dari chat {"flow":[498,985],"list":[108,498],"pane":[498,985],"title":"@salsaputri"}
+1000 back -> [ false, 'chat', 'Salsa Putri' ]
+1000 notif dari chat [ 108, 985, 108 ]
+1000 profil dari home (normal): [ false, '108px', 108 ]
+errors []

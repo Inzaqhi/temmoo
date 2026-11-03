@@ -1,0 +1,6 @@
+nav terlihat: [ 'Untukmu', 'Events', 'Circle', 'Chat3', 'Profil' ]
+dm view: 1
+Temui circle setelah reload: [ 'Temui', 'Terkirim', 'Temui', 'Temui' ]
+DM terakhir setelah reload: halo dari hp
+desktop pane juga dapat? (nama sama): { 'Nadia Aulia': [ 'halo dari hp' ] }
+errors []

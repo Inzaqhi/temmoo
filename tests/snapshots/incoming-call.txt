@@ -1,0 +1,20 @@
+1 masuk: {"overlay":true,"status":"Panggilan suara masuk…","tombol":["Balas pesan","Tolak","Terima"],"title":"📞 Kevin menelepon…"}
+1 diterima: {"overlay":true,"status":"00:0x","tombol":["Bisukan","Speaker","Akhiri"],"title":"Temmoo"}
+2 masuk: Panggilan video masuk…
+2 ditolak: {"overlay":false,"status":"Panggilan video masuk…","tombol":["Balas pesan","Tolak","Terima"],"title":"Temmoo"} Panggilan dari Nadia Aulia ditolak
+3 balas pesan Dimas -> @dimasraka
+4 dibiarkan: {"overlay":false,"status":"Panggilan suara masuk…","tombol":["Balas pesan","Tolak","Terima"],"title":"Temmoo"} Panggilan tak terjawab dari Kevin Ardana
+5 saat menelepon: status tetap 00:00 | toast Kevin Ardana mencoba menelepon kamu
+6 Salsa telepon balik: {"overlay":true,"status":"Panggilan suara masuk…","tombol":["Balas pesan","Tolak","Terima"],"title":"📞 Salsa menelepon…"}
+riwayat:
+  Salsa Putri | ↙ Masuk · Panggilan suara · 00:0x
+  Salsa Putri | ↗ Tidak dijawab · Panggilan suara
+  Nadia Aulia | ↗ Keluar · Panggilan suara · 00:00
+  Kevin Ardana | ↙ Tidak terjawab · Panggilan video
+  Kevin Ardana | ↙ Tidak terjawab · Panggilan suara
+  Dimas Raka | ↙ Ditolak · Panggilan suara
+  Nadia Aulia | ↙ Ditolak · Panggilan video
+  Kevin Ardana | ↙ Masuk · Panggilan suara · 00:0x
+  Nadia Aulia | ↗ Keluar · Panggilan video · 04:12
+  Kevin Ardana | ↙ Tidak terjawab · Panggilan suara
+title akhir: Temmoo | errors []

@@ -1,0 +1,3 @@
+event selesai, Dasar: aksi album 0 | pengganti: Jual album resmi
+klik -> layar 64 | kartu terlihat: true
+errors []

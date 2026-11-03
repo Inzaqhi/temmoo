@@ -1,0 +1,46 @@
+menu: [ 'Ringkasan', '＋ Buat event', 'Tim', 'Kembali ke akun' ]
+Tim -> Tim | anggota: [ 'iwang (kamu)' ]
+daftar event tampil: grid
+tanpa pilih event -> Pilih minimal satu event
+duplikat -> Email ini sudah ada di tim
+anggota: [
+  'I iwang (kamu) iwang@gmail.com Pemilik akun promotor Pemilik Semua event',
+  'DP Dina Pratama dina@mootiara.id Undangan terkirim baru saja Admin Editor Pengamat 1 event',
+  'RM raka@mootiara.id raka@mootiara.id Undangan terkirim baru saja Admin Editor Pengamat Sem'
+]
+setelah diterima: [
+  'Pemilik akun promotor',
+  'Bergabung baru saja',
+  'Bergabung baru saja'
+]
+DINA ringkasan: [ 'Jazz di Taman', '520', '205' ] | menu [ 'Ringkasan', '＋ Buat event', 'Kembali ke akun' ] | banner 👁 Kamu melihat Promotor Studio sebagai Dina Pratama (Editor
+  dashboard Jazz: tombol kirim tinjau? 0 | pengumuman? 1
+  paksa buka event tanpa akses -> Jazz di Taman
+  Dina buat event -> form, tombol ajukan? 0 | catatan Pengajuan ke Tim Temmoo dilakukan oleh Admin atau Pemilik.
+  setelah simpan, event Dina: [ 'Jazz di Taman', '520', '205', 'Workshop Zine' ]
+  Dina buka Tim -> 👁 Kamu melihat Promotor Studio sebagai Dina Pratama (Editor) Kembali sebagai Pemilik MOOTIARA SURABAYA · PROMOTOR PENUH
+RAKA ringkasan: [
+  'Surabaya Creative Week',
+  '516',
+  '166',
+  'Jazz di Taman',
+  '520',
+  '205',
+  'Lari Pagi Komunitas',
+  'Workshop Zine'
+] | buat baru? 0 | tombol [ 'Lihat', 'Lihat', 'Lihat', 'Lihat' ]
+  buka draft -> 71
+  form: input nonaktif true | switcher aktif true | catatan Peranmu hanya bisa melihat event ini.
+akhir anggota: [ 'iwang:owner', 'raka:admin' ]
+aktivitas: [
+  'iwang Pemilik menghapus Dina Pratama dari tim baru saja',
+  'iwang Pemilik mengubah peran raka: Pengamat → Admin baru saja',
+  'Dina Pratama Editor menyimpan draft “Workshop Zine” baru saja',
+  'Dina Pratama Editor membuat draft event baru baru saja',
+  'raka Pengamat menerima undangan dan bergabung sebagai Pengamat baru saja',
+  'Dina Pratama Editor menerima undangan dan bergabung sebagai Editor baru saja',
+  'iwang Pemilik mengundang raka@mootiara.id sebagai Pengamat baru saja'
+]
+reload: anggota 2 | bertindak sebagai owner
+HP geser horizontal: tidak
+errors []

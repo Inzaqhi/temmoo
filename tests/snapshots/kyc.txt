@@ -1,0 +1,32 @@
+langkah 1: 1 Verifikasi identitas 2 Kode OTP | OTP belum muncul: true
+kosong -> Unggah foto KTP.
+file teks -> Gunakan foto JPG, PNG, atau WEBP.
+KTP kecil diunggah: ktp-small.png · 320×200 px
+isian tetap setelah unggah selfie: 35780154080000 Dina Pratama
+NIK 14 digit + KTP kecil -> Verifikasi belum lolos. Perbaiki yang ditandai ✕ lalu periksa lagi.
+    [
+  'bad:✕Foto KTP terlalu kecil; minimal 600×380 px',
+  'ok:✓Selfie dengan KTP sudah diunggah',
+  'bad:✕NIK harus 16 digit angka.',
+  'ok:✓Nama di KTP sesuai dengan nama akun'
+]
+tanggal di NIK salah -> [
+  'ok:✓Foto KTP cukup jelas (1000×630 px)',
+  'ok:✓Selfie dengan KTP sudah diunggah',
+  'bad:✕Tanggal lahir di dalam NIK tidak valid.',
+  'ok:✓Nama di KTP sesuai dengan nama akun'
+]
+usia <17 -> [ 'bad:✕Usia 11 tahun; minimal 17 tahun' ]
+NIK disaring jadi: 3578
+nama beda -> lanjut ke OTP Identitas diterima dengan catatan tinjauan manual | header OTP: Identitas sudah diperiksa (NIK 3578••••••••0004, dengan catatan tinjauan manual). Terakhir, masukkan kode OTP. | stepper ✓ Verifikasi identitas 2 Kode OTP
+OTP benar -> iwang:admin, Dina Pratama:owner | log: Dina Pratama Pemilik menerima kepemilikan Mootiara Surabaya dari iwang · identitas NIK 3578••••••••0004 (perlu tinjauan manual) baru saja
+foto tidak tersimpan: true
+isi contoh: 3578015408000004 / DINA PRATAMA
+sedang memeriksa: Memeriksa dokumen… (nonaktif)
+nama cocok -> Identitas terverifikasi
+Kembali dari OTP -> banner
+Terima lagi -> langsung OTP
+Kembali dari KTP -> banner
+dibatalkan saat KTP -> form hilang: true
+HP geser horizontal: tidak
+errors []

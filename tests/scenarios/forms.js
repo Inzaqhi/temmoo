@@ -1,0 +1,17 @@
+const {chromium,APP,INDEX}=require('../helpers');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1600,height:900}});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route(/^https?:/,r=>r.abort());await p.goto(APP+'');await p.evaluate(()=>{localStorage.clear();localStorage.setItem('temmoo_onboarded','1');sessionStorage.clear()});await p.goto(APP+'#/home');await p.waitForTimeout(300);
+await p.evaluate(()=>{show('chat');selectChat(0)});const c0=await p.locator('#chatThread .bubble.outgoing').count();
+await p.fill('#chatMessage','satu');await p.click('#chatCompose button[type=submit]');await p.fill('#chatMessage','dua');await p.press('#chatMessage','Enter');await p.waitForTimeout(200);
+console.log('chat: 2 pesan dikirim, bertambah',(await p.locator('#chatThread .bubble.outgoing').count())-c0,'(harus 2)');
+await p.evaluate(()=>{activeEvent=1;openFlow(19)});await p.waitForTimeout(250);await p.click('[data-create-event-group]');await p.waitForTimeout(200);
+await p.click('[data-group-create] button[type=submit]');await p.waitForTimeout(200);
+console.log('form kosong: tetap terbuka',await p.locator('[data-group-create]').count(),'(harus 1), grup',await p.evaluate(()=>groupFlowState.customGroups.length),'(harus 0)');
+await p.fill('[data-group-create] input[name=name]','Berangkat dari Surabaya');await p.click('[data-group-create] textarea');await p.keyboard.type('baris 1');await p.keyboard.press('Enter');await p.keyboard.type('baris 2');
+console.log('textarea Enter = baris baru:',JSON.stringify(await p.inputValue('[data-group-create] textarea')),'| form masih terbuka',await p.locator('[data-group-create]').count());
+await p.fill('[data-group-create] input[name=memberLimit]','3');await p.click('[data-group-create] button[type=submit]');await p.waitForTimeout(150);
+console.log('batas 3 (<5) ditolak:',await p.locator('[data-group-create]').count()===1);
+await p.fill('[data-group-create] input[name=memberLimit]','50');await p.click('[data-group-create] button[type=submit]');await p.waitForTimeout(300);
+console.log('grup dibuat:',await p.evaluate(()=>groupFlowState.customGroups.map(g=>g.name)),'| tampil di daftar:',await p.evaluate(()=>document.querySelector('#flowContent').textContent.includes('Berangkat dari Surabaya')));
+await p.screenshot({path:'grp-done.png'});
+console.log('errors',errs);await b.close()})();

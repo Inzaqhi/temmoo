@@ -1,0 +1,28 @@
+badge awal: [ '7', '7' ]
+search open: [ 14, 'Cari', 'globalSearch', 'Cari' ]
+hasil "surabaya": [ 'Orang 2', 'Event 7', 'Postingan 1' ]
+tab event: [
+  'Hindia Live 2026',
+  'Pasar Seni Surabaya',
+  'Surabaya Food Market',
+  'Sunday Run Community',
+  'Indie Night Vol. 4',
+  'Nusantara Culture Week',
+  'Youth Creative Festival'
+]
+klik event -> Detail Event — Posts
+back -> [ 14, 'surabaya' ]
+kosong: Tidak ada hasil untuk “zzzz”Coba kata la
+di tab Event sebelumnya muncul pesan kategori kosong: ok
+klik orang -> @nadiaaulia
+recent: [ '↺ nadia', '↺ surabaya', 'festival' ]
+notif: [ 'Notifikasi', 7, 'Notifikasi7' ]
+klik notif event -> Detail Event — Posts badge 6
+setelah tandai semua: [ true, true ]
+--- setelah reload ---
+Temui: [ 'Terkirim', 'Temui' ]
+Follow Kevin: ✓ Mengikuti
+Follow Dimas (dari notif): ✓ Mengikuti
+Chat terakhir: pesan tersimpan desktop
+badge: [ true, true ] notif dibaca tersimpan
+errors []

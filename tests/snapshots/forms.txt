@@ -1,0 +1,6 @@
+chat: 2 pesan dikirim, bertambah 2 (harus 2)
+form kosong: tetap terbuka 1 (harus 1), grup 0 (harus 0)
+textarea Enter = baris baru: "baris 1\nbaris 2" | form masih terbuka 1
+batas 3 (<5) ditolak: true
+grup dibuat: [ 'Berangkat dari Surabaya' ] | tampil di daftar: true
+errors []

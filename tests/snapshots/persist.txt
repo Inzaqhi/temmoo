@@ -1,0 +1,26 @@
+awal   [
+  'Nadia Aulia [18m] like=34',
+  'Kevin Ardana [1j] like=126',
+  'Salsa Putri [3j] like=68'
+]
+ubah   [
+  'iwang [baru] like=0',
+  'Nadia Aulia [18m] like=35♥',
+  'Kevin Ardana [1j] like=126',
+  'Salsa Putri [3j] like=68'
+]
+reload [
+  'iwang [baru] like=0',
+  'Nadia Aulia [18m] like=35♥',
+  'Kevin Ardana [1j] like=126',
+  'Salsa Putri [3j] like=68'
+]
+thread milik: Kevin Ardana
+balasan pertama di thread: balasan tersimpan
+unlike [
+  'iwang [baru] like=0',
+  'Nadia Aulia [18m] like=34',
+  'Kevin Ardana [1j] like=126',
+  'Salsa Putri [3j] like=68'
+]
+errors []
