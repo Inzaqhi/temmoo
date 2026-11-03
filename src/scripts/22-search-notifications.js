@@ -56,7 +56,7 @@
   function notifItem(n){const isRead=readIds.has(n.id),on=followed.has(n.who);return `<div class="notif-item ${isRead?'':'unread'}" role="button" tabindex="0" data-notif="${n.id}"><span class="notif-av">${avatar(n.tone,n.av)}<i class="notif-icon ni-${n.kind}">${n.icon}</i></span><div class="notif-body"><span><b>${esc(n.who)}</b> ${esc(n.text)}</span>${n.quote?`<q>“${esc(n.quote)}”</q>`:''}<small>${n.time==='Baru saja'?n.time:n.time+' lalu'}</small></div>${n.follow?`<button class="notif-follow ${on?'following':''}" data-follow-back="${esc(n.who)}">${on?'Mengikuti':'Ikuti balik'}</button>`:''}</div>`}
   function notifList(){
     const list=notifs.filter(n=>notifTab==='all'||(notifTab==='social'?['meet','like','reply','follow'].includes(n.kind):['event','group'].includes(n.kind)));
-    if(!list.length)return `<div class="search-empty"><b>Belum ada notifikasi</b>Kabar terbaru akan muncul di sini.</div>`;
+    if(!list.length)return `<div class="search-empty"><b>Belum ada aktivitas</b>Kabar terbaru akan muncul di sini.</div>`;
     const fresh=list.filter(n=>n.fresh),old=list.filter(n=>!n.fresh);
     return (fresh.length?`<div class="notif-group">BARU</div>${fresh.map(notifItem).join('')}`:'')+(old.length?`<div class="notif-group">SEBELUMNYA</div>${old.map(notifItem).join('')}`:'');
   }
@@ -78,7 +78,7 @@
     if(n!==11&&n!==14)return baseTemplate(n);
     const flowEl=document.querySelector('#flowLayer');
     if(innerWidth>620){flowEl.classList.add('embedded');}
-    document.querySelector('#flowTitle').textContent=n===14?'Cari':'Notifikasi';
+    document.querySelector('#flowTitle').textContent=n===14?'Cari':'Aktivitas';
     document.querySelector('#flowIndex').textContent=n===14?'Orang, postingan, dan event':'Kabar terbaru untukmu';
     return n===14?searchScreen():notifScreen();
   };
@@ -124,7 +124,7 @@
     const follow=e.target.closest('[data-follow-profile]');if(follow){const n=selectedProfile().name;setTimeout(()=>{follow.classList.contains('following')?followed.add(n):followed.delete(n);write(FOLLOW,[...followed])},0)}
     const back=e.target.closest('[data-follow-back]');if(back){e.stopPropagation();const n=back.dataset.followBack;followed.has(n)?followed.delete(n):followed.add(n);write(FOLLOW,[...followed]);back.classList.toggle('following',followed.has(n));back.textContent=followed.has(n)?'Mengikuti':'Ikuti balik';toast(followed.has(n)?`Kamu mengikuti ${n}`:`Berhenti mengikuti ${n}`);return}
     const item=e.target.closest('[data-notif]');if(item){const n=notifs.find(x=>x.id===item.dataset.notif);if(n)openNotif(n);return}
-    if(e.target.closest('[data-notif-read-all]')){notifs.forEach(n=>readIds.add(n.id));write(READ,[...readIds]);refreshNotif();toast('Semua notifikasi ditandai dibaca');return}
+    if(e.target.closest('[data-notif-read-all]')){notifs.forEach(n=>readIds.add(n.id));write(READ,[...readIds]);refreshNotif();toast('Semua aktivitas ditandai dibaca');return}
     const nt=e.target.closest('[data-notif-tab]');if(nt){notifTab=nt.dataset.notifTab;refreshNotif();return}
     const st=e.target.closest('[data-search-tab]');if(st){tab=st.dataset.searchTab;document.querySelectorAll('[data-search-tab]').forEach(b=>b.classList.toggle('active',b.dataset.searchTab===tab&&b.closest('.search-tabs')));refreshResults();return}
     const term=e.target.closest('[data-search-term]');if(term){openSearch(term.dataset.searchTerm);rememberQuery(query);return}

@@ -16,7 +16,7 @@ kosong: Tidak ada hasil untuk “zzzz”Coba kata la
 di tab Event sebelumnya muncul pesan kategori kosong: ok
 klik orang -> @nadiaaulia
 recent: [ '↺ nadia', '↺ surabaya', 'festival' ]
-notif: [ 'Notifikasi', 7, 'Notifikasi7' ]
+notif: [ 'Aktivitas', 7, 'Aktivitas7' ]
 klik notif event -> Detail Event — Posts badge 6
 setelah tandai semua: [ true, true ]
 --- setelah reload ---
