@@ -1,5 +1,6 @@
 // Menu Promotor Studio dan Admin Console di HP: bilah bawah berisi 3 menu utama + "Lainnya" (tidak perlu digeser).
-// Menu lain tampil di lembar bawah saat "Lainnya" ditekan. Di layar lebar menu samping tetap utuh seperti biasa.
+// Admin: menu lain tampil di lembar bawah saat "Lainnya" ditekan. Studio: menunya cukup 4 (Ringkasan, Buat event, Tim,
+// Akun) sehingga tanpa "Lainnya"; tombol halaman seperti Pratinjau publik dipindah ke kepala halaman. Di layar lebar menu samping tetap utuh seperti biasa.
 (()=>{
   const ICON={
     grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -7,12 +8,13 @@
     team:'<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14a5 5 0 0 1 3 5"/>',
     queue:'<path d="M9 5h11M9 12h11M9 19h11"/><path d="m3.5 5 1.2 1.2L7 4M3.5 12l1.2 1.2L7 11M3.5 19l1.2 1.2L7 18"/>',
     calendar:'<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    account:'<circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
     more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
   };
   const svg=name=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[name]}</svg>`;
   // Menu utama per konsol: [selector tombol, ikon, label pendek di bilah bawah]
   const PRIMARY={
-    'promoter-nav':[['[data-go="64"]','grid','Ringkasan'],['[data-pe-new]','plus','Buat event'],['[data-go="72"]','team','Tim']],
+    'promoter-nav':[['[data-go="64"]','grid','Ringkasan'],['[data-pe-new]','plus','Buat event'],['[data-go="72"]','team','Tim'],['[data-go="56"]','account','Akun']],
     'admin-nav':[['[data-go="57"]','grid','Ringkasan'],['[data-go="61"]','queue','Antrean event'],['[data-go="75"]','calendar','Kalender']],
   };
 
@@ -26,6 +28,12 @@
     const rest=buttons.filter(b=>!primary.includes(b));
     rest.forEach(b=>b.classList.add('nav-overflow'));
     if(!rest.length)return;
+    if(kind==='promoter-nav'){
+      // Di HP tombol halaman (mis. Pratinjau publik) tampil di kepala halaman, bukan di bilah bawah.
+      const head=nav.parentElement?.querySelector('.promoter-main>header>div');
+      if(head&&!head.querySelector('.nav-inpage'))head.insertAdjacentHTML('beforeend',`<div class="nav-inpage">${rest.map(b=>{const c=b.cloneNode(true);c.className='pro-btn secondary';c.querySelector('.nav-full')?.replaceWith(...c.querySelector('.nav-full').childNodes);return c.outerHTML}).join('')}</div>`);
+      return;
+    }
     const activeRest=rest.find(b=>b.classList.contains('active'));
     nav.insertAdjacentHTML('beforeend',`<button type="button" class="nav-more ${activeRest?'active':''}" data-nav-more aria-haspopup="dialog">${svg('more')}<span class="nav-short">${activeRest?'':'Lainnya'}</span></button>`);
     // Halaman yang sedang dibuka ada di "Lainnya": tampilkan namanya di tombol itu supaya posisi tetap jelas.

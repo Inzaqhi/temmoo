@@ -58,7 +58,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/32-i18n-en.js` | Kamus Bahasa Indonesia → English (teks persis, pola angka `#`, aturan untuk teks bernama) |
 | `scripts/33-i18n.js` | Mesin bahasa: menerjemahkan teks antarmuka yang tampil, pengaturan bahasa di Pusat Akun |
 | `scripts/34-a11y.js` | Aksesibilitas: kartu & baris yang bisa diklik bisa difokus keyboard (Enter/Spasi), nama untuk tombol ikon, label untuk isian. Gaya fokus di `styles/28-a11y.css` |
-| `scripts/35-mobile-nav.js` | Menu Promotor Studio & Admin Console di HP: bilah bawah 3 menu utama + Lainnya (lembar bawah). Gaya di `styles/29-mobile-nav.css` |
+| `scripts/35-mobile-nav.js` | Menu Promotor Studio & Admin Console di HP: bilah bawah 4 tombol tetap. Studio: Ringkasan, Buat event, Tim, Akun (Pratinjau publik di kepala halaman); Admin: 3 menu + Lainnya (lembar bawah). Gaya di `styles/29-mobile-nav.css` |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja
@@ -79,7 +79,7 @@ Build tidak butuh dependensi; cukup Python 3.
 - Teks di kode tetap **Bahasa Indonesia** (bahasa sumber). Saat English, `33-i18n.js` menerjemahkan setiap teks antarmuka yang tampil memakai kamus `32-i18n-en.js`. Konten pengguna (postingan, chat, nama event/orang) tidak ada di kamus sehingga dibiarkan.
 - **Menambah teks baru:** tulis seperti biasa dalam Bahasa Indonesia, lalu tambahkan terjemahannya di `dict`. Angka ditulis `#` dan bentuk tunggal/jamak `{photo|photos}`, misalnya `'# foto dipilih':'# {photo|photos} selected'`. Teks yang memuat nama memakai `rules` (regex).
 - **Jangan** menjalankan logika dari teks di layar (`textContent==='Semua'`): di English teksnya berubah. Pakai atribut `data-*`. Data yang disimpan juga harus dari sumbernya, bukan dari teks yang tampil.
-- **Jam**: tulis jam di sumber sebagai `19.00` (format Indonesia). Dalam English jam tampil `07:00 PM`. Jam event di data adalah waktu setempat lokasi event (default WIB, atau `eventMeta[i].tz` = `WITA`/`WIT`) dan ditampilkan dalam zona waktu perangkat pengguna lewat `eventTime()`/`eventTimeLabel()`, tanpa label zona.
+- **Jam**: tulis jam di sumber sebagai `19.00` (format Indonesia). Dalam English jam tampil `07:00 PM`. Jam event di data adalah waktu setempat lokasi event (`eventMeta[i].tz` = `WIB`/`WITA`/`WIT`; formulir promotor & kurasi punya pilihan zona yang terisi otomatis dari lokasi lewat `guessEventTz()`) dan ditampilkan dalam zona waktu perangkat pengguna lewat `eventTime()`/`eventTimeLabel()`, tanpa label zona.
 - **Teks hukum** (persetujuan, ketentuan, pembayaran, KTP) memakai `legalText(id, en)` dan selalu tampil dua bahasa; bahasa yang dipakai tampil di atas.
 - Tes: skenario lama berjalan dalam Bahasa Indonesia; `tests/scenarios/i18n.js` membuka semua layar dalam English dan mencetak teks antarmuka yang belum ada di kamus (harus hanya konten contoh). `TEMMOO_LANG=en node tests/run.js` menjalankan semua skenario dalam English (banyak yang akan berbeda dari snapshot; berguna untuk mencari teks yang belum diterjemahkan).
 

@@ -48,4 +48,13 @@ format: [
   '24.00 → 24.00'
 ]
 audit log: [ 'Today, 09:14 AM', 'Yesterday, 06:42 PM', 'Yesterday, 04:10 PM' ]
+promotor: zona awal (Surabaya): WIB | pilihan: [ 'WIB', 'WITA', 'WIT' ]
+  lokasi Pantai Kuta, Bali -> WITA
+  lokasi Jayapura -> WIT
+  disimpan: WITA
+  terbit, 19.00 WITA dilihat dari Jakarta: [ 'WITA', '18.00' ]
+  dibuka lagi: WITA
+  pilih WIB manual lalu ubah lokasi ke Makassar -> WIB
+kurasi: venue Makassar -> WITA
+  tersimpan: [ 'WITA', '18.00' ]
 errors []

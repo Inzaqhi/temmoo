@@ -25,3 +25,7 @@
 .nav-sheet-list button.active::after{content:"✓";margin-left:auto}
 .nav-sheet-list button.is-exit{margin-top:6px;border-top:1px solid var(--line);border-radius:0 0 12px 12px;color:#c23a48}
 .nav-sheet button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+/* Studio di HP: tombol halaman (Pratinjau publik) di kepala halaman */
+.nav-inpage{display:none}
+@media(max-width:760px){.nav-inpage{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.nav-inpage .pro-btn{min-height:40px}}
+.nav-inpage button{padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--indigo,var(--violet));font:inherit;font-size:13px;font-weight:700;cursor:pointer}

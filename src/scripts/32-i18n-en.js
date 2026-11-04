@@ -428,6 +428,8 @@ window.I18N_EN={
     'Nama album sudah dipakai':'That album name is already taken','Album':'Album',
     'Akun privat aktif. Pengikut baru perlu persetujuanmu.':'Private account on. New followers need your approval.','Akun publik. Semua orang bisa mengikutimu.':'Public account. Anyone can follow you.','Autentikasi dua langkah aktif':'Two-step authentication on','Autentikasi dua langkah nonaktif':'Two-step authentication off',
     'Antrean event':'Event queue','Kalender':'Calendar','Menu lainnya':'More menu','Admin Console':'Admin Console',
+    'Zona waktu event':'Event time zone','WIB — Jawa, Sumatra, Kalimantan Barat & Tengah':'WIB — Java, Sumatra, West & Central Kalimantan','WITA — Bali, Nusa Tenggara, Sulawesi, Kalimantan Selatan, Timur & Utara':'WITA — Bali, Nusa Tenggara, Sulawesi, South, East & North Kalimantan','WIT — Maluku & Papua':'WIT — Maluku & Papua',
+    'Peserta melihat jam event dalam zona waktu perangkat masing-masing.':'Attendees see the event time in their own device time zone.',
     'Opsi lainnya':'More options','Repost':'Repost','Bulan':'Month','Tahun':'Year','Filter status':'Filter status',
   }
 };

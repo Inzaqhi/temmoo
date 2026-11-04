@@ -1,5 +1,5 @@
-// Menu Promotor Studio & Admin Console di HP: bilah bawah 3 menu utama + "Lainnya", semua tombol terlihat utuh (tidak
-// perlu digeser); menu lain di lembar bawah. Di desktop menu samping tetap lengkap dengan urutan aslinya.
+// Menu Promotor Studio & Admin Console di HP: bilah bawah 4 tombol tetap, semua terlihat utuh (tidak perlu digeser).
+// Studio: Ringkasan, Buat event, Tim, Akun (Pratinjau publik pindah ke kepala halaman). Admin: 3 menu + Lainnya (lembar bawah). Di desktop menu samping tetap lengkap dengan urutan aslinya.
 const {chromium,APP}=require('../helpers');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED|net::/.test(m.text()))errs.push(m.text())});
@@ -16,8 +16,10 @@ const sheet=()=>p.$$eval('.nav-sheet [data-sheet-item]',x=>x.map(b=>b.textConten
 
 // 1. Promotor Studio
 for(const n of [64,71,72]){await p.evaluate(n=>openFlow(n),n);await W();console.log(`1 Studio layar ${n}:`,await bar('.promoter-nav'))}
-await p.click('[data-nav-more]');await W();console.log('  Lainnya:',await sheet(),'| fokus:',await p.evaluate(()=>document.activeElement.textContent));
-await p.click('.nav-sheet [data-sheet-item] >> text=Kembali ke akun');await W();console.log('  Kembali ke akun ->',await p.$eval('#flowTitle',x=>x.textContent),'| lembar tertutup:',!(await p.$('.nav-sheet')));
+console.log('  tanpa tombol Lainnya:',!(await p.$('.promoter-nav [data-nav-more]')));
+await p.evaluate(()=>openFlow(71));await W();console.log('  layar 71, tombol di kepala halaman:',await p.$$eval('.promoter-main .nav-inpage button',x=>x.map(b=>b.textContent)));
+await p.click('.promoter-main .nav-inpage [data-promoter-preview]');await W();console.log('  ketuk Pratinjau publik ->',await p.evaluate(()=>[flowCurrent,events[activeEvent]?.[0]]));
+await p.evaluate(()=>openFlow(64));await W();await p.click('.promoter-nav [data-go="56"]');await W();console.log('  ketuk Akun ->',await p.$eval('#flowTitle',x=>x.textContent));
 await p.evaluate(()=>openFlow(64));await W();await p.click('.promoter-nav [data-go="72"]');await W();console.log('  ketuk Tim ->',(await bar('.promoter-nav')).tombol);
 
 // 2. Admin Console

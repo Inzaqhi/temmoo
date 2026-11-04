@@ -1,21 +1,23 @@
 1 Studio layar 64: {
-  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Lainnya' ],
+  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Akun' ],
   'di bawah layar': true,
   'bisa digeser': false
 }
 1 Studio layar 71: {
-  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Lainnya' ],
+  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Akun' ],
   'di bawah layar': true,
   'bisa digeser': false
 }
 1 Studio layar 72: {
-  tombol: [ 'Ringkasan', 'Buat event', 'Tim*', 'Lainnya' ],
+  tombol: [ 'Ringkasan', 'Buat event', 'Tim*', 'Akun' ],
   'di bawah layar': true,
   'bisa digeser': false
 }
-  Lainnya: [ 'Kembali ke akun' ] | fokus: Kembali ke akun
-  Kembali ke akun -> Pusat Akun | lembar tertutup: true
-  ketuk Tim -> [ 'Ringkasan', 'Buat event', 'Tim*', 'Lainnya' ]
+  tanpa tombol Lainnya: true
+  layar 71, tombol di kepala halaman: [ 'Pratinjau publik' ]
+  ketuk Pratinjau publik -> [ 46, 'Malam Puisi' ]
+  ketuk Akun -> Pusat Akun
+  ketuk Tim -> [ 'Ringkasan', 'Buat event', 'Tim*', 'Akun' ]
 2 Admin: {
   tombol: [ 'Ringkasan*', 'Antrean event', 'Kalender', 'Lainnya' ],
   'di bawah layar': true,
@@ -43,7 +45,7 @@
   'Pratinjau publik',
   'Kembali ke akun'
 ]
-4 English Studio: [ 'Overview*', 'Create event', 'Team', 'More' ]
+4 English Studio: [ 'Overview*', 'Create event', 'Team', 'Account' ]
   English Admin: [ 'Overview', 'Event queue', 'Calendar', 'Audit log*' ]
   More: Admin Console | × | Verified | Moderation | Users | Audit log | Exit admin
 errors []

@@ -53,3 +53,5 @@ a.pro-btn{display:inline-flex;align-items:center;justify-content:center;text-dec
 .ticket-terms{max-width:520px;margin:14px auto 4px;font-size:12px;line-height:1.5;text-align:left}
 a.wide{display:flex;align-items:center;justify-content:center;text-decoration:none}
 
+/* Zona waktu event di formulir promotor & kurasi */
+.field-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px;font-weight:500;line-height:1.4}
