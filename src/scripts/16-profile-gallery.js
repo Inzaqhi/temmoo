@@ -2,11 +2,12 @@
 (()=>{
   const tones=['tone-coral','tone-indigo','tone-teal','tone-gold','tone-mix'];
   let activeView='photos',query='',selection=new Set();
-  // Foto Saya tersimpan di perangkat (temmoo_my_photos_v1): unggahan (diperkecil), album buatan sendiri,
+  // Foto Saya tersimpan di perangkat (temmoo_my_photos_v1): unggahan (file di IndexedDB lewat photoFiles), album buatan sendiri,
   // tanda Favorit/Arsip/Sampah/Dibagikan untuk semua foto (termasuk contoh & foto yang dibeli), dan foto yang dihapus permanen.
   const STORE='temmoo_my_photos_v1',FLAGS=['favorite','archived','trashed','shared'];
   const stored=(()=>{try{return JSON.parse(localStorage.getItem(STORE))||{}}catch{return {}}})();
   const flags=stored.flags||{},deleted=new Set(stored.deleted||[]),moved=stored.moved||{};
+  const srcOf=p=>p.file?window.photoFiles?.url(p.file)||'':(p.src||'');
   const longDate=iso=>new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
   const applyFlags=photo=>{if(flags[photo.id])for(const f of FLAGS)photo[f]=!!flags[photo.id][f];return photo};
   const seedPhotos=[
@@ -27,7 +28,7 @@
   const albums=[...(stored.albums||[]).map(a=>({...a,custom:true})),...seedAlbums];
   const albumCount=a=>a.custom?allPhotos().filter(p=>p.album===a.name&&!p.trashed).length:a.count;
   function save(){
-    const data={uploads:photos.filter(p=>p.upload).map(({id,name,at,album,tone,src})=>({id,name,at,album,tone,src})),
+    const data={uploads:photos.filter(p=>p.upload).map(({id,name,at,album,tone,file,src})=>file?{id,name,at,album,tone,file}:{id,name,at,album,tone,src}),
       albums:albums.filter(a=>a.custom).map(({id,name,privacy,description,collaborative,tone})=>({id,name,privacy,description,collaborative,tone})),
       moved,flags:Object.fromEntries(allPhotos().map(p=>[p.id,Object.fromEntries(FLAGS.filter(f=>p[f]).map(f=>[f,true]))])),deleted:[...deleted]};
     try{localStorage.setItem(STORE,JSON.stringify(data));return true}catch{return false}
@@ -36,7 +37,7 @@
   const nav=[['photos','Foto'],['bought','Dibeli'],['albums','Album'],['favorites','Favorit'],['shared','Dibagikan'],['archive','Arsip'],['trash','Sampah']];
 
   const boughtCache=new Map(),TONE={'photo-0':'tone-coral','photo-1':'tone-indigo','photo-2':'tone-teal','photo-3':'tone-gold'};
-  function boughtPhotos(){return (window.photoPurchases?.list()||[]).map(p=>{if(!boughtCache.has(p.key))boughtCache.set(p.key,applyFlags({id:'buy-'+p.key,name:`${p.label} · ${p.event}`,date:longDate(p.at),album:p.event,tone:TONE[p.tone]||'tone-indigo',src:p.src,bought:true,order:p.order}));return boughtCache.get(p.key)}).filter(p=>!deleted.has(p.id))}
+  function boughtPhotos(){return (window.photoPurchases?.list()||[]).map(p=>{if(!boughtCache.has(p.key))boughtCache.set(p.key,applyFlags({id:'buy-'+p.key,name:`${p.label} · ${p.event}`,date:longDate(p.at),album:p.event,tone:TONE[p.tone]||'tone-indigo',src:p.src,file:p.file,bought:true,order:p.order}));return boughtCache.get(p.key)}).filter(p=>!deleted.has(p.id))}
   const allPhotos=()=>[...boughtPhotos(),...photos];
   function visiblePhotos(){
     return allPhotos().filter(photo=>{
@@ -50,7 +51,7 @@
     });
   }
   function photoCard(photo){
-    const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
+    const src=srcOf(photo),style=src?`style="background-image:url('${src}')"`:'';
     return `<article class="user-photo-card ${photo.tone}" data-user-photo="${photo.id}" ${style}><button class="photo-select ${selection.has(photo.id)?'selected':''}" data-select-user-photo="${photo.id}" aria-label="Pilih foto">${selection.has(photo.id)?'✓':'○'}</button>${photo.favorite?'<span class="photo-favorite">♥</span>':''}${photo.bought?'<span class="photo-bought">Dibeli</span>':''}<div><b>${esc(photo.name)}</b><small>${esc(photo.album)}</small></div></article>`;
   }
   function albumCard(album){return `<button class="user-album-card ${album.tone}" data-user-album="${album.id}"><div class="album-cover-stack"><i></i><i></i><i></i></div><b>${esc(album.name)}</b><span>${albumCount(album)} foto · ${esc(album.privacy)}</span></button>`}
@@ -85,13 +86,13 @@
   function previewActions(photo){
     const id=photo.id;
     if(photo.trashed)return `<button data-photo-restore="${id}">Pulihkan</button><button class="is-danger" data-photo-delete="${id}">Hapus permanen</button>`;
-    const download=photo.src?`<a class="button-link" href="${photo.src}" download="${esc(photo.name)}.jpg">Unduh</a>`:'';
+    const src=srcOf(photo),download=src?`<a class="button-link" href="${src}" download="${esc(photo.name)}.jpg">Unduh</a>`:'';
     if(photo.archived)return `${download}<button data-photo-restore="${id}">Keluarkan dari Arsip</button><button data-photo-trash="${id}">Hapus</button>`;
     return `<button data-toggle-favorite="${id}" aria-pressed="${!!photo.favorite}">${photo.favorite?'♥ Favorit':'♡ Favorit'}</button><button data-toggle-shared="${id}" aria-pressed="${!!photo.shared}">${photo.shared?'Berhenti bagikan':'Bagikan'}</button>${download}<button data-move-archive="${id}">Arsipkan</button><button data-photo-trash="${id}">Hapus</button>`;
   }
   function previewPhoto(photo){
     document.querySelector('#userPhotoPreview')?.remove();
-    const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
+    const src=srcOf(photo),style=src?`style="background-image:url('${src}')"`:'';
     document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="userPhotoPreview"><div class="user-photo-preview"><header><div><b>${esc(photo.name)}</b><span>${esc(photo.date)} · ${esc(photo.album)}${photo.order?` · pesanan ${esc(photo.order)}`:''}</span></div><button data-close-gallery-modal>×</button></header><div class="preview-user-image ${photo.tone}" ${style}></div>${albumPicker(photo)}<footer>${previewActions(photo)}</footer></div></div>`);
   }
   document.addEventListener('click',e=>{
@@ -122,6 +123,7 @@
     if(!list.length)return;
     const ok=await askConfirm({title:list.length>1?`Hapus ${list.length} foto permanen?`:'Hapus foto permanen?',text:'Foto akan dihapus dari Foto Saya dan tidak bisa dipulihkan.',confirm:'Hapus permanen',danger:true});
     if(!ok)return;
+    window.photoFiles?.remove(list.filter(p=>p.upload&&p.file).map(p=>p.file));
     for(const p of list){deleted.add(p.id);delete moved[p.id];const i=photos.indexOf(p);if(i>=0)photos.splice(i,1);delete flags[p.id];selection.delete(p.id)}
     document.querySelector('#userPhotoPreview')?.remove();save();rerender();toast(list.length>1?`${list.length} foto dihapus permanen`:'Foto dihapus permanen');
   }
@@ -129,17 +131,28 @@
     if(!photo.upload)moved[photo.id]=photo.album;
     document.querySelector('#userPhotoPreview')?.remove();save();rerender();toast(`Dipindahkan ke album ${photo.album}`)});
   document.addEventListener('input',e=>{if(e.target.id==='userPhotoSearch'){query=e.target.value.trim().toLowerCase();document.querySelector('.photo-library-content').innerHTML=content()}});
-  // Foto diperkecil (sisi terpanjang 1080 px, JPEG) supaya muat di penyimpanan perangkat.
-  const EDGE=1080,MAX_FILES=20;
-  function shrink(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.8))};img.src=r.result};r.readAsDataURL(file)})}
+  // Foto diperkecil ke sisi terpanjang 1600 px (JPEG) lalu disimpan di IndexedDB.
+  const EDGE=1600,MAX_FILES=50;
+  function shrink(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);window.photoFiles.fromCanvas(c,.82,'photo').then(resolve,reject)};img.src=r.result};r.readAsDataURL(file)})}
   document.addEventListener('change',async e=>{if(e.target.id!=='userPhotoUpload')return;
     const files=[...e.target.files].filter(f=>f.type.startsWith('image/'));e.target.value='';
     if(!files.length){toast('Pilih file gambar (JPG, PNG, atau WebP)');return}
-    const take=files.slice(0,MAX_FILES),added=[],now=new Date().toISOString();
-    for(const [index,file] of take.entries()){try{added.push({id:`upload-${Date.now().toString(36)}-${index}`,name:file.name.replace(/\.[^.]+$/,''),at:now,date:longDate(now),album:'Upload terbaru',tone:tones[index%tones.length],src:await shrink(file),upload:true})}catch{}}
-    if(!added.length){toast('Foto tidak bisa dibaca');return}
+    const take=files.slice(0,MAX_FILES),added=[],now=new Date().toISOString();let full=false;
+    await window.photoFiles.ready;
+    for(const [index,file] of take.entries()){if(full)break;let fileId;try{fileId=await shrink(file)}catch{continue}
+      if(!fileId){full=true;break}
+      added.push({id:`upload-${Date.now().toString(36)}-${index}`,name:file.name.replace(/\.[^.]+$/,''),at:now,date:longDate(now),album:'Upload terbaru',tone:tones[index%tones.length],file:fileId,upload:true})}
+    if(!added.length){toast(full?'Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.':'Foto tidak bisa dibaca');return}
     photos.unshift(...added);
-    if(!save()){photos.splice(0,added.length);rerender();toast('Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.');return}
-    activeView='photos';rerender();toast(`${added.length} foto berhasil diunggah`+(files.length>take.length?` (maksimal ${MAX_FILES} sekaligus)`:''))});
+    if(!save()){photos.splice(0,added.length);window.photoFiles.remove(added.map(p=>p.file));rerender();toast('Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.');return}
+    activeView='photos';rerender();
+    toast(full?`${added.length} foto diunggah · penyimpanan perangkat penuh, sisanya dilewati`:`${added.length} foto berhasil diunggah`+(files.length>take.length?` (maksimal ${MAX_FILES} sekaligus)`:''))});
+  // Saat file foto selesai dimuat: pindahkan unggahan lama (data URL di localStorage) ke IndexedDB, lalu tampilkan ulang.
+  window.photoFiles?.ready.then(async()=>{
+    let changed=false;
+    for(const p of photos)if(p.upload&&!p.file&&p.src?.startsWith('data:')){const id=await window.photoFiles.adopt(p.src,'photo');if(id){p.file=id;delete p.src;changed=true}}
+    if(changed)save();
+    if(document.querySelector('#profilePost .user-photo-library'))rerender();
+  });
   document.addEventListener('submit',e=>{if(e.target.id!=='createUserAlbumForm')return;e.preventDefault();const data=new FormData(e.target),name=data.get('name').trim();if(albums.some(a=>a.name.toLowerCase()===name.toLowerCase())){toast('Nama album sudah dipakai');return}albums.unshift({id:`album-${Date.now()}`,name,privacy:data.get('privacy'),description:String(data.get('description')||'').trim(),collaborative:data.get('collaborative')==='on',tone:tones[albums.length%tones.length],custom:true});save();document.querySelector('#createUserAlbumDialog')?.remove();activeView='albums';rerender();toast('Album berhasil dibuat')});
 })();

@@ -1,5 +1,6 @@
 // Foto Saya tersimpan di perangkat: unggahan (diperkecil), album buatan sendiri, pindah album, Favorit, Dibagikan,
-// Arsip, Sampah, pulihkan, dan hapus permanen — semuanya tetap ada setelah halaman dimuat ulang.
+// Arsip, Sampah, pulihkan, dan hapus permanen — semuanya tetap ada setelah halaman dimuat ulang. File foto di IndexedDB,
+// localStorage hanya menyimpan datanya; unggahan format lama (data URL di localStorage) dipindahkan otomatis.
 const {chromium,APP}=require('../helpers');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:1000}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED|net::/.test(m.text()))errs.push(m.text())});
@@ -15,7 +16,7 @@ const png=await p.evaluate(()=>{const c=document.createElement('canvas');c.width
 await openLib();
 await p.setInputFiles('#userPhotoUpload',[{name:'Gate dibuka.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')},{name:'Teman baru.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')},{name:'catatan.txt',mimeType:'text/plain',buffer:Buffer.from('halo')}]);
 await W(800);console.log('1 unggah:',await toast(),'|',(await cards()).slice(0,3));
-const saved=await p.evaluate(()=>{const d=JSON.parse(localStorage.getItem('temmoo_my_photos_v1'));const img=new Image();img.src=d.uploads[0].src;return new Promise(r=>img.onload=()=>r({jumlah:d.uploads.length,ukuran:img.width+'×'+img.height,jpeg:d.uploads[0].src.startsWith('data:image/jpeg'),tanggal:d.uploads[0].at.slice(0,10)}))});
+const saved=await p.evaluate(()=>{const raw=localStorage.getItem('temmoo_my_photos_v1'),d=JSON.parse(raw),u=d.uploads[0];const img=new Image();img.src=photoFiles.url(u.file);return new Promise(r=>img.onload=()=>r({jumlah:d.uploads.length,ukuran:img.width+'×'+img.height,'localStorage < 2 KB':raw.length<2048,'tanpa data URL':!raw.includes('data:image'),tanggal:u.at.slice(0,10),indexedDB:photoFiles.persistent}))});
 console.log('  tersimpan:',saved);
 await p.setInputFiles('#userPhotoUpload',[{name:'catatan.txt',mimeType:'text/plain',buffer:Buffer.from('halo')}]);await W(300);console.log('  hanya file bukan gambar:',await toast());
 
@@ -34,7 +35,7 @@ await p.evaluate(()=>document.querySelector('[data-user-photo="p3"]').click());a
 
 // 3. Muat ulang: semuanya tetap
 await reload();await openLib();
-console.log('3 setelah reload, Foto:',await cards());
+console.log('3 setelah reload, Foto:',await cards(),'| gambar unggahan tampil:',await p.$$eval('.user-photo-card[data-user-photo^="upload-"]',x=>x.map(c=>c.style.backgroundImage.startsWith('url("blob:'))));
 await openLib('albums');console.log('  Album:',await p.$$eval('.user-album-card',x=>x.slice(0,2).map(a=>a.innerText.replace(/\n+/g,' · '))));
 await openLib('favorites');console.log('  Favorit:',await cards());
 await openLib('shared');console.log('  Dibagikan:',await cards());
@@ -51,15 +52,22 @@ await p.click('[data-photo-bulk="delete"]');await W();console.log('  konfirmasi:
 await p.click('.app-dialog .is-danger');await W();console.log('  hapus permanen:',await toast(),'| Sampah:',await cards());
 await reload();await openLib();console.log('  setelah reload, p2 hilang:',await p.evaluate(()=>!document.querySelector('[data-user-photo="p2"]')),'| p3 kembali:',!!(await p.$('[data-user-photo="p3"]')));
 // Hapus unggahan permanen membebaskan penyimpanan
-const before=await p.evaluate(()=>localStorage.getItem('temmoo_my_photos_v1').length);
+const before=await p.evaluate(()=>photoFiles.usage());
 await p.click('.user-photo-card >> nth=1');await W();await p.click('#userPhotoPreview [data-photo-trash]');await W();await openLib('trash');await p.click('.user-photo-card >> nth=0');await W();await p.click('#userPhotoPreview [data-photo-delete]');await W();await p.click('.app-dialog .is-danger');await W();
-console.log('  unggahan dihapus permanen, penyimpanan berkurang:',await p.evaluate(b=>localStorage.getItem('temmoo_my_photos_v1').length<b/1.5,before),'| sisa unggahan:',await p.evaluate(()=>JSON.parse(localStorage.getItem('temmoo_my_photos_v1')).uploads.map(u=>u.name)));
+console.log('  unggahan dihapus permanen, penyimpanan berkurang:',await p.evaluate(b=>photoFiles.usage()<b/1.5,before),'| sisa unggahan:',await p.evaluate(()=>JSON.parse(localStorage.getItem('temmoo_my_photos_v1')).uploads.map(u=>u.name)));
 
 // 5. Penyimpanan penuh: unggahan dibatalkan dengan pesan
-await p.evaluate(()=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='temmoo_my_photos_v1')throw new DOMException('full','QuotaExceededError');return set.call(this,k,v)}});
+await p.evaluate(()=>{IDBObjectStore.prototype.put=function(){throw new DOMException('full','QuotaExceededError')}});
 await openLib();const n=(await cards()).length;
 await p.setInputFiles('#userPhotoUpload',[{name:'Terlalu besar.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')}]);await W(600);
 console.log('5 penyimpanan penuh:',await toast(),'| jumlah foto tetap:',(await cards()).length===n);
+
+// 5b. Unggahan format lama (data URL di localStorage) dipindah ke IndexedDB saat dibuka
+await reload();
+await p.evaluate(()=>{const c=document.createElement('canvas');c.width=40;c.height=30;c.getContext('2d').fillRect(0,0,40,30);
+  localStorage.setItem('temmoo_my_photos_v1',JSON.stringify({uploads:[{id:'upload-lama',name:'Foto lama',at:'2026-10-01T10:00:00.000Z',album:'Upload terbaru',tone:'tone-teal',src:c.toDataURL('image/jpeg')}],albums:[],flags:{},deleted:[]}))});
+await reload();await openLib();
+console.log('5b migrasi format lama:',await p.evaluate(()=>{const raw=localStorage.getItem('temmoo_my_photos_v1'),u=JSON.parse(raw).uploads[0];return {nama:u.name,'pindah ke IndexedDB':photoFiles.has(u.file),'data URL dihapus':!raw.includes('data:image')}}),'| tampil:',await p.$eval('[data-user-photo="upload-lama"]',c=>c.style.backgroundImage.startsWith('url("blob:')));
 
 // 6. English
 await p.evaluate(()=>localStorage.setItem('temmoo_lang_v1','en'));await reload();await openLib('trash');

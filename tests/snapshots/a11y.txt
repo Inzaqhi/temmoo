@@ -10,6 +10,13 @@
   tanggal lahir: [ 'Tanggal', 'Bulan', 'Tahun' ]
   label isian daftar: [ 'Nama', 'Username', 'Tanggal lahir' ]
   isian chat: [ 'Cari percakapan' ]
+  sakelar Pusat Akun: [
+  [ 'switch', 'Akun privat', false ],
+  [ 'switch', 'Autentikasi dua langkah', false ]
+]
+  klik label Akun privat: Akun privat aktif. Pengikut baru perlu persetujuanmu.
+  Spasi pada dua langkah: Autentikasi dua langkah aktif
+  setelah reload: [ 'privateAccount=true', 'twoFactor=true' ]
 3 English, isian chat: [ 'Search conversations' ] | tombol tulis: Create post
   kembali/opsi: Back / More options
 errors []

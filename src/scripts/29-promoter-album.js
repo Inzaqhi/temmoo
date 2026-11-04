@@ -1,7 +1,8 @@
 // Album resmi promotor (layar 76): unggah foto event, atur harga per foto, terbitkan ke tab Album (layar 59).
-// Foto disimpan terpisah dari data promotor (temmoo_album_v1) supaya penyimpanan yang penuh tidak merusak data organisasi.
+// Data foto (nama, harga, ID file) di temmoo_album_v1; file fotonya di IndexedDB (photoFiles) supaya muat ratusan foto.
 (()=>{
-  const ALBUM=76,KEY='temmoo_album_v1',MAX=30,MAX_MB=10,EDGE=640;
+  const ALBUM=76,KEY='temmoo_album_v1',MAX=200,MAX_MB=20,EDGE=1600;
+  const srcOf=p=>p.file?window.photoFiles?.url(p.file)||'':(p.src||'');
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
   let store={};try{store=JSON.parse(localStorage.getItem(KEY))||{}}catch{}
@@ -16,7 +17,7 @@
 
   function resize(file){return new Promise((resolve,reject)=>{
     const r=new FileReader();r.onerror=reject;
-    r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve({src:c.toDataURL('image/jpeg',.72),w:img.width,h:img.height})};img.src=r.result};
+    r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);window.photoFiles.fromCanvas(c,.82,'album').then(file=>file?resolve({file,w:img.width,h:img.height}):reject(new Error('full')),reject)};img.src=r.result};
     r.readAsDataURL(file);
   })}
 
@@ -32,7 +33,7 @@
       ${!pub&&!can('submit')?'<p class="pro-hint">Pemilik atau Admin tim yang menerbitkan album.</p>':''}
       ${edit?`<label class="album-drop ${busy?'busy':''}"><input type="file" accept="image/jpeg,image/png,image/webp" multiple data-album-upload ${list.length>=MAX||busy?'disabled':''}><b>${busy?'Memproses foto…':list.length>=MAX?`Batas ${MAX} foto tercapai`:'▧ Pilih foto untuk diunggah'}</b><small>JPG, PNG, atau WebP · maks ${MAX_MB} MB per foto · hingga ${MAX} foto. Peserta melihat versi ber-watermark; file asli dikirim setelah pembayaran.</small></label>
       <div class="album-price"><label>Harga default per foto<input type="number" min="0" step="1000" value="${m.defaultPrice}" data-album-default></label><button class="pro-btn secondary" data-album-apply ${list.length?'':'disabled'}>Terapkan ke semua foto</button></div>`:''}
-      ${list.length?`<div class="album-grid">${list.map((p,i)=>`<figure><div class="album-thumb" style="background-image:url(${p.src})"><span>${String(i+1).padStart(2,'0')}</span></div><figcaption><small title="${esc(p.name)}">${esc(p.name)}</small>${edit?`<label>Rp<input type="number" min="0" step="1000" value="${p.price}" data-album-price="${p.id}" aria-label="Harga ${esc(p.name)}"></label><button data-album-remove="${p.id}" aria-label="Hapus ${esc(p.name)}">Hapus</button>`:`<b>${rp(p.price)}</b>`}</figcaption></figure>`).join('')}</div>`:`<div class="ins-empty"><b>Belum ada foto</b><span>Unggah foto terbaik dari ${esc(ev.name)}. Peserta yang hadir akan mendapat kabar saat album terbit.</span></div>`}
+      ${list.length?`<div class="album-grid">${list.map((p,i)=>`<figure><div class="album-thumb" style="background-image:url(${srcOf(p)})"><span>${String(i+1).padStart(2,'0')}</span></div><figcaption><small title="${esc(p.name)}">${esc(p.name)}</small>${edit?`<label>Rp<input type="number" min="0" step="1000" value="${p.price}" data-album-price="${p.id}" aria-label="Harga ${esc(p.name)}"></label><button data-album-remove="${p.id}" aria-label="Hapus ${esc(p.name)}">Hapus</button>`:`<b>${rp(p.price)}</b>`}</figcaption></figure>`).join('')}</div>`:`<div class="ins-empty"><b>Belum ada foto</b><span>Unggah foto terbaik dari ${esc(ev.name)}. Peserta yang hadir akan mendapat kabar saat album terbit.</span></div>`}
     </section>`;
   }
 
@@ -40,7 +41,7 @@
   function publicAlbum(ev){
     const m=meta(ev),list=photos(ev);
     if(m.status!=='published'||!list.length)return `<section class="official-event-album"><div class="ins-empty album-empty"><b>Album resmi belum tersedia</b><span>Promotor akan mengunggah foto setelah event berlangsung.</span>${can('edit')?`<button class="pro-btn" data-go="${ALBUM}">Unggah album</button>`:''}</div></section>`;
-    return `<section class="official-event-album"><div class="album-shop-head"><div><span class="official-label">ALBUM RESMI</span><h2>Foto dari ${esc(ev.name)}</h2><p>Diunggah oleh ${esc(promoterState.organization)}. Klik foto untuk melihat pratinjau besar, lalu gunakan tombol centang untuk memilih.</p></div><button data-album-help aria-label="Informasi pembelian foto">?</button></div><div class="album-toolbar"><span><b>${list.length} foto</b> · kamu bisa memilih beberapa foto</span><button data-album-select-all>Pilih semua</button></div><div class="official-photo-grid">${list.map((p,i)=>`<button class="official-photo-card has-photo" style="background-image:url(${p.src})" data-src="${p.src}" data-photo-key="${p.id}" data-price="${Number(p.price)||0}" data-paid-photo="${i+1}" aria-label="Lihat pratinjau ${esc(p.name)}"><span class="photo-watermark">TEMMOO PREVIEW</span><i data-select-photo role="checkbox" aria-label="Pilih foto ${i+1}" aria-checked="false">✓</i><small>Foto ${String(i+1).padStart(2,'0')}</small><b>${rp(p.price)}</b></button>`).join('')}</div><div class="album-purchase-bar"><div><small id="albumSelectionText">Belum ada foto dipilih</small><b id="albumSelectionPrice">Rp0</b></div><button data-buy-event-photos disabled>Beli & download</button></div></section>`;
+    return `<section class="official-event-album"><div class="album-shop-head"><div><span class="official-label">ALBUM RESMI</span><h2>Foto dari ${esc(ev.name)}</h2><p>Diunggah oleh ${esc(promoterState.organization)}. Klik foto untuk melihat pratinjau besar, lalu gunakan tombol centang untuk memilih.</p></div><button data-album-help aria-label="Informasi pembelian foto">?</button></div><div class="album-toolbar"><span><b>${list.length} foto</b> · kamu bisa memilih beberapa foto</span><button data-album-select-all>Pilih semua</button></div><div class="official-photo-grid">${list.map((p,i)=>`<button class="official-photo-card has-photo" style="background-image:url(${srcOf(p)})" data-src="${srcOf(p)}" data-file="${p.file||''}" data-photo-key="${p.id}" data-price="${Number(p.price)||0}" data-paid-photo="${i+1}" aria-label="Lihat pratinjau ${esc(p.name)}"><span class="photo-watermark">TEMMOO PREVIEW</span><i data-select-photo role="checkbox" aria-label="Pilih foto ${i+1}" aria-checked="false">✓</i><small>Foto ${String(i+1).padStart(2,'0')}</small><b>${rp(p.price)}</b></button>`).join('')}</div><div class="album-purchase-bar"><div><small id="albumSelectionText">Belum ada foto dipilih</small><b id="albumSelectionPrice">Rp0</b></div><button data-buy-event-photos disabled>Beli & download</button></div></section>`;
   }
 
   const base=template;
@@ -54,6 +55,13 @@
     return base(n);
   };
   const rerender=()=>openFlow(ALBUM,false);
+  // Foto lama (data URL di localStorage) dipindah ke IndexedDB; layar album yang sedang terbuka ditampilkan ulang.
+  window.photoFiles?.ready.then(async()=>{
+    let changed=false;
+    for(const list of Object.values(store))for(const p of list||[])if(!p.file&&p.src?.startsWith('data:')){const id=await window.photoFiles.adopt(p.src,'album');if(id){p.file=id;delete p.src;changed=true}}
+    if(changed)persist();
+    if(typeof flowCurrent!=='undefined'&&(flowCurrent===ALBUM||flowCurrent===59)&&document.querySelector('#flowLayer.open'))openFlow(flowCurrent,false);
+  });
 
   document.addEventListener('change',async e=>{
     const input=e.target.closest('[data-album-upload]');
@@ -61,13 +69,15 @@
       const ev=promoterState.event,list=photos(ev),m=meta(ev),files=[...input.files];input.value='';
       const ok=files.filter(f=>/^image\/(jpeg|png|webp)$/.test(f.type)&&f.size<=MAX_MB*1048576),room=MAX-list.length,take=ok.slice(0,room);
       const skipped=files.length-take.length;
-      if(!take.length){toast(files.length?'Foto harus JPG, PNG, atau WebP dan maksimal 10 MB':'Tidak ada foto dipilih');return}
-      busy=true;rerender();
-      for(const f of take){try{const r=await resize(f);list.push({id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:f.name,price:m.defaultPrice,...r})}catch{}}
+      if(!take.length){toast(files.length?`Foto harus JPG, PNG, atau WebP dan maksimal ${MAX_MB} MB`:'Tidak ada foto dipilih');return}
+      busy=true;rerender();await window.photoFiles.ready;
+      let added=0,full=false;
+      for(const f of take){try{const r=await resize(f);list.push({id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:f.name,price:m.defaultPrice,...r});added++}catch(err){if(err?.message==='full'){full=true;break}}}
       busy=false;
-      if(!persist())list.splice(list.length-take.length);
-      window.promoterTeam?.log(`mengunggah ${take.length} foto ke album “${ev.name}”`);
-      toast(`${take.length} foto ditambahkan${skipped?` · ${skipped} dilewati (format, ukuran, atau batas ${MAX} foto)`:''}`);rerender();return;
+      if(!persist()){window.photoFiles.remove(list.splice(list.length-added).map(p=>p.file));added=0}
+      if(added)window.promoterTeam?.log(`mengunggah ${added} foto ke album “${ev.name}”`);
+      const left=files.length-added;
+      toast(!added&&full?'Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.':`${added} foto ditambahkan${full?' · penyimpanan perangkat penuh, sisanya dilewati':left?` · ${left} dilewati (format, ukuran, atau batas ${MAX} foto)`:''}`);rerender();return;
     }
     const price=e.target.closest('[data-album-price]');
     if(price){const p=photos(promoterState.event).find(x=>x.id===price.dataset.albumPrice);if(p){p.price=Math.max(0,Math.round(Number(price.value)||0));persist();rerender()}return}
@@ -77,7 +87,7 @@
   document.addEventListener('click',e=>{
     const ev=promoterState.event;
     if(e.target.closest('[data-album-apply]')){const m=meta(ev),d=document.querySelector('[data-album-default]');if(d)m.defaultPrice=Math.max(0,Math.round(Number(d.value)||0));photos(ev).forEach(p=>p.price=m.defaultPrice);savePromoter();persist();toast(`Semua foto ${rp(m.defaultPrice)}`);rerender();return}
-    const rm=e.target.closest('[data-album-remove]');if(rm){const list=photos(ev),i=list.findIndex(p=>p.id===rm.dataset.albumRemove);if(i>=0)list.splice(i,1);if(!list.length&&meta(ev).status==='published'){meta(ev).status='draft';savePromoter()}persist();toast('Foto dihapus');rerender();return}
+    const rm=e.target.closest('[data-album-remove]');if(rm){const list=photos(ev),i=list.findIndex(p=>p.id===rm.dataset.albumRemove);if(i>=0)window.photoFiles?.remove(list.splice(i,1)[0].file);if(!list.length&&meta(ev).status==='published'){meta(ev).status='draft';savePromoter()}persist();toast('Foto dihapus');rerender();return}
     if(e.target.closest('[data-album-publish]')){const m=meta(ev);if(!photos(ev).length||!started(ev)||!can('submit'))return;m.status='published';m.publishedAt=Date.now();savePromoter();syncPublishedEvent();
       window.promoterTeam?.log(`menerbitkan album resmi “${ev.name}” (${photos(ev).length} foto)`);
       pushNotif({kind:'event',icon:'▧',who:promoterState.organization,av:promoterState.organization.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(),tone:'gold',text:`menerbitkan album resmi ${ev.name}`,quote:`${photos(ev).length} foto sudah bisa dibeli`,go:ev.publishedIndex!=null?{event:ev.publishedIndex}:{screen:64}});

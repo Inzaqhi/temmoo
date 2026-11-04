@@ -3,7 +3,14 @@
   'Teman baru [Upload terbaru]',
   'Bareng teman sebelum konser [LaLaLa Fest] ♥'
 ]
-  tersimpan: { jumlah: 2, ukuran: '1080×720', jpeg: true, tanggal: '2026-11-03' }
+  tersimpan: {
+  jumlah: 2,
+  ukuran: '1600×1067',
+  'localStorage < 2 KB': true,
+  'tanpa data URL': true,
+  tanggal: '2026-11-03',
+  indexedDB: true
+}
   hanya file bukan gambar: Pilih file gambar (JPG, PNG, atau WebP)
 2 album: Album berhasil dibuat | [
   'Malam Puisi · 0 foto · Pengikut',
@@ -20,7 +27,7 @@
   'Bareng teman sebelum konser [LaLaLa Fest]',
   'Menunggu gate dibuka [Hindia Live 2025]',
   'Foto bersama komunitas [Coffee Fest] ♥'
-]
+] | gambar unggahan tampil: [ true, true ]
   Album: [
   'Malam Puisi · 1 foto · Pengikut',
   'LaLaLa Fest 2026 · 14 foto · Pribadi'
@@ -41,6 +48,11 @@
   setelah reload, p2 hilang: true | p3 kembali: true
   unggahan dihapus permanen, penyimpanan berkurang: true | sisa unggahan: [ 'Gate dibuka' ]
 5 penyimpanan penuh: Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi. | jumlah foto tetap: true
+5b migrasi format lama: {
+  nama: 'Foto lama',
+  'pindah ke IndexedDB': true,
+  'data URL dihapus': true
+} | tampil: true
 6 English, Sampah kosong: ▧ | No photos yet | Photos you delete appear here before they are deleted permanently.
-  pratinjau: Gate dibuka | 3 November 2026 · Malam Puisi | × | Album | Malam Puisi | ♥ Favorite | Share | Download | Archive | Delete
+  pratinjau: Foto lama | 1 October 2026 · Latest upload | × | ♡ Favorite | Share | Download | Archive | Delete
 errors []

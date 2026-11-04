@@ -21,7 +21,7 @@ await p.evaluate(()=>openFlow(76));await W();
 await p.setInputFiles('[data-album-upload]','bukan.txt');await W();console.log('2 unggah .txt ->',await toast());
 await p.setInputFiles('[data-album-upload]',['ktp-big.png','selfie.png','ktp-small.png','bukan.txt']);await p.waitForFunction(()=>!document.querySelector('.album-drop.busy'),null,{timeout:5000});await W();
 console.log('  unggah 3 gambar + 1 txt ->',await toast(),'|',await text('.album-head>div'));
-console.log('  thumbnail:',await p.$$eval('.album-thumb',x=>x.map(t=>t.style.backgroundImage.slice(0,27))),'| ukuran disimpan (KB):',await p.evaluate(()=>Math.round(localStorage.getItem('temmoo_album_v1').length/1024)<200));
+console.log('  thumbnail:',await p.$$eval('.album-thumb',x=>x.map(t=>t.style.backgroundImage.slice(0,10))),'| data di localStorage (KB):',await p.evaluate(()=>{const s=localStorage.getItem('temmoo_album_v1');return [Math.round(s.length/1024)<2,!s.includes('data:image'),Object.values(JSON.parse(s)).flat().every(x=>photoFiles.has(x.file))]}));
 
 // 3. Harga
 await p.fill('[data-album-default]','12000');await p.click('[data-album-apply]');await W();console.log('3 terapkan 12000 ->',await toast(),'|',await p.$$eval('[data-album-price]',x=>x.map(i=>i.value)));
@@ -32,7 +32,7 @@ await p.click('[data-album-remove] >> nth=2');await W();console.log('  hapus fot
 await p.click('[data-album-publish]');await W();console.log('4 terbitkan ->',await toast(),'|',await text('.album-head'));
 console.log('  notifikasi:',await p.evaluate(()=>{const n=JSON.parse(localStorage.getItem('temmoo_notif_extra_v1')||'[]')[0];return n&&n.who+' '+n.text+' · '+n.quote}));
 await p.click('[data-album-view]');await W();
-console.log('  peserta:',await p.evaluate(()=>[flowCurrent,document.querySelector('.album-toolbar span').innerText,[...document.querySelectorAll('.official-photo-card')].map(c=>c.querySelector('b').textContent+(c.style.backgroundImage.startsWith('url("data:image/jpeg')?' (foto)':' (contoh)'))]));
+console.log('  peserta:',await p.evaluate(()=>[flowCurrent,document.querySelector('.album-toolbar span').innerText,[...document.querySelectorAll('.official-photo-card')].map(c=>c.querySelector('b').textContent+(c.style.backgroundImage.startsWith('url("blob:')?' (foto)':' (contoh)'))]));
 await p.click('[data-album-select-all]');await W();console.log('  pilih semua ->',await text('.album-purchase-bar>div'));
 await p.click('.official-photo-card >> nth=1');await W();console.log('  pratinjau:',await p.evaluate(()=>{const v=document.querySelector('#albumPhotoPreview');return [v.querySelector('.album-preview-image').classList.contains('has-photo'),v.querySelector('.album-preview-info b').textContent]}));
 await p.keyboard.press('ArrowRight');await W();console.log('  panah kanan -> foto',await p.evaluate(()=>document.querySelector('#albumPhotoPreview').dataset.photoId));

@@ -39,9 +39,10 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 
 | File | Isi |
 |---|---|
+| `scripts/00-photo-files.js` | Penyimpanan file foto di IndexedDB (`photoFiles`): Foto Saya, album resmi promotor, dan foto yang dibeli. localStorage hanya menyimpan data kecil + ID file; foto format lama dipindah otomatis |
 | `scripts/01-app-core.js` | Data contoh (posts, events, circles, chats), `render()`, `show()` |
 | `scripts/02-flows.js` | Semua layar detail (`template(n)` dan `openFlow(n)`) |
-| `scripts/16-profile-gallery.js` | Foto Saya: unggahan (diperkecil ke 1080 px), album sendiri, Favorit/Dibagikan/Arsip/Sampah, hapus permanen. Tersimpan di `temmoo_my_photos_v1` |
+| `scripts/16-profile-gallery.js` | Foto Saya: unggahan (diperkecil ke 1600 px, file di IndexedDB), album sendiri, Favorit/Dibagikan/Arsip/Sampah, hapus permanen. Tersimpan di `temmoo_my_photos_v1` |
 | `scripts/17-audit.js` | Akun, verifikasi, grup event, admin, dan promotor (kode lama terbesar) |
 | `scripts/18-router.js` | URL hash (`#/home`, `#/event/...`) dan tombol back |
 | `scripts/22-search-notifications.js` | Pencarian, notifikasi, serta penyimpanan Temui/follow/chat |
@@ -51,7 +52,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/26-promoter-events.js` | Banyak event per akun promotor: daftar event (layar 64), pemilih event, antrean admin |
 | `scripts/27-promoter-team.js` | Anggota tim promotor (layar 72): undangan, peran, akses per event, "Lihat sebagai", pemindahan kepemilikan, log aktivitas |
 | `scripts/28-event-claim.js` | Kalender kurasi & penyerahan halaman: tanda di halaman event, permintaan lewat WhatsApp (layar 74), penyerahan/penolakan/pencabutan di Admin Console (layar 75) |
-| `scripts/29-promoter-album.js` | Album resmi promotor (layar 76): unggah foto, harga per foto, terbitkan ke tab Album event. Foto disimpan di `temmoo_album_v1` |
+| `scripts/29-promoter-album.js` | Album resmi promotor (layar 76): unggah foto, harga per foto, terbitkan ke tab Album event. Data foto di `temmoo_album_v1`, file di IndexedDB (hingga 200 foto per event) |
 | `scripts/30-dialogs.js` | Dialog di dalam halaman (`askConfirm`, `openAppDialog`). Jangan pakai `confirm()`/`alert()`: diblokir di pratinjau Claude |
 | `scripts/31-photo-purchases.js` | Checkout foto album, pembelian tersimpan di `temmoo_purchases_v1`, tanda Dimiliki, Foto Saya → Dibeli |
 | `scripts/32-i18n-en.js` | Kamus Bahasa Indonesia → English (teks persis, pola angka `#`, aturan untuk teks bernama) |

@@ -26,6 +26,8 @@
 5 beli foto promotor: Nomor pesanan | TMO-… | Dibayar lewat QRIS | Rp15.000
   halaman album promotor: Terjual 1 foto · Rp15.000
   setelah reload: [ 'Rp20.000', '✓ Dimiliki' ]
+  file di IndexedDB: { album: true, pembelian: true, salinan: true }
+  promotor menghapus foto 2 -> Foto Saya · Dibeli masih bergambar: [ 'Foto 02 · Surabaya Creative Week true' ]
 HP checkout menempel di bawah: true
 confirm() lain yang diblokir: 0
 errors []

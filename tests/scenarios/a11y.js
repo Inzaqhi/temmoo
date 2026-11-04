@@ -18,6 +18,7 @@ const audit=()=>p.evaluate(()=>{
   for(const e of document.querySelectorAll('body *')){if(!vis(e))continue;
     if(getComputedStyle(e).cursor==='pointer'&&!e.closest(NAT)&&![...e.querySelectorAll('[data-a11y-click]')].some(vis)&&!(e.matches('.avatar')&&[...e.parentElement.querySelectorAll('[data-a11y-click]')].some(vis))){const par=e.parentElement;if(!(par&&getComputedStyle(par).cursor==='pointer'&&!par.closest(NAT)))out.push('tidak bisa difokus: '+desc(e))}
     if(e.matches('button,a[href],[role=button],[role=link]')){const n=(e.getAttribute('aria-label')||e.getAttribute('title')||e.innerText||'').trim();if(!/[\p{L}\p{N}]/u.test(n))out.push('tanpa nama: '+desc(e))}
+    if(e.matches('button,a[href]')&&e.querySelector('button,a[href],input,select,textarea'))out.push('interaktif bertumpuk: '+desc(e));
     if(e.matches('input:not([type=hidden]):not([type=file]),select,textarea')&&!(e.getAttribute('aria-label')||e.getAttribute('aria-labelledby')||e.closest('label')||(e.id&&document.querySelector(`label[for="${e.id}"]`))))out.push('isian tanpa label: '+desc(e)+' '+e.placeholder);
   }return out});
 const found=new Map();const add=(k,list)=>list.forEach(x=>found.set(x,[...(found.get(x)||[]),k]));
@@ -46,6 +47,13 @@ await p.keyboard.press('Enter');await W(50);console.log('  pilihan minat (peran,
 await p.evaluate(()=>openFlow(5));await W();console.log('  tanggal lahir:',await p.$$eval('.choice-grid select',x=>x.map(s=>s.getAttribute('aria-label'))));
 await p.evaluate(()=>openFlow(4));await W();console.log('  label isian daftar:',await p.$$eval('#flowContent .field input',x=>x.map(i=>i.labels[0]?.textContent)));
 await p.evaluate(()=>{closeFlow();show('chat')});await W();console.log('  isian chat:',await p.$$eval('#chat input',x=>x.filter(i=>i.offsetParent).map(i=>i.getAttribute('aria-label'))));
+
+// Sakelar Pusat Akun: label yang bisa diklik, role=switch, tersimpan
+await p.evaluate(()=>{accountState.accountType='user';accountState.role='user';openFlow(56)});await W();
+console.log('  sakelar Pusat Akun:',await p.$$eval('[data-account-setting]',x=>x.map(i=>[i.getAttribute('role'),i.closest('label').querySelector('span').firstChild.textContent,i.checked])));
+await p.click('.account-toggle >> text=Akun privat');await W();console.log('  klik label Akun privat:',await p.$eval('#toast',x=>x.textContent));
+await p.focus('[data-account-setting="twoFactor"]');await p.keyboard.press('Space');await W();console.log('  Spasi pada dua langkah:',await p.$eval('#toast',x=>x.textContent));
+await p.reload();await W(300);await p.evaluate(()=>openFlow(56));await W();console.log('  setelah reload:',await p.$$eval('[data-account-setting]',x=>x.map(i=>i.dataset.accountSetting+'='+i.checked)));
 
 // 3. English: label ikut diterjemahkan
 await p.evaluate(()=>localStorage.setItem('temmoo_lang_v1','en'));await p.reload();await W(300);

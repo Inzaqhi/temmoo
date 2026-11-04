@@ -1,12 +1,8 @@
 1 klik Unggah album resmi -> layar 76 | Album resmi | Draft | 0 foto | Belum ada foto | Terbitkan album
   tab Album peserta sebelum terbit: Album resmi belum tersedia | Promotor akan mengunggah foto setelah event berlangsung. | Unggah album
-2 unggah .txt -> Foto harus JPG, PNG, atau WebP dan maksimal 10 MB
-  unggah 3 gambar + 1 txt -> 3 foto ditambahkan · 1 dilewati (format, ukuran, atau batas 30 foto) | Draft | 3 foto | Total harga semua foto Rp30.000
-  thumbnail: [
-  'url("data:image/jpeg;base64',
-  'url("data:image/jpeg;base64',
-  'url("data:image/jpeg;base64'
-] | ukuran disimpan (KB): true
+2 unggah .txt -> Foto harus JPG, PNG, atau WebP dan maksimal 20 MB
+  unggah 3 gambar + 1 txt -> 3 foto ditambahkan · 1 dilewati (format, ukuran, atau batas 200 foto) | Draft | 3 foto | Total harga semua foto Rp30.000
+  thumbnail: [ 'url("blob:', 'url("blob:', 'url("blob:' ] | data di localStorage (KB): [ true, true, true ]
 3 terapkan 12000 -> Semua foto Rp12.000 | [ '12000', '12000', '12000' ]
   ubah foto 2 -> Draft | 3 foto | Total harga semua foto Rp49.000
   hapus foto 3 -> Foto dihapus | Draft | 2 foto | Total harga semua foto Rp37.000

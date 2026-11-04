@@ -58,6 +58,13 @@ await p.click('.checkout-done [data-checkout-close]');
 await p.evaluate(()=>openFlow(76));await p.waitForTimeout(200);console.log('  halaman album promotor:',await p.evaluate(()=>document.querySelector('.album-sold')?.textContent));
 await p.reload();await p.waitForTimeout(300);await p.evaluate(()=>{activeEvent=promoterState.event.publishedIndex;openFlow(59)});await p.waitForTimeout(200);
 console.log('  setelah reload:',await p.$$eval('.official-photo-card',x=>x.map(c=>c.querySelector('b').textContent)));
+// Album lama (data URL) pindah ke IndexedDB; foto yang dibeli punya salinan file sendiri, tetap ada walau promotor menghapus fotonya
+console.log('  file di IndexedDB:',await p.evaluate(()=>{const al=localStorage.getItem('temmoo_album_v1'),pu=localStorage.getItem('temmoo_purchases_v1'),buy=JSON.parse(pu)[0];
+  return {album:!al.includes('data:image')&&JSON.parse(al).a.every(x=>photoFiles.has(x.file)),pembelian:!pu.includes('data:image')&&photoFiles.has(buy.file),salinan:buy.file!==JSON.parse(al).a[1].file}}));
+await p.evaluate(()=>{openFlow(76)});await p.waitForTimeout(200);await p.click('[data-album-remove="f2"]');await p.waitForTimeout(200);
+await p.evaluate(()=>{closeFlow();show('profile');document.querySelector('[data-profile-tab="album"]').click()});await p.waitForTimeout(200);await p.evaluate(()=>openPhotoLibraryView('bought'));await p.waitForTimeout(150);
+console.log('  promotor menghapus foto 2 -> Foto Saya · Dibeli masih bergambar:',await p.$$eval('.user-photo-card',x=>x.map(c=>c.querySelector('b').textContent+' '+c.style.backgroundImage.startsWith('url("blob:'))));
+await p.evaluate(()=>{activeEvent=promoterState.event.publishedIndex;openFlow(59)});await p.waitForTimeout(200);
 
 await p.setViewportSize({width:390,height:844});await p.click('[data-paid-photo="1"] [data-select-photo]');await p.click('[data-buy-event-photos]');await p.waitForTimeout(200);
 console.log('HP checkout menempel di bawah:',await p.evaluate(()=>{const r=document.querySelector('.app-dialog').getBoundingClientRect();return Math.abs(r.bottom-innerHeight)<2&&r.left===0}));
