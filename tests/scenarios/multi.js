@@ -11,7 +11,7 @@ console.log('  baris:',await p.$$eval('.pe-row',x=>x.map(r=>r.innerText.replace(
 // buat event baru
 await p.click('.pe-new');await W();console.log('Buat baru ->',await main(),'| nama kosong:',await p.inputValue('[data-promoter-event-form] [name=name]')==='');
 const fill=async(o)=>{for(const[k,v]of Object.entries(o))await p.fill(`[data-promoter-event-form] [name=${k}]`,v)};
-await fill({name:'Jazz di Taman',date:'5 Desember 2026',dateShort:'5 DES',time:'19.00',venue:'Taman Bungkul, Surabaya',description:'Konser jazz sore di taman kota.'});
+await fill({name:'Jazz di Taman',date:'2026-12-05',time:'19:00',venue:'Taman Bungkul, Surabaya',description:'Konser jazz sore di taman kota.'});
 await p.click('[data-promoter-event-form] button[value=submit]');await W();console.log('Ajukan ->',await main());
 await p.click('[data-event-sim="publish"]');await W();console.log('Terbitkan ->',await p.evaluate(()=>promoterState.event.name+' '+promoterState.event.status));
 // event ketiga: draft saja

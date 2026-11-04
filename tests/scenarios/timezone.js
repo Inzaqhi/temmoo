@@ -33,8 +33,19 @@ await p.selectOption('[data-promoter-event-form] [data-event-tz]','WIB');await p
 // Formulir kurasi admin
 await p.evaluate(()=>{accountState.accountType='temmoo_official';accountState.role='super_admin';openFlow(75)});await p.waitForTimeout(200);
 await p.fill('[data-curate-form] [name=venue]','GOR Sudiang, Makassar');console.log('kurasi: venue Makassar ->',await p.$eval('[data-curate-form] [data-event-tz]',x=>x.value));
-await p.fill('[data-curate-form] [name=name]','Festival Pantai Losari');await p.fill('[data-curate-form] [name=date]','2027-02-20');await p.fill('[data-curate-form] [name=time]','19.00');await p.fill('[data-curate-form] [name=source]','Dinas Pariwisata Makassar').catch(()=>{});
-await p.click('[data-curate-form] [type=submit]');await p.waitForTimeout(200);
-console.log('  tersimpan:',await p.evaluate(()=>{const i=events.findIndex(e=>e[0]==='Festival Pantai Losari');return i<0?'(tidak ada)':[eventMeta[i].tz,eventTime(i)]}));
+await p.fill('[data-curate-form] [name=name]','Festival Pantai Losari');await p.fill('[data-curate-form] [name=date]','2027-02-20');await p.fill('[data-curate-form] [name=time]','19:00');await p.fill('[data-curate-form] [name=source]','Dinas Pariwisata Makassar').catch(()=>{});
+await p.fill('[data-curate-form] [name=city]','makassar');await p.click('[data-curate-form] [type=submit]');await p.waitForTimeout(200);
+console.log('  tersimpan:',await p.evaluate(()=>{const i=events.findIndex(e=>e[0]==='Festival Pantai Losari');return i<0?'(tidak ada)':[eventMeta[i].tz,eventTime(i),eventMeta[i].city]}));
+await p.evaluate(()=>{closeFlow();show('events')});await p.waitForTimeout(150);console.log('  filter kota katalog:',await p.$$eval('#eventCity option',x=>x.map(o=>o.value)));
+await p.selectOption('#eventCity','Makassar');await p.waitForTimeout(150);console.log('  pilih Makassar:',await p.$$eval('#eventsList .catalog-card h4',x=>x.map(h=>h.textContent)));
+
+// Formulir promotor: pemilih tanggal & jam bawaan; label tanggal singkat dibuat otomatis; tanggal lewat ditolak saat kirim
+await p.evaluate(()=>{accountState.accountType='user';accountState.role='user';promoterState.event={...promoterState.event,status:'draft'};openFlow(65)});await p.waitForTimeout(200);
+console.log('promotor: jenis isian:',await p.$$eval('[data-promoter-event-form] [name=date],[data-promoter-event-form] [name=time]',x=>x.map(i=>i.name+'='+i.type+' '+i.value)),'| label singkat manual:',!!(await p.$('[data-promoter-event-form] [name=dateShort]')));
+await p.fill('[data-promoter-event-form] [name=date]','2027-08-17');await p.fill('[data-promoter-event-form] [name=time]','07:30');await p.click('[data-promoter-event-form] [value=draft]');await p.waitForTimeout(200);
+console.log('  disimpan:',await p.evaluate(()=>[promoterState.event.date,promoterState.event.dateShort,promoterState.event.time]));
+await p.evaluate(()=>openFlow(65));await p.waitForTimeout(200);
+console.log('  batas minimal tanggal:',await p.$eval('[data-promoter-event-form] [name=date]',x=>x.min));await p.$eval('[data-promoter-event-form] [name=date]',x=>{x.removeAttribute('min');x.value='2026-10-01'});await p.click('[data-promoter-event-form] [value=submit]');await p.waitForTimeout(200);
+console.log('  kirim dengan tanggal lewat:',await p.$eval('#toast',x=>x.textContent),'| status:',await p.evaluate(()=>promoterState.event.status));
 
 console.log('errors',errs);await b.close()})();

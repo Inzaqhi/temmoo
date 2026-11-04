@@ -79,7 +79,7 @@ await p.reload();await W(300);await openEvent('Youth Creative Festival');console
 await openEvent('Hindia Live 2026');await p.click('[data-claim-start]');await W();await Promise.all([ctx.waitForEvent('page').then(x=>x.close()),p.click('[data-claim-request]')]);await W();
 await p.click('[data-claim-sim="approve"]');await W(300);console.log('6 simulasi serahkan ->',await toast(),'|',await text('.pro-status h2'));
 await admin();await p.fill('[data-curate-form] [name=name]','Festival Rujak Uleg 2027');await p.fill('[data-curate-form] [name=date]','2027-03-14');await p.fill('[data-curate-form] [name=venue]','Jalan Kembang Jepun');await p.fill('[data-curate-form] [name=source]','Kalender Disbudpar Surabaya');
-await p.click('[data-curate-form] [type=submit]');await W();console.log('  tambah kurasi ->',await toast());
+await p.fill('[data-curate-form] [name=city]','Surabaya');await p.click('[data-curate-form] [type=submit]');await W();console.log('  tambah kurasi ->',await toast());
 await asUser();await openEvent('Festival Rujak Uleg 2027');console.log('  event kurasi baru:',await text('.claim-banner'),'||',await text('.info-card p'));
 
 // 7. Editor tidak bisa meminta

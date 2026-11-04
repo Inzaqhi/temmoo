@@ -4,6 +4,9 @@
 // penyelenggara, lalu menyerahkan halaman dari Admin Console. Setelah diserahkan, event masuk Promotor Studio dengan ID yang sama,
 // sehingga peminat dan status kehadiran pengguna tetap tersambung. Tim Temmoo juga bisa mencabut penyerahan.
 (()=>{
+  // Saran kota di formulir kurasi (tetap bisa diketik bebas). Penulisan dirapikan supaya filter kota tidak dobel.
+  const CITIES=['Surabaya','Jakarta','Bandung','Yogyakarta','Semarang','Malang','Solo','Sidoarjo','Medan','Palembang','Pekanbaru','Padang','Lampung','Denpasar','Mataram','Kupang','Makassar','Manado','Balikpapan','Samarinda','Banjarmasin','Pontianak','Ambon','Jayapura','Sorong'];
+  const cityName=v=>{const t=String(v||'').trim().replace(/\s+/g,' ');return CITIES.find(c=>c.toLowerCase()===t.toLowerCase())||t.replace(/\b\p{L}/gu,c=>c.toUpperCase())};
   const CLAIM=74,CAL=75,CLAIMS='temmoo_claims_v1',CURATED='temmoo_curated_v1';
   // Ganti dengan nomor WhatsApp resmi Tim Temmoo sebelum rilis (format internasional tanpa +).
   const TEMMOO_WA='6281100000000';
@@ -151,9 +154,9 @@
       <section class="admin-panel claim-admin"><h3>Permintaan pengelolaan</h3><p class="claim-admin-hint">Promotor menghubungi Tim Temmoo lewat WhatsApp. Verifikasi ke nomor resmi penyelenggara (bukan nomor pengirim) sebelum menyerahkan halaman.</p>${requests.length?requests.map(({id,c,i})=>`<div class="admin-list-row"><i class="event-admin-icon">W</i><div><b>${esc(events[i][0])}</b><span>${esc(c.org)} · diminta ${new Date(c.at).toLocaleDateString('id-ID',{day:'numeric',month:'short'})}${c.by?` · oleh ${esc(c.by)}`:''}</span>${open(id,'assign')?assignForm(id,c.org):''}${open(id,'decline')?reasons(DECLINE,'claim-decline-reason',id):''}</div><div class="pro-admin-actions"><button data-claim-admin="decline" data-id="${esc(id)}">Tolak</button><button class="ok" data-claim-admin="assign" data-id="${esc(id)}">Serahkan</button></div></div>`).join(''):'<div class="ins-empty"><b>Tidak ada permintaan</b><span>Permintaan promotor yang menghubungi lewat WhatsApp muncul di sini.</span></div>'}</section>
       <section class="admin-panel claim-admin"><h3>Tambah event ke kalender</h3><form class="pro-form claim-curate" data-curate-form>
         <label>Nama event<input name="name" required maxlength="70" placeholder="Contoh: Festival Rujak Uleg 2027"></label>
-        <div class="pro-grid"><label>Tanggal<input name="date" type="date" required></label><label>Jam mulai<input name="time" placeholder="10.00" value="10.00" maxlength="5"></label></div>
+        <div class="pro-grid"><label>Tanggal<input name="date" type="date" required></label><label>Jam mulai<input name="time" type="time" required value="10:00"></label></div>
         ${eventTzSelect('WIB')}
-        <div class="pro-grid"><label>Venue<input name="venue" required maxlength="80" placeholder="Taman Bungkul"></label><label>Kota<select name="city"><option>Surabaya</option><option>Jakarta</option><option>Bandung</option></select></label></div>
+        <div class="pro-grid"><label>Venue<input name="venue" required maxlength="80" placeholder="Taman Bungkul"></label><label>Kota<input name="city" required maxlength="40" list="curateCities" placeholder="Surabaya" autocomplete="off"><datalist id="curateCities">${CITIES.map(c=>`<option value="${c}"></option>`).join('')}</datalist></label></div>
         <div class="pro-grid"><label>Kategori<select name="category">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label><label>Harga<select name="price"><option>Gratis</option><option>Berbayar</option></select></label></div>
         <label>Kisaran harga atau tautan tiket (opsional)<input name="ticket" maxlength="200" placeholder="Rp50.000 atau https://..."></label>
         <label>Deskripsi singkat (opsional)<textarea name="description" rows="3" maxlength="400" placeholder="Apa yang bisa ditemui pengunjung di event ini?"></textarea></label>
@@ -222,7 +225,7 @@
       if(!name||!date)return;
       const id='curated-'+name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+date.replace(/-/g,'');
       if(eventIndexById(id)>=0){toast('Event dengan nama dan tanggal ini sudah ada');return}
-      const c={id,name,date,time:String(d.get('time')||'10.00'),tz:EVENT_TZ[d.get('tz')]?d.get('tz'):'WIB',venue:String(d.get('venue')).trim(),city:d.get('city'),category:d.get('category'),price,amount:price==='Gratis'?'Gratis':/^https?:/.test(ticket)?'Lihat tautan tiket':ticket||'Harga menyusul',ticketUrl:/^https?:/.test(ticket)?ticket:'',description:String(d.get('description')||'').trim(),source:String(d.get('source')).trim(),addedAt:Date.now()};
+      const c={id,name,date,time:dotTime(d.get('time'))||'10.00',tz:EVENT_TZ[d.get('tz')]?d.get('tz'):'WIB',venue:String(d.get('venue')).trim(),city:cityName(d.get('city')),category:d.get('category'),price,amount:price==='Gratis'?'Gratis':/^https?:/.test(ticket)?'Lihat tautan tiket':ticket||'Harga menyusul',ticketUrl:/^https?:/.test(ticket)?ticket:'',description:String(d.get('description')||'').trim(),source:String(d.get('source')).trim(),addedAt:Date.now()};
       curated.push(c);addToCatalog(c);save();refreshCatalog();adminLog(`${name} ditambahkan ke kalender kurasi (sumber: ${c.source})`);toast(`${name} ditambahkan ke kalender`);openFlow(CAL,false);return}
   },true);
 

@@ -45,7 +45,7 @@ await p.evaluate(()=>{accountState.accountType='temmoo_official';accountState.ro
 await p.fill('[data-curate-form] [name=name]','Festival Rujak Uleg 2027');await p.fill('[data-curate-form] [name=date]','2027-03-14');await p.fill('[data-curate-form] [name=venue]','Jalan Kembang Jepun');
 await p.selectOption('[data-curate-form] [name=price]','Berbayar');await p.fill('[data-curate-form] [name=ticket]','https://tiket.example.id/rujak-uleg');
 await p.fill('[data-curate-form] [name=description]','Parade rujak uleg dan pasar jajanan khas Surabaya.');await p.fill('[data-curate-form] [name=source]','Kalender Disbudpar Surabaya');
-await p.click('[data-curate-form] [type=submit]');await W();await p.evaluate(()=>{accountState.accountType='user'});
+await p.fill('[data-curate-form] [name=city]','Surabaya');await p.click('[data-curate-form] [type=submit]');await W();await p.evaluate(()=>{accountState.accountType='user'});
 await open('Festival Rujak Uleg 2027',20);console.log('5 kurasi:',await text('.event-about'),'||',await text('.event-ticket'));
 await p.reload();await W(300);await open('Festival Rujak Uleg 2027',21);console.log('  setelah reload, tautan:',await p.$eval('[data-ticket-out]',a=>a.href));
 

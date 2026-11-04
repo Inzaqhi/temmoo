@@ -56,5 +56,11 @@ promotor: zona awal (Surabaya): WIB | pilihan: [ 'WIB', 'WITA', 'WIT' ]
   dibuka lagi: WITA
   pilih WIB manual lalu ubah lokasi ke Makassar -> WIB
 kurasi: venue Makassar -> WITA
-  tersimpan: [ 'WITA', '18.00' ]
+  tersimpan: [ 'WITA', '18.00', 'Makassar' ]
+  filter kota katalog: [ 'Semua', 'Bali', 'Bandung', 'Jakarta', 'Makassar', 'Surabaya' ]
+  pilih Makassar: [ 'Festival Pantai Losari' ]
+promotor: jenis isian: [ 'date=date 2026-12-12', 'time=time 19:00' ] | label singkat manual: false
+  disimpan: [ '17 Agustus 2027', '17 AGU', '07.30' ]
+  batas minimal tanggal: 2026-11-03
+  kirim dengan tanggal lewat: Tanggal event sudah lewat. Pilih tanggal hari ini atau setelahnya. | status: draft
 errors []

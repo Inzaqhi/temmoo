@@ -430,6 +430,7 @@ window.I18N_EN={
     'Antrean event':'Event queue','Kalender':'Calendar','Menu lainnya':'More menu','Admin Console':'Admin Console',
     'Zona waktu event':'Event time zone','WIB — Jawa, Sumatra, Kalimantan Barat & Tengah':'WIB — Java, Sumatra, West & Central Kalimantan','WITA — Bali, Nusa Tenggara, Sulawesi, Kalimantan Selatan, Timur & Utara':'WITA — Bali, Nusa Tenggara, Sulawesi, South, East & North Kalimantan','WIT — Maluku & Papua':'WIT — Maluku & Papua',
     'Peserta melihat jam event dalam zona waktu perangkat masing-masing.':'Attendees see the event time in their own device time zone.',
+    'Tanggal event sudah lewat. Pilih tanggal hari ini atau setelahnya.':'The event date has passed. Choose today or a later date.',
     'Opsi lainnya':'More options','Repost':'Repost','Bulan':'Month','Tahun':'Year','Filter status':'Filter status',
   }
 };
