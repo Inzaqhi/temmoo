@@ -10,7 +10,7 @@ const step=async(l,t)=>{await click(t);console.log(l.padEnd(34),'→',await at()
 await step('Profil','Profil');await step('Akun & verifikasi','Akun & verifikasi');await step('Daftar sebagai promotor','Daftar sebagai promotor');
 await f.fill('[name=org]','Ruang Kolektif');await f.fill('[name=email]','halo@ruangkolektif.id');await f.fill('[name=phone]','081234567890');await f.fill('[name=experience]','Pasar Seni 2025');await f.fill('[name=link]','@ruangkolektif');await f.check('[name=agree]');
 await step('Kirim pengajuan','Kirim pengajuan');await step('Simulasi: Setujui','✓ Setujui');await step('Buka Promotor Studio','Buka Promotor Studio');
-await step('Lanjutkan draft','Lanjutkan');await f.fill('[data-promoter-event-form] [name=name]','Malam Puisi Kolektif');await f.fill('[data-promoter-event-form] [name=date]','2026-12-18');await step('Simpan & kirim pengajuan','Simpan & kirim pengajuan');
+await step('Lanjutkan draft','Lanjutkan');await f.fill('[data-promoter-event-form] [name=name]','Malam Puisi Kolektif');await step('Simpan & kirim pengajuan','Simpan & kirim pengajuan');
 console.log('   kotak simulasi event ada?',await f.locator('[data-event-sim]').count());
 await step('Simulasi: Setujui & terbitkan','Setujui & terbitkan');console.log('   status:',await f.evaluate(()=>promoterState.event.status));
 await step('Buka Event Hub aktif','Buka Event Hub aktif');
