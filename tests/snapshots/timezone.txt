@@ -1,0 +1,51 @@
+Asia/Jakarta id {
+  detail: '21 NOV 2026 · mulai 19.00',
+  hub: '21 NOV 2026 · 19.00',
+  gerbang: 'Gate dibuka pukul 18.00. Siapkan tiket dan identitas sebelum masuk.',
+  pagi: '10 OKT 2026 · mulai 10.00'
+}
+Asia/Makassar id {
+  detail: '21 NOV 2026 · mulai 20.00',
+  hub: '21 NOV 2026 · 20.00',
+  gerbang: 'Gate dibuka pukul 19.00. Siapkan tiket dan identitas sebelum masuk.',
+  pagi: '10 OKT 2026 · mulai 11.00'
+}
+Asia/Jakarta en {
+  detail: '21 NOV 2026 · starts 07:00 PM',
+  hub: '21 NOV 2026 · 07:00 PM',
+  gerbang: 'Gates open at 06:00 PM. Have your ticket and ID ready before entering.',
+  pagi: '10 OCT 2026 · starts 10:00 AM'
+}
+Asia/Tokyo en {
+  detail: '21 NOV 2026 · starts 09:00 PM',
+  hub: '21 NOV 2026 · 09:00 PM',
+  gerbang: 'Gates open at 08:00 PM. Have your ticket and ID ready before entering.',
+  pagi: '10 OCT 2026 · starts 12:00 PM'
+}
+America/Los_Angeles en {
+  detail: '21 NOV 2026 · starts 04:00 AM',
+  hub: '21 NOV 2026 · 04:00 AM',
+  gerbang: 'Gates open at 03:00 AM. Have your ticket and ID ready before entering.',
+  pagi: '10 OCT 2026 · starts 08:00 PM (−1 day)'
+}
+America/Los_Angeles id {
+  detail: '21 NOV 2026 · mulai 04.00',
+  hub: '21 NOV 2026 · 04.00',
+  gerbang: 'Gate dibuka pukul 03.00. Siapkan tiket dan identitas sebelum masuk.',
+  pagi: '10 OKT 2026 · mulai 20.00 (−1 hari)'
+}
+format: [
+  '19.00 → 07:00 PM',
+  'Gate dibuka pukul 09.00. → Gate dibuka pukul 09:00 AM.',
+  '00.30 → 12:30 AM',
+  '12.15 → 12:15 PM',
+  '23.59 → 11:59 PM',
+  'Rp15.000 → Rp15.000',
+  '4.85 → 4.85',
+  '10.000 orang → 10.000 people',
+  '03.11.2026 → 03.11.2026',
+  '12.50% → 12.50%',
+  '24.00 → 24.00'
+]
+audit log: [ 'Today, 09:14 AM', 'Yesterday, 06:42 PM', 'Yesterday, 04:10 PM' ]
+errors []

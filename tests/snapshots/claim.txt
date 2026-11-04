@@ -80,7 +80,7 @@
   Youth Creative setelah reload: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari sumber publik. | Ini event-mu?
 6 simulasi serahkan -> Halaman diserahkan. Event masuk Promotor Studio | Halaman ini sudah dikelola organisasimu
   tambah kurasi -> Festival Rujak Uleg 2027 ditambahkan ke kalender
-  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. | Ini event-mu? || 14 MAR 2027 · mulai 10.00 WIB
+  event kurasi baru: ◆ | Dikurasi Tim Temmoo | Info dikumpulkan dari Kalender Disbudpar Surabaya. | Ini event-mu? || 14 MAR 2027 · mulai 10.00
 7 sebagai editor -> Hanya Pemilik atau Admin tim yang bisa meminta pengelolaan
 HP geser horizontal: tidak
 errors []

@@ -63,7 +63,11 @@
     if(out===undefined){note(t);return undefined}
     const lead=raw.match(/^\s*/)[0],trail=raw.match(/\s*$/)[0];return lead+out+trail;
   }
-  window.t=s=>{const r=tr(String(s));return r===undefined?s:r};
+  // Jam ditulis "19.00" di sumber (format Indonesia); dalam English tampil "07:00 PM". Hanya jam dua digit yang valid
+  // (00–23 . 00–59) yang tidak menempel ke angka lain, jadi harga (Rp15.000), desimal, dan tanggal 03.11.2026 tidak tersentuh.
+  const CLOCK=/(^|[^\d.,:])([01]\d|2[0-3])\.([0-5]\d)(?![\d%]|[.,:]\d)/g;
+  const clock=s=>typeof s==='string'&&s.includes('.')?s.replace(CLOCK,(m,pre,h,mm)=>`${pre}${String(+h%12||12).padStart(2,'0')}:${mm} ${+h<12?'AM':'PM'}`):s;
+  window.t=s=>{const r=tr(String(s));return clock(r===undefined?s:r)};
 
   const SKIP=new Set(['SCRIPT','STYLE','TEXTAREA','NOSCRIPT','CODE']);
   const ATTRS=['placeholder','aria-label','title','alt'];
@@ -74,8 +78,8 @@
   function text(node){if(seen.get(node)===node.data)return;if(skip(node.parentElement)){seen.set(node,node.data);return}
     // <option> tanpa value memakai teksnya sebagai nilai; kunci nilai aslinya supaya filter & form tetap menerima teks Indonesia.
     const opt=node.parentElement;if(opt.tagName==='OPTION'&&!opt.hasAttribute('value'))opt.setAttribute('value',opt.textContent);
-    const r=tr(node.data);if(r!==undefined&&r!==node.data)node.data=r;seen.set(node,node.data)}
-  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;(srcAttr.get(el)||srcAttr.set(el,{}).get(el))[a]=v;const r=tr(v);if(r!==undefined&&r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
+    const r=clock(tr(node.data)??node.data);if(r!==node.data)node.data=r;seen.set(node,node.data)}
+  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;(srcAttr.get(el)||srcAttr.set(el,{}).get(el))[a]=v;const r=clock(tr(v)??v);if(r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
     if(el.tagName==='INPUT'&&/^(button|submit)$/.test(el.type)&&el.value){const r=tr(el.value);if(r!==undefined)el.value=r}}
   function walk(root){
     if(root.nodeType===3){text(root);return}

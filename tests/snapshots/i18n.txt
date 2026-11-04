@@ -13,8 +13,8 @@
   cari global "photography": People 1: Kevin Ardana
   cari global "concerts": People 1: Salsa Putri
   saran pencarian: [ 'festival', 'Surabaya', 'coffee', 'Hindia', 'food', 'Nadia' ]
-  Ruang Event Hindia: ♡ | YOUR ATTENDANCE | Interested | Change | EVENT STARTS IN | 18 days | 21 NOV 2026 · 19.00 WIB | Event saved | Choose Going to unlock Circle suggestions, event groups, and check-in prep. | I'm goingChange status | Promoter announcement | Gates open at 18.00.
-  Ruang Event Coffee (selesai): ◷ | YOUR ATTENDANCE | Not checked in | EVENT HAS ENDED | 24 days ago | 10 OCT 2026 · 10.00 WIB | This event has ended | See the official coverage and stories from other attendees. | View official albu
+  Ruang Event Hindia: ♡ | YOUR ATTENDANCE | Interested | Change | EVENT STARTS IN | 18 days | 21 NOV 2026 · 07:00 PM | Event saved | Choose Going to unlock Circle suggestions, event groups, and check-in prep. | I'm goingChange status | Promoter announcement | Gates open at 06:00 PM
+  Ruang Event Coffee (selesai): ◷ | YOUR ATTENDANCE | Not checked in | EVENT HAS ENDED | 24 days ago | 10 OCT 2026 · 10:00 AM | This event has ended | See the official coverage and stories from other attendees. | View official album
   Riwayat: 5 Events joined 2 Attended 14 Friends met
   checkout: PHOTO CHECKOUT | LaLaLa Fest 2026 | × | Photo 03 | 1 full-resolution photo without watermark | Rp10.000 | Service fee | Rp0 | Total | Rp10.000 | Payment method | QRIS | Scan from your bank or e-wallet app | E-wallet | GoPay, OVO, DANA, ShopeePay | Bank transfer | Virtual account BCA, BNI, BRI, Mandiri | Dengan membayar, kamu menyetujui Ketentuan Pembelian Foto dan Kebijakan Privasi Temmoo. | By paying, you agree to the Temmoo Photo Purchase Terms and Privacy Policy. | Prototype: payment is simulated; no money is charged. | Cancel | Pay Rp10.000
   teks hukum (bahasa aktif di atas): [
