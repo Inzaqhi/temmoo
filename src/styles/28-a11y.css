@@ -1,0 +1,4 @@
+/* Fokus keyboard yang terlihat untuk elemen yang dibuat bisa difokus oleh 34-a11y.js */
+[data-a11y-click]:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:6px}
+[data-a11y-click]:focus:not(:focus-visible){outline:none}
+.catalog-card:has(h4:focus-visible){box-shadow:0 0 0 2px var(--teal)!important}

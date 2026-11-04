@@ -1,0 +1,15 @@
+1 temuan pemeriksaan: 0 []
+2 Tab ke kartu event: Hindia Live 2026 | peran: link
+  Enter membuka: Detail Event — Posts | event: Hindia Live 2026
+  tombol kembali: Kembali | opsi: Opsi lainnya
+  Tab ke saran Circle: Nadia Aulia
+  Spasi membuka: @nadiaaulia
+  Tab ke jumlah pengikut: 165 pengikut
+  Enter membuka: Pengikut
+  pilihan minat (peran, aria-pressed sebelum → sesudah Enter): [ 'button', 'false' ] → true
+  tanggal lahir: [ 'Tanggal', 'Bulan', 'Tahun' ]
+  label isian daftar: [ 'Nama', 'Username', 'Tanggal lahir' ]
+  isian chat: [ 'Cari percakapan' ]
+3 English, isian chat: [ 'Search conversations' ] | tombol tulis: Create post
+  kembali/opsi: Back / More options
+errors []

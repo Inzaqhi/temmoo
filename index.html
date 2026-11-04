@@ -244,7 +244,14 @@ document.addEventListener('click',event=>{
 (()=>{
   const tones=['tone-coral','tone-indigo','tone-teal','tone-gold','tone-mix'];
   let activeView='photos',query='',selection=new Set();
-  const photos=[
+  // Foto Saya tersimpan di perangkat (temmoo_my_photos_v1): unggahan (diperkecil), album buatan sendiri,
+  // tanda Favorit/Arsip/Sampah/Dibagikan untuk semua foto (termasuk contoh & foto yang dibeli), dan foto yang dihapus permanen.
+  const STORE='temmoo_my_photos_v1',FLAGS=['favorite','archived','trashed','shared'];
+  const stored=(()=>{try{return JSON.parse(localStorage.getItem(STORE))||{}}catch{return {}}})();
+  const flags=stored.flags||{},deleted=new Set(stored.deleted||[]),moved=stored.moved||{};
+  const longDate=iso=>new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  const applyFlags=photo=>{if(flags[photo.id])for(const f of FLAGS)photo[f]=!!flags[photo.id][f];return photo};
+  const seedPhotos=[
     {id:'p1',name:'Bareng teman sebelum konser',date:'24 Agustus 2026',album:'LaLaLa Fest',tone:'tone-coral',favorite:true},
     {id:'p2',name:'Panggung utama',date:'24 Agustus 2026',album:'LaLaLa Fest',tone:'tone-indigo'},
     {id:'p3',name:'Circle pertama',date:'12 Juli 2025',album:'Hindia Live 2025',tone:'tone-teal',shared:true},
@@ -252,16 +259,26 @@ document.addEventListener('click',event=>{
     {id:'p5',name:'Coffee corner',date:'10 Oktober 2025',album:'Coffee Fest',tone:'tone-mix',archived:true},
     {id:'p6',name:'Foto bersama komunitas',date:'10 Oktober 2025',album:'Coffee Fest',tone:'tone-coral',favorite:true}
   ];
-  const albums=[
+  const uploads=(stored.uploads||[]).map(u=>({...u,date:longDate(u.at),upload:true}));
+  const photos=[...uploads,...seedPhotos.map(p=>moved[p.id]?{...p,album:moved[p.id]}:p)].filter(p=>!deleted.has(p.id)).map(applyFlags);
+  const seedAlbums=[
     {id:'a1',name:'LaLaLa Fest 2026',count:14,privacy:'Pribadi',tone:'tone-coral'},
     {id:'a2',name:'Hindia Live 2025',count:9,privacy:'Publik',tone:'tone-teal'},
     {id:'a3',name:'Circle Coffee Fest',count:6,privacy:'Dibagikan',tone:'tone-gold'}
   ];
+  const albums=[...(stored.albums||[]).map(a=>({...a,custom:true})),...seedAlbums];
+  const albumCount=a=>a.custom?allPhotos().filter(p=>p.album===a.name&&!p.trashed).length:a.count;
+  function save(){
+    const data={uploads:photos.filter(p=>p.upload).map(({id,name,at,album,tone,src})=>({id,name,at,album,tone,src})),
+      albums:albums.filter(a=>a.custom).map(({id,name,privacy,description,collaborative,tone})=>({id,name,privacy,description,collaborative,tone})),
+      moved,flags:Object.fromEntries(allPhotos().map(p=>[p.id,Object.fromEntries(FLAGS.filter(f=>p[f]).map(f=>[f,true]))])),deleted:[...deleted]};
+    try{localStorage.setItem(STORE,JSON.stringify(data));return true}catch{return false}
+  }
   const esc=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const nav=[['photos','Foto'],['bought','Dibeli'],['albums','Album'],['favorites','Favorit'],['shared','Dibagikan'],['archive','Arsip'],['trash','Sampah']];
 
   const boughtCache=new Map(),TONE={'photo-0':'tone-coral','photo-1':'tone-indigo','photo-2':'tone-teal','photo-3':'tone-gold'};
-  function boughtPhotos(){return (window.photoPurchases?.list()||[]).map(p=>{if(!boughtCache.has(p.key))boughtCache.set(p.key,{id:'buy-'+p.key,name:`${p.label} · ${p.event}`,date:new Date(p.at).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}),album:p.event,tone:TONE[p.tone]||'tone-indigo',src:p.src,bought:true,order:p.order});return boughtCache.get(p.key)})}
+  function boughtPhotos(){return (window.photoPurchases?.list()||[]).map(p=>{if(!boughtCache.has(p.key))boughtCache.set(p.key,applyFlags({id:'buy-'+p.key,name:`${p.label} · ${p.event}`,date:longDate(p.at),album:p.event,tone:TONE[p.tone]||'tone-indigo',src:p.src,bought:true,order:p.order}));return boughtCache.get(p.key)}).filter(p=>!deleted.has(p.id))}
   const allPhotos=()=>[...boughtPhotos(),...photos];
   function visiblePhotos(){
     return allPhotos().filter(photo=>{
@@ -278,29 +295,46 @@ document.addEventListener('click',event=>{
     const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
     return `<article class="user-photo-card ${photo.tone}" data-user-photo="${photo.id}" ${style}><button class="photo-select ${selection.has(photo.id)?'selected':''}" data-select-user-photo="${photo.id}" aria-label="Pilih foto">${selection.has(photo.id)?'✓':'○'}</button>${photo.favorite?'<span class="photo-favorite">♥</span>':''}${photo.bought?'<span class="photo-bought">Dibeli</span>':''}<div><b>${esc(photo.name)}</b><small>${esc(photo.album)}</small></div></article>`;
   }
-  function albumCard(album){return `<button class="user-album-card ${album.tone}" data-user-album="${album.id}"><div class="album-cover-stack"><i></i><i></i><i></i></div><b>${esc(album.name)}</b><span>${album.count} foto · ${esc(album.privacy)}</span></button>`}
+  function albumCard(album){return `<button class="user-album-card ${album.tone}" data-user-album="${album.id}"><div class="album-cover-stack"><i></i><i></i><i></i></div><b>${esc(album.name)}</b><span>${albumCount(album)} foto · ${esc(album.privacy)}</span></button>`}
   function content(){
     if(activeView==='albums')return `<div class="user-album-grid">${albums.filter(a=>!query||a.name.toLowerCase().includes(query)).map(albumCard).join('')}</div>`;
     const list=visiblePhotos();
-    if(!list.length)return activeView==='bought'?`<div class="photo-empty"><i>▧</i><h3>Belum ada foto yang dibeli</h3><p>Foto yang kamu beli dari album resmi event akan tersimpan di sini tanpa watermark.</p></div>`:`<div class="photo-empty"><i>▧</i><h3>Belum ada foto</h3><p>Upload foto atau pilih tampilan lain.</p></div>`;
+    if(!list.length)return activeView==='bought'?`<div class="photo-empty"><i>▧</i><h3>Belum ada foto yang dibeli</h3><p>Foto yang kamu beli dari album resmi event akan tersimpan di sini tanpa watermark.</p></div>`:`<div class="photo-empty"><i>▧</i><h3>Belum ada foto</h3><p>${activeView==='trash'?'Foto yang kamu hapus akan muncul di sini sebelum dihapus permanen.':'Upload foto atau pilih tampilan lain.'}</p></div>`;
     return `<p class="photo-date-label">Terbaru</p><div class="user-photo-grid">${list.map(photoCard).join('')}</div>`;
   }
-  function libraryMarkup(){return `<section class="user-photo-library"><header class="photo-library-head"><div><h3>Foto Saya</h3><p>Foto dan album yang kamu unggah.</p></div><div class="photo-head-actions"><button data-create-user-album>＋ Buat album</button><button class="primary" data-upload-user-photo>↑ Upload</button><input type="file" id="userPhotoUpload" accept="image/*" multiple hidden></div></header><div class="photo-search-row"><label><span>⌕</span><input id="userPhotoSearch" value="${esc(query)}" placeholder="Cari foto, album, atau event"></label></div><nav class="photo-library-nav">${nav.map(([id,label])=>`<button class="${activeView===id?'active':''}" data-photo-view="${id}">${label}</button>`).join('')}</nav><div class="photo-selection-bar ${selection.size?'show':''}"><b>${selection.size} dipilih</b><button data-photo-bulk="favorite">♥ Favorit</button><button data-photo-bulk="archive">Arsipkan</button><button data-photo-bulk="trash">Hapus</button><button data-photo-clear>×</button></div><div class="photo-library-content">${content()}</div></section>`}
+  function bulkButtons(){
+    if(activeView==='trash')return '<button data-photo-bulk="restore">Pulihkan</button><button class="is-danger" data-photo-bulk="delete">Hapus permanen</button>';
+    if(activeView==='archive')return '<button data-photo-bulk="restore">Keluarkan dari Arsip</button><button data-photo-bulk="trash">Hapus</button>';
+    return '<button data-photo-bulk="favorite">♥ Favorit</button><button data-photo-bulk="archive">Arsipkan</button><button data-photo-bulk="trash">Hapus</button>';
+  }
+  function libraryMarkup(){return `<section class="user-photo-library"><header class="photo-library-head"><div><h3>Foto Saya</h3><p>Foto dan album yang kamu unggah.</p></div><div class="photo-head-actions"><button data-create-user-album>＋ Buat album</button><button class="primary" data-upload-user-photo>↑ Upload</button><input type="file" id="userPhotoUpload" accept="image/*" multiple hidden></div></header><div class="photo-search-row"><label><span>⌕</span><input id="userPhotoSearch" value="${esc(query)}" placeholder="Cari foto, album, atau event"></label></div><nav class="photo-library-nav">${nav.map(([id,label])=>`<button class="${activeView===id?'active':''}" data-photo-view="${id}">${label}</button>`).join('')}</nav><div class="photo-selection-bar ${selection.size?'show':''}"><b>${selection.size} dipilih</b>${bulkButtons()}<button data-photo-clear aria-label="Batalkan pilihan">×</button></div><div class="photo-library-content">${content()}</div></section>`}
   window.openPhotoLibraryView=view=>{activeView=view;query='';selection.clear();window.renderOwnPhotoLibrary()};
   window.renderOwnPhotoLibrary=function(){const target=document.querySelector('#profilePost');if(target)target.innerHTML=libraryMarkup()};
   window.renderPublicPhotoLibrary=function(){
     const target=document.querySelector('#publicProfileContent');if(!target)return;
-    target.innerHTML=`<section class="user-photo-library public-user-gallery"><header class="photo-library-head"><div><h3>Album Publik</h3><p>Album yang dibagikan pengguna ini.</p></div></header><div class="user-album-grid">${albums.filter(a=>a.privacy!=='Pribadi').map(albumCard).join('')}</div></section>`;
+    target.innerHTML=`<section class="user-photo-library public-user-gallery"><header class="photo-library-head"><div><h3>Album Publik</h3><p>Album yang dibagikan pengguna ini.</p></div></header><div class="user-album-grid">${seedAlbums.filter(a=>a.privacy!=='Pribadi').map(albumCard).join('')}</div></section>`;
   };
   function rerender(){window.renderOwnPhotoLibrary()}
   function createAlbumDialog(){
     document.querySelector('#createUserAlbumDialog')?.remove();
     document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="createUserAlbumDialog"><form class="user-gallery-dialog" id="createUserAlbumForm"><header><b>Buat album</b><button type="button" data-close-gallery-modal>×</button></header><label>Nama album<input name="name" required maxlength="60" placeholder="Contoh: LaLaLa Fest 2026"></label><label>Deskripsi<textarea name="description" maxlength="180" placeholder="Ceritakan isi album"></textarea></label><label>Privasi<select name="privacy"><option>Pribadi</option><option>Pengikut</option><option>Publik</option><option>Tautan khusus</option></select></label><label class="gallery-check"><input type="checkbox" name="collaborative"> Izinkan orang yang diundang menambahkan foto</label><footer><button type="button" data-close-gallery-modal>Batal</button><button class="primary" type="submit">Buat album</button></footer></form></div>`);
   }
+  function albumPicker(photo){
+    const own=albums.filter(a=>a.custom);if(photo.bought||photo.trashed||!own.length)return '';
+    const names=[...new Set([photo.album,...own.map(a=>a.name)])];
+    return `<label class="photo-album-pick">Album<select data-photo-album="${photo.id}">${names.map(n=>`<option value="${esc(n)}" ${n===photo.album?'selected':''}>${esc(n)}</option>`).join('')}</select></label>`;
+  }
+  function previewActions(photo){
+    const id=photo.id;
+    if(photo.trashed)return `<button data-photo-restore="${id}">Pulihkan</button><button class="is-danger" data-photo-delete="${id}">Hapus permanen</button>`;
+    const download=photo.src?`<a class="button-link" href="${photo.src}" download="${esc(photo.name)}.jpg">Unduh</a>`:'';
+    if(photo.archived)return `${download}<button data-photo-restore="${id}">Keluarkan dari Arsip</button><button data-photo-trash="${id}">Hapus</button>`;
+    return `<button data-toggle-favorite="${id}" aria-pressed="${!!photo.favorite}">${photo.favorite?'♥ Favorit':'♡ Favorit'}</button><button data-toggle-shared="${id}" aria-pressed="${!!photo.shared}">${photo.shared?'Berhenti bagikan':'Bagikan'}</button>${download}<button data-move-archive="${id}">Arsipkan</button><button data-photo-trash="${id}">Hapus</button>`;
+  }
   function previewPhoto(photo){
     document.querySelector('#userPhotoPreview')?.remove();
     const style=photo.src?`style="background-image:url('${photo.src}')"`:'';
-    document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="userPhotoPreview"><div class="user-photo-preview"><header><div><b>${esc(photo.name)}</b><span>${esc(photo.date)} · ${esc(photo.album)}${photo.order?` · pesanan ${esc(photo.order)}`:''}</span></div><button data-close-gallery-modal>×</button></header><div class="preview-user-image ${photo.tone}" ${style}></div><footer><button data-toggle-favorite="${photo.id}">${photo.favorite?'♥ Favorit':'♡ Favorit'}</button><button>Bagikan</button>${photo.src?`<a class="button-link" href="${photo.src}" download="${esc(photo.name)}.jpg">Unduh</a>`:'<button>Unduh</button>'}<button data-move-archive="${photo.id}">Arsipkan</button></footer></div></div>`);
+    document.body.insertAdjacentHTML('beforeend',`<div class="user-gallery-modal" id="userPhotoPreview"><div class="user-photo-preview"><header><div><b>${esc(photo.name)}</b><span>${esc(photo.date)} · ${esc(photo.album)}${photo.order?` · pesanan ${esc(photo.order)}`:''}</span></div><button data-close-gallery-modal>×</button></header><div class="preview-user-image ${photo.tone}" ${style}></div>${albumPicker(photo)}<footer>${previewActions(photo)}</footer></div></div>`);
   }
   document.addEventListener('click',e=>{
     const profileAlbum=e.target.closest('[data-profile-tab="album"]');if(profileAlbum)setTimeout(()=>{activeView='photos';renderOwnPhotoLibrary()},0);
@@ -311,21 +345,54 @@ document.addEventListener('click',event=>{
     if(e.target.closest('[data-close-gallery-modal]')||e.target.classList.contains('user-gallery-modal')){e.target.closest('.user-gallery-modal')?.remove();return}
     const select=e.target.closest('[data-select-user-photo]');if(select){e.stopPropagation();const id=select.dataset.selectUserPhoto;selection.has(id)?selection.delete(id):selection.add(id);rerender();return}
     const card=e.target.closest('[data-user-photo]');if(card){const photo=allPhotos().find(p=>p.id===card.dataset.userPhoto);if(photo)previewPhoto(photo);return}
-    const favorite=e.target.closest('[data-toggle-favorite]');if(favorite){const photo=allPhotos().find(p=>p.id===favorite.dataset.toggleFavorite);if(photo){photo.favorite=!photo.favorite;document.querySelector('#userPhotoPreview')?.remove();rerender();toast(photo.favorite?'Ditambahkan ke Favorit':'Dihapus dari Favorit')}return}
-    const archive=e.target.closest('[data-move-archive]');if(archive){const photo=allPhotos().find(p=>p.id===archive.dataset.moveArchive);if(photo){photo.archived=true;document.querySelector('#userPhotoPreview')?.remove();rerender();toast('Foto dipindahkan ke Arsip')}return}
-    const bulk=e.target.closest('[data-photo-bulk]');if(bulk){allPhotos().filter(p=>selection.has(p.id)).forEach(p=>{if(bulk.dataset.photoBulk==='favorite')p.favorite=true;if(bulk.dataset.photoBulk==='archive')p.archived=true;if(bulk.dataset.photoBulk==='trash')p.trashed=true});selection.clear();rerender();toast('Koleksi diperbarui');return}
+    const one=(attr,fn)=>{const el=e.target.closest(`[${attr}]`);if(!el)return false;const photo=allPhotos().find(p=>p.id===el.getAttribute(attr));if(photo)fn(photo);return true};
+    const done=msg=>{document.querySelector('#userPhotoPreview')?.remove();save();rerender();toast(msg)};
+    if(one('data-toggle-favorite',p=>{p.favorite=!p.favorite;done(p.favorite?'Ditambahkan ke Favorit':'Dihapus dari Favorit')}))return;
+    if(one('data-toggle-shared',p=>{p.shared=!p.shared;done(p.shared?'Foto dibagikan ke pengikut':'Foto tidak lagi dibagikan')}))return;
+    if(one('data-move-archive',p=>{p.archived=true;done('Foto dipindahkan ke Arsip')}))return;
+    if(one('data-photo-trash',p=>{p.trashed=true;done('Foto dipindahkan ke Sampah')}))return;
+    if(one('data-photo-restore',p=>{const msg=p.trashed?'Foto dipulihkan':'Foto dikeluarkan dari Arsip';p.trashed=false;p.archived=false;done(msg)}))return;
+    if(one('data-photo-delete',p=>deleteForever([p])))return;
+    const bulk=e.target.closest('[data-photo-bulk]');if(bulk){const list=allPhotos().filter(p=>selection.has(p.id)),act=bulk.dataset.photoBulk;
+      if(act==='delete'){deleteForever(list);return}
+      list.forEach(p=>{if(act==='favorite')p.favorite=true;if(act==='archive')p.archived=true;if(act==='trash')p.trashed=true;if(act==='restore'){p.trashed=false;p.archived=false}});
+      selection.clear();save();rerender();toast({trash:'Foto dipindahkan ke Sampah',archive:'Foto dipindahkan ke Arsip',restore:'Foto dipulihkan'}[act]||'Koleksi diperbarui');return}
     if(e.target.closest('[data-photo-clear]')){selection.clear();rerender();return}
     const album=e.target.closest('[data-user-album]');if(album){activeView='photos';query=(albums.find(a=>a.id===album.dataset.userAlbum)?.name||'').replace(/ 2026$/,'').toLowerCase();rerender();return}
   },true);
+  async function deleteForever(list){
+    if(!list.length)return;
+    const ok=await askConfirm({title:list.length>1?`Hapus ${list.length} foto permanen?`:'Hapus foto permanen?',text:'Foto akan dihapus dari Foto Saya dan tidak bisa dipulihkan.',confirm:'Hapus permanen',danger:true});
+    if(!ok)return;
+    for(const p of list){deleted.add(p.id);delete moved[p.id];const i=photos.indexOf(p);if(i>=0)photos.splice(i,1);delete flags[p.id];selection.delete(p.id)}
+    document.querySelector('#userPhotoPreview')?.remove();save();rerender();toast(list.length>1?`${list.length} foto dihapus permanen`:'Foto dihapus permanen');
+  }
+  document.addEventListener('change',e=>{const pick=e.target.closest('[data-photo-album]');if(!pick)return;const photo=photos.find(p=>p.id===pick.dataset.photoAlbum);if(!photo)return;photo.album=pick.value;
+    if(!photo.upload)moved[photo.id]=photo.album;
+    document.querySelector('#userPhotoPreview')?.remove();save();rerender();toast(`Dipindahkan ke album ${photo.album}`)});
   document.addEventListener('input',e=>{if(e.target.id==='userPhotoSearch'){query=e.target.value.trim().toLowerCase();document.querySelector('.photo-library-content').innerHTML=content()}});
-  document.addEventListener('change',e=>{if(e.target.id!=='userPhotoUpload')return;const files=[...e.target.files];let remaining=files.length;files.forEach((file,index)=>{const reader=new FileReader();reader.onload=()=>{photos.unshift({id:`upload-${Date.now()}-${index}`,name:file.name.replace(/\.[^.]+$/,''),date:'Baru saja',album:'Upload terbaru',tone:tones[index%tones.length],src:reader.result});remaining-=1;if(!remaining){activeView='photos';rerender();toast(`${files.length} foto berhasil diunggah`)}};reader.readAsDataURL(file)})});
-  document.addEventListener('submit',e=>{if(e.target.id!=='createUserAlbumForm')return;e.preventDefault();const data=new FormData(e.target),name=data.get('name').trim();albums.unshift({id:`album-${Date.now()}`,name,count:0,privacy:data.get('privacy'),tone:tones[albums.length%tones.length]});document.querySelector('#createUserAlbumDialog')?.remove();activeView='albums';rerender();toast('Album berhasil dibuat')});
+  // Foto diperkecil (sisi terpanjang 1080 px, JPEG) supaya muat di penyimpanan perangkat.
+  const EDGE=1080,MAX_FILES=20;
+  function shrink(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const k=Math.min(1,EDGE/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.8))};img.src=r.result};r.readAsDataURL(file)})}
+  document.addEventListener('change',async e=>{if(e.target.id!=='userPhotoUpload')return;
+    const files=[...e.target.files].filter(f=>f.type.startsWith('image/'));e.target.value='';
+    if(!files.length){toast('Pilih file gambar (JPG, PNG, atau WebP)');return}
+    const take=files.slice(0,MAX_FILES),added=[],now=new Date().toISOString();
+    for(const [index,file] of take.entries()){try{added.push({id:`upload-${Date.now().toString(36)}-${index}`,name:file.name.replace(/\.[^.]+$/,''),at:now,date:longDate(now),album:'Upload terbaru',tone:tones[index%tones.length],src:await shrink(file),upload:true})}catch{}}
+    if(!added.length){toast('Foto tidak bisa dibaca');return}
+    photos.unshift(...added);
+    if(!save()){photos.splice(0,added.length);rerender();toast('Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.');return}
+    activeView='photos';rerender();toast(`${added.length} foto berhasil diunggah`+(files.length>take.length?` (maksimal ${MAX_FILES} sekaligus)`:''))});
+  document.addEventListener('submit',e=>{if(e.target.id!=='createUserAlbumForm')return;e.preventDefault();const data=new FormData(e.target),name=data.get('name').trim();if(albums.some(a=>a.name.toLowerCase()===name.toLowerCase())){toast('Nama album sudah dipakai');return}albums.unshift({id:`album-${Date.now()}`,name,privacy:data.get('privacy'),description:String(data.get('description')||'').trim(),collaborative:data.get('collaborative')==='on',tone:tones[albums.length%tones.length],custom:true});save();document.querySelector('#createUserAlbumDialog')?.remove();activeView='albums';rerender();toast('Album berhasil dibuat')});
 })();
 </script>
 <style id="profile-gallery-css">
 .user-photo-library{padding:20px}.photo-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.photo-library-head h3{margin:0 0 5px;font-size:20px}.photo-library-head p{margin:0;color:var(--muted);font-size:13px}.photo-head-actions{display:flex;gap:8px}.photo-head-actions button,.user-gallery-dialog button,.user-photo-preview footer button{height:38px;padding:0 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);font-weight:700;cursor:pointer}.photo-head-actions .primary,.user-gallery-dialog .primary{border-color:var(--indigo);background:var(--indigo);color:#fff}.photo-search-row{margin:16px 0 12px}.photo-search-row label{height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;border:1px solid var(--line);border-radius:13px;background:#fff}.photo-search-row input{width:100%;border:0!important;box-shadow:none!important;outline:0;color:var(--text);font-size:14px}.photo-library-nav{display:flex;gap:7px;overflow-x:auto;padding-bottom:14px;border-bottom:1px solid var(--line);scrollbar-width:none}.photo-library-nav::-webkit-scrollbar{display:none}.photo-library-nav button{flex:none;padding:8px 12px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--muted);font-weight:700;cursor:pointer}.photo-library-nav button.active{background:var(--indigo-light);border-color:#c8c2ff;color:var(--indigo-dark)}.photo-library-content{padding-top:15px}.photo-date-label{margin:0 0 10px;color:var(--muted);font-size:12px;font-weight:800}.user-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.user-photo-card{position:relative;aspect-ratio:1;border:0;border-radius:10px;background-size:cover;background-position:center;overflow:hidden;cursor:pointer;color:#fff;text-align:left}.user-photo-card>div{position:absolute;inset:auto 0 0;padding:28px 10px 9px;background:linear-gradient(transparent,rgba(10,8,20,.82));display:grid}.user-photo-card b{font-size:12px;line-height:1.3}.user-photo-card small{margin-top:2px;color:#e9e6ef;font-size:10px}.tone-coral{background:radial-gradient(circle at 25% 20%,#ff6b6b,transparent 28%),linear-gradient(145deg,#322047,#17142a)}.tone-indigo{background:radial-gradient(circle at 75% 70%,#5b4bff,transparent 30%),linear-gradient(145deg,#2d285d,#17142a)}.tone-teal{background:radial-gradient(circle at 70% 20%,#43e6c2,transparent 28%),linear-gradient(145deg,#243b52,#17142a)}.tone-gold{background:radial-gradient(circle at 25% 70%,#f5b942,transparent 30%),linear-gradient(145deg,#403047,#17142a)}.tone-mix{background:radial-gradient(circle at 20% 20%,#ff6b6b,transparent 25%),radial-gradient(circle at 75% 75%,#5b4bff,transparent 30%),#211b3c}.photo-select{position:absolute;z-index:2;top:8px;right:8px;width:27px;height:27px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(19,15,34,.48);color:#fff;font-size:17px;cursor:pointer}.photo-select.selected{border-color:var(--indigo);background:var(--indigo)}.photo-favorite{position:absolute;z-index:1;top:9px;left:9px;color:#fff;font-size:17px;text-shadow:0 2px 5px #000}.user-album-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.user-album-card{border:0;background:transparent;color:var(--text);padding:0;text-align:left;cursor:pointer}.album-cover-stack{height:130px;position:relative;margin-bottom:9px;border-radius:13px;overflow:hidden}.album-cover-stack i{position:absolute;width:63%;height:100%;background:inherit;border-right:2px solid #fff}.album-cover-stack i:nth-child(2){left:34%;filter:brightness(.82)}.album-cover-stack i:nth-child(3){left:68%;filter:brightness(1.15)}.user-album-card b,.user-album-card span{display:block}.user-album-card b{font-size:13px}.user-album-card span{margin-top:3px;color:var(--muted);font-size:11px}.photo-selection-bar{display:none;align-items:center;gap:8px;margin-top:12px;padding:9px 11px;border-radius:12px;background:var(--indigo-light)}.photo-selection-bar.show{display:flex}.photo-selection-bar b{margin-right:auto}.photo-selection-bar button{border:0;background:transparent;color:var(--indigo-dark);font-weight:700;cursor:pointer}.photo-empty{padding:50px 20px;text-align:center;color:var(--muted)}.photo-empty i{font-size:35px}.photo-empty h3{margin:12px 0 5px;color:var(--text)}.photo-empty p{margin:0}.user-gallery-modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px;background:rgba(12,9,22,.72);backdrop-filter:blur(7px)}.user-gallery-dialog,.user-photo-preview{width:min(520px,100%);max-height:calc(100vh - 40px);overflow:auto;border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(0,0,0,.35)}.user-gallery-dialog{padding:18px;display:grid;gap:14px}.user-gallery-dialog header,.user-photo-preview header{display:flex;align-items:center;justify-content:space-between}.user-gallery-dialog header b{font-size:18px}.user-gallery-dialog header button,.user-photo-preview header button{width:34px;height:34px;padding:0;border:0;border-radius:50%;background:var(--soft);font-size:20px}.user-gallery-dialog label{display:grid;gap:6px;color:var(--muted);font-size:12px;font-weight:700}.user-gallery-dialog input,.user-gallery-dialog textarea,.user-gallery-dialog select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}.user-gallery-dialog textarea{min-height:76px;resize:vertical}.user-gallery-dialog .gallery-check{display:flex;grid-template-columns:auto 1fr;align-items:center}.gallery-check input{width:auto}.user-gallery-dialog footer{display:flex;justify-content:flex-end;gap:8px}.user-photo-preview{padding:14px}.user-photo-preview header{padding:2px 2px 12px}.user-photo-preview header>div{display:grid;gap:3px}.user-photo-preview header span{color:var(--muted);font-size:11px}.preview-user-image{height:min(62vh,560px);border-radius:13px;background-size:contain;background-repeat:no-repeat;background-position:center}.user-photo-preview footer{display:flex;gap:7px;padding-top:12px;overflow-x:auto}.public-user-gallery{min-height:280px}
 .user-album-card.tone-coral .album-cover-stack{background:radial-gradient(circle at 25% 20%,#ff6b6b,transparent 28%),#211a3c}.user-album-card.tone-indigo .album-cover-stack{background:radial-gradient(circle at 75% 70%,#5b4bff,transparent 30%),#211a3c}.user-album-card.tone-teal .album-cover-stack{background:radial-gradient(circle at 70% 20%,#43e6c2,transparent 28%),#243044}.user-album-card.tone-gold .album-cover-stack{background:radial-gradient(circle at 25% 70%,#f5b942,transparent 30%),#35273f}.user-album-card.tone-mix .album-cover-stack{background:radial-gradient(circle at 20% 20%,#ff6b6b,transparent 25%),radial-gradient(circle at 75% 75%,#5b4bff,transparent 30%),#211b3c}
 @media(max-width:620px){.user-photo-library{padding:15px 12px 82px}.photo-library-head{display:grid}.photo-head-actions{width:100%}.photo-head-actions button{flex:1}.user-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.user-photo-card{border-radius:5px}.user-photo-card>div{padding-inline:7px}.user-photo-card b{font-size:10px}.user-photo-card small{display:none}.user-album-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.album-cover-stack{height:110px}.photo-selection-bar{position:sticky;top:0;z-index:4;overflow-x:auto}.photo-selection-bar b{flex:none}.user-gallery-modal{padding:10px}.user-photo-preview footer button{flex:none}}
+.user-photo-preview footer button.is-danger,.photo-selection-bar button.is-danger{border-color:#dc3f4d;background:#dc3f4d;color:#fff}
+.photo-album-pick{display:flex;align-items:center;gap:9px;padding-top:12px;color:var(--muted);font-size:13px;font-weight:700}
+.photo-album-pick select{flex:1;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font:inherit;font-weight:600}
 </style>
 <style id="theme-css">
 /* Temmoo Indigo–Coral design system */
@@ -3623,6 +3690,7 @@ window.I18N_EN={
     [/^Tidak ada hasil untuk “(.*)”$/,'No results for “$1”'],
     [/^Terima kasih sudah meramaikan (.+)! Album resmi sudah bisa dilihat di tab Album\.$/,'Thanks for being part of $1! The official album is now in the Album tab.'],
     [/^Foto dari (.+)$/,'Photos from $1'],
+    [/^Dipindahkan ke album (.+)$/,'Moved to album $1'],[/^(\d+) foto berhasil diunggah \(maksimal (\d+) sekaligus\)$/,(m,n,x)=>`${n} ${plural(n,'photo','photos')} uploaded (up to ${x} at a time)`],
     [/^(\d+) foto dari (.+) sudah jadi milikmu, tanpa watermark\.$/,(m,n,e)=>`${n} ${plural(n,'photo','photos')} from ${e} ${plural(n,'is','are')} now yours, without watermark.`],
     [/^Dikelola (.+?)( · organisasimu)?$/,(m,o,own)=>`Managed by ${o}${own?' · your organization':''}`],
     [/^Diklaim (.+)$/,'Claimed by $1'],
@@ -4025,6 +4093,13 @@ window.I18N_EN={
     'Akun Temmoo Official masuk ke dashboard':'Temmoo Official account signed in to the dashboard','Pembayaran bulanan berhasil':'Monthly payment successful','Pengajuan akun promotor · Dokumen lengkap':'Promoter account application · Documents complete','Lihat semua ':'View all','Cari nama atau username':'Search name or username','Semua status':'All statuses','Pembayaran tertunda':'Payment pending','Dicabut':'Revoked',
     'Mulai tinjau':'Start review','Tinjau pengajuan':'Review submission','Persetujuan admin':'Admin approval','Disetujui admin':'Approved by admin','Dikirim ke Admin Temmoo':'Sent to Temmoo Admin','Sedang ditinjau':'Under review','STATUS TERKINI':'CURRENT STATUS','SEBELUMNYA':'PREVIOUS','Menunggu tahap sebelumnya':'Waiting for the previous step','Menunggu pemeriksaan Admin Temmoo':'Waiting for Temmoo Admin review',
     'Catatan untuk promotor':'Note for the promoter','Minta revisi':'Request changes','Setujui & terbitkan':'Approve & publish','Data pribadi · # menit':'Personal data · # {minute|minutes}','Spam · # jam':'Spam · # {hour|hours}','Akun: @akunpromo123':'Account: @akunpromo123','Tutup tanpa tindakan':'Close without action','Terapkan tindakan':'Apply action',
+    'Pulihkan':'Restore','Hapus permanen':'Delete permanently','Keluarkan dari Arsip':'Unarchive','Berhenti bagikan':'Stop sharing','Batalkan pilihan':'Clear selection',
+    'Foto dibagikan ke pengikut':'Photo shared with followers','Foto tidak lagi dibagikan':'Photo is no longer shared','Foto dipindahkan ke Sampah':'Photo moved to Trash','Foto dipulihkan':'Photo restored','Foto dikeluarkan dari Arsip':'Photo unarchived',
+    'Hapus foto permanen?':'Delete photo permanently?','Hapus # foto permanen?':'Delete # {photo|photos} permanently?','Foto akan dihapus dari Foto Saya dan tidak bisa dipulihkan.':'The photo will be removed from My Photos and cannot be restored.',
+    'Foto dihapus permanen':'Photo deleted permanently','# foto dihapus permanen':'# {photo|photos} deleted permanently','Foto yang kamu hapus akan muncul di sini sebelum dihapus permanen.':'Photos you delete appear here before they are deleted permanently.',
+    'Pilih file gambar (JPG, PNG, atau WebP)':'Choose an image file (JPG, PNG, or WebP)','Foto tidak bisa dibaca':'The photo could not be read','Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.':'Device storage is full. Delete some photos and try again.',
+    'Nama album sudah dipakai':'That album name is already taken','Album':'Album',
+    'Opsi lainnya':'More options','Repost':'Repost','Bulan':'Month','Tahun':'Year','Filter status':'Filter status',
   }
 };
 })();
@@ -4098,13 +4173,15 @@ window.I18N_EN={
 
   const SKIP=new Set(['SCRIPT','STYLE','TEXTAREA','NOSCRIPT','CODE']);
   const ATTRS=['placeholder','aria-label','title','alt'];
-  const seen=new WeakMap(),seenAttr=new WeakMap();
+  const seen=new WeakMap(),seenAttr=new WeakMap(),srcAttr=new WeakMap();
+  // Teks asli (Indonesia) sebuah atribut, mis. placeholder yang dipakai ulang sebagai aria-label oleh 34-a11y.
+  window.i18nSource=(el,a)=>srcAttr.get(el)?.[a]??el.getAttribute(a);
   const skip=el=>!el||SKIP.has(el.tagName)||el.closest('[data-no-translate],[contenteditable="true"]');
   function text(node){if(seen.get(node)===node.data)return;if(skip(node.parentElement)){seen.set(node,node.data);return}
     // <option> tanpa value memakai teksnya sebagai nilai; kunci nilai aslinya supaya filter & form tetap menerima teks Indonesia.
     const opt=node.parentElement;if(opt.tagName==='OPTION'&&!opt.hasAttribute('value'))opt.setAttribute('value',opt.textContent);
     const r=tr(node.data);if(r!==undefined&&r!==node.data)node.data=r;seen.set(node,node.data)}
-  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;const r=tr(v);if(r!==undefined&&r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
+  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;(srcAttr.get(el)||srcAttr.set(el,{}).get(el))[a]=v;const r=tr(v);if(r!==undefined&&r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
     if(el.tagName==='INPUT'&&/^(button|submit)$/.test(el.type)&&el.value){const r=tr(el.value);if(r!==undefined)el.value=r}}
   function walk(root){
     if(root.nodeType===3){text(root);return}
@@ -4120,6 +4197,79 @@ window.I18N_EN={
     else if(m.type==='attributes')attrs(m.target);
     else m.addedNodes.forEach(walk);
   }}).observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:[...ATTRS,'value']});
+})();
+</script>
+<style id="a11y-css">/* Fokus keyboard yang terlihat untuk elemen yang dibuat bisa difokus oleh 34-a11y.js */
+[data-a11y-click]:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:6px}
+[data-a11y-click]:focus:not(:focus-visible){outline:none}
+.catalog-card:has(h4:focus-visible){box-shadow:0 0 0 2px var(--teal)!important}
+</style>
+<script id="a11y-js">// Aksesibilitas keyboard & pembaca layar untuk elemen yang dibuat oleh skrip lain:
+// 1. Elemen yang bisa diklik tapi bukan <button>/<a> (kartu event, baris orang/chat, pilihan minat, angka profil)
+//    dibuat bisa difokus (Tab) dan dijalankan dengan Enter/Spasi. Kalau elemen itu berisi tombol lain (mis. ♡ di kartu
+//    event), yang difokus adalah judulnya supaya tidak ada tombol di dalam tombol.
+// 2. Tombol ikon (←, ···, ＋, ×) diberi nama.
+// 3. Isian tanpa label dihubungkan ke <label> di sebelahnya, placeholder, atau judul layar.
+// Teks label ditulis dalam Bahasa Indonesia; mesin bahasa (33-i18n) menerjemahkannya seperti teks lain.
+(()=>{
+  const NATIVE='button,a[href],input,select,textarea,summary,label,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]';
+  const CLICKABLE=['.catalog-card','.event-group-card','.user-photo-card','.suggest','.row','.choice:not(select)','.status-option','.circle-card',
+    '[data-open-screen]','[data-profile-jump]','[data-thread-menu]','[data-go]:not(input)','.placeholder[data-compose]','.post-head>b','.account'].join(',');
+  // Bagian yang difokus bila kartu berisi tombol sendiri.
+  const LABEL_PART='h4,h3,.row-main>b,.row-line>b,b';
+  const ICON_NAMES=[['#flowBack','Kembali'],['#flowMore','Opsi lainnya'],['.float[data-compose]','Buat postingan'],['[data-repost]','Repost'],
+    ['[data-share-post]','Bagikan'],['[data-thread-menu]','Opsi postingan'],['.post-head .more','Opsi postingan']];
+  const source=(el,a)=>window.i18nSource?.(el,a)??el.getAttribute(a);
+  let uid=0;const idOf=el=>el.id||(el.id='a11y-'+(++uid));
+
+  function makeClickable(el){
+    if(el.dataset.a11y)return;el.dataset.a11y='1';
+    if(el.closest(NATIVE)||el.closest('[data-a11y-click]'))return;
+    if(getComputedStyle(el).cursor!=='pointer')return;
+    let target=el;
+    if(el.querySelector('button,a[href],input,select,textarea')){
+      target=[...el.querySelectorAll(LABEL_PART)].find(x=>!x.closest('button,a')&&getComputedStyle(x).display!=='none');if(!target)return;
+      target.setAttribute('role','link');
+    }else if(!el.hasAttribute('role'))el.setAttribute('role','button');
+    target.tabIndex=0;target.dataset.a11yClick='';
+    if(el.matches('.choice'))syncPressed(el);
+  }
+  const syncPressed=el=>el.setAttribute('aria-pressed',String(el.classList.contains('selected')));
+
+  function labelControl(el){
+    if(el.dataset.a11y)return;el.dataset.a11y='1';
+    if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby')||el.closest('label')||(el.id&&document.querySelector(`label[for="${CSS.escape(el.id)}"]`)))return;
+    const prev=el.previousElementSibling;
+    if(prev?.tagName==='LABEL'&&!prev.htmlFor&&!prev.querySelector('input,select,textarea')){prev.htmlFor=idOf(el);return}
+    const ph=source(el,'placeholder');if(ph){el.setAttribute('aria-label',ph);return}
+    const grid=el.closest('.choice-grid');if(grid&&el.tagName==='SELECT'){const parts=['Tanggal','Bulan','Tahun'],i=[...grid.querySelectorAll('select')].indexOf(el);if(parts[i]){el.setAttribute('aria-label',parts[i]);return}}
+    if(el.tagName==='SELECT'&&el.closest('.admin-toolbar')){el.setAttribute('aria-label','Filter status');return}
+    const text=el.parentElement?.querySelector(':scope>span');if(text&&el.type==='checkbox'){el.setAttribute('aria-labelledby',idOf(text));return}
+    if(el.closest('#flowContent'))el.setAttribute('aria-labelledby','flowTitle');
+  }
+
+  function nameIcons(root){
+    for(const [sel,name] of ICON_NAMES)root.querySelectorAll(sel).forEach(el=>{if(!el.getAttribute('aria-label'))el.setAttribute('aria-label',name)});
+    root.querySelectorAll('button:not([aria-label])').forEach(b=>{if(/^\s*[×✕]\s*$/.test(b.textContent))b.setAttribute('aria-label','Tutup')});
+  }
+
+  let queued=false;
+  function sweep(){queued=false;
+    nameIcons(document);
+    document.querySelectorAll(`:is(${CLICKABLE}):not([data-a11y])`).forEach(makeClickable);
+    document.querySelectorAll('input:not([type=hidden]):not([type=file]):not([data-a11y]),select:not([data-a11y]),textarea:not([data-a11y])').forEach(labelControl);
+  }
+  const queue=()=>{if(!queued){queued=true;requestAnimationFrame(sweep)}};
+  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('load',queue);queue();
+  // Pilihan (minat, privasi) berganti kelas .selected saat diklik: perbarui aria-pressed.
+  document.addEventListener('click',()=>setTimeout(()=>document.querySelectorAll('.choice[aria-pressed]').forEach(syncPressed),0));
+
+  document.addEventListener('keydown',e=>{
+    const el=e.target;if(!(el instanceof Element)||!el.hasAttribute('data-a11y-click'))return;
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    e.preventDefault();if(!e.repeat)el.click();
+  });
 })();
 </script>
 

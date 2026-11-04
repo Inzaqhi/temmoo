@@ -17,6 +17,7 @@ window.I18N_EN={
     [/^Tidak ada hasil untuk “(.*)”$/,'No results for “$1”'],
     [/^Terima kasih sudah meramaikan (.+)! Album resmi sudah bisa dilihat di tab Album\.$/,'Thanks for being part of $1! The official album is now in the Album tab.'],
     [/^Foto dari (.+)$/,'Photos from $1'],
+    [/^Dipindahkan ke album (.+)$/,'Moved to album $1'],[/^(\d+) foto berhasil diunggah \(maksimal (\d+) sekaligus\)$/,(m,n,x)=>`${n} ${plural(n,'photo','photos')} uploaded (up to ${x} at a time)`],
     [/^(\d+) foto dari (.+) sudah jadi milikmu, tanpa watermark\.$/,(m,n,e)=>`${n} ${plural(n,'photo','photos')} from ${e} ${plural(n,'is','are')} now yours, without watermark.`],
     [/^Dikelola (.+?)( · organisasimu)?$/,(m,o,own)=>`Managed by ${o}${own?' · your organization':''}`],
     [/^Diklaim (.+)$/,'Claimed by $1'],
@@ -419,6 +420,13 @@ window.I18N_EN={
     'Akun Temmoo Official masuk ke dashboard':'Temmoo Official account signed in to the dashboard','Pembayaran bulanan berhasil':'Monthly payment successful','Pengajuan akun promotor · Dokumen lengkap':'Promoter account application · Documents complete','Lihat semua ':'View all','Cari nama atau username':'Search name or username','Semua status':'All statuses','Pembayaran tertunda':'Payment pending','Dicabut':'Revoked',
     'Mulai tinjau':'Start review','Tinjau pengajuan':'Review submission','Persetujuan admin':'Admin approval','Disetujui admin':'Approved by admin','Dikirim ke Admin Temmoo':'Sent to Temmoo Admin','Sedang ditinjau':'Under review','STATUS TERKINI':'CURRENT STATUS','SEBELUMNYA':'PREVIOUS','Menunggu tahap sebelumnya':'Waiting for the previous step','Menunggu pemeriksaan Admin Temmoo':'Waiting for Temmoo Admin review',
     'Catatan untuk promotor':'Note for the promoter','Minta revisi':'Request changes','Setujui & terbitkan':'Approve & publish','Data pribadi · # menit':'Personal data · # {minute|minutes}','Spam · # jam':'Spam · # {hour|hours}','Akun: @akunpromo123':'Account: @akunpromo123','Tutup tanpa tindakan':'Close without action','Terapkan tindakan':'Apply action',
+    'Pulihkan':'Restore','Hapus permanen':'Delete permanently','Keluarkan dari Arsip':'Unarchive','Berhenti bagikan':'Stop sharing','Batalkan pilihan':'Clear selection',
+    'Foto dibagikan ke pengikut':'Photo shared with followers','Foto tidak lagi dibagikan':'Photo is no longer shared','Foto dipindahkan ke Sampah':'Photo moved to Trash','Foto dipulihkan':'Photo restored','Foto dikeluarkan dari Arsip':'Photo unarchived',
+    'Hapus foto permanen?':'Delete photo permanently?','Hapus # foto permanen?':'Delete # {photo|photos} permanently?','Foto akan dihapus dari Foto Saya dan tidak bisa dipulihkan.':'The photo will be removed from My Photos and cannot be restored.',
+    'Foto dihapus permanen':'Photo deleted permanently','# foto dihapus permanen':'# {photo|photos} deleted permanently','Foto yang kamu hapus akan muncul di sini sebelum dihapus permanen.':'Photos you delete appear here before they are deleted permanently.',
+    'Pilih file gambar (JPG, PNG, atau WebP)':'Choose an image file (JPG, PNG, or WebP)','Foto tidak bisa dibaca':'The photo could not be read','Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.':'Device storage is full. Delete some photos and try again.',
+    'Nama album sudah dipakai':'That album name is already taken','Album':'Album',
+    'Opsi lainnya':'More options','Repost':'Repost','Bulan':'Month','Tahun':'Year','Filter status':'Filter status',
   }
 };
 })();

@@ -41,6 +41,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 |---|---|
 | `scripts/01-app-core.js` | Data contoh (posts, events, circles, chats), `render()`, `show()` |
 | `scripts/02-flows.js` | Semua layar detail (`template(n)` dan `openFlow(n)`) |
+| `scripts/16-profile-gallery.js` | Foto Saya: unggahan (diperkecil ke 1080 px), album sendiri, Favorit/Dibagikan/Arsip/Sampah, hapus permanen. Tersimpan di `temmoo_my_photos_v1` |
 | `scripts/17-audit.js` | Akun, verifikasi, grup event, admin, dan promotor (kode lama terbesar) |
 | `scripts/18-router.js` | URL hash (`#/home`, `#/event/...`) dan tombol back |
 | `scripts/22-search-notifications.js` | Pencarian, notifikasi, serta penyimpanan Temui/follow/chat |
@@ -55,6 +56,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/31-photo-purchases.js` | Checkout foto album, pembelian tersimpan di `temmoo_purchases_v1`, tanda Dimiliki, Foto Saya → Dibeli |
 | `scripts/32-i18n-en.js` | Kamus Bahasa Indonesia → English (teks persis, pola angka `#`, aturan untuk teks bernama) |
 | `scripts/33-i18n.js` | Mesin bahasa: menerjemahkan teks antarmuka yang tampil, pengaturan bahasa di Pusat Akun |
+| `scripts/34-a11y.js` | Aksesibilitas: kartu & baris yang bisa diklik bisa difokus keyboard (Enter/Spasi), nama untuk tombol ikon, label untuk isian. Gaya fokus di `styles/28-a11y.css` |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja

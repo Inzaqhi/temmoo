@@ -67,13 +67,15 @@
 
   const SKIP=new Set(['SCRIPT','STYLE','TEXTAREA','NOSCRIPT','CODE']);
   const ATTRS=['placeholder','aria-label','title','alt'];
-  const seen=new WeakMap(),seenAttr=new WeakMap();
+  const seen=new WeakMap(),seenAttr=new WeakMap(),srcAttr=new WeakMap();
+  // Teks asli (Indonesia) sebuah atribut, mis. placeholder yang dipakai ulang sebagai aria-label oleh 34-a11y.
+  window.i18nSource=(el,a)=>srcAttr.get(el)?.[a]??el.getAttribute(a);
   const skip=el=>!el||SKIP.has(el.tagName)||el.closest('[data-no-translate],[contenteditable="true"]');
   function text(node){if(seen.get(node)===node.data)return;if(skip(node.parentElement)){seen.set(node,node.data);return}
     // <option> tanpa value memakai teksnya sebagai nilai; kunci nilai aslinya supaya filter & form tetap menerima teks Indonesia.
     const opt=node.parentElement;if(opt.tagName==='OPTION'&&!opt.hasAttribute('value'))opt.setAttribute('value',opt.textContent);
     const r=tr(node.data);if(r!==undefined&&r!==node.data)node.data=r;seen.set(node,node.data)}
-  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;const r=tr(v);if(r!==undefined&&r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
+  function attrs(el){if(skip(el))return;let m=seenAttr.get(el);if(!m)seenAttr.set(el,m={});for(const a of ATTRS){const v=el.getAttribute(a);if(v==null||m[a]===v)continue;(srcAttr.get(el)||srcAttr.set(el,{}).get(el))[a]=v;const r=tr(v);if(r!==undefined&&r!==v)el.setAttribute(a,r);m[a]=el.getAttribute(a)}
     if(el.tagName==='INPUT'&&/^(button|submit)$/.test(el.type)&&el.value){const r=tr(el.value);if(r!==undefined)el.value=r}}
   function walk(root){
     if(root.nodeType===3){text(root);return}

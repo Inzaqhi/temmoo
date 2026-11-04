@@ -1,0 +1,46 @@
+1 unggah: 2 foto berhasil diunggah | [
+  'Gate dibuka [Upload terbaru]',
+  'Teman baru [Upload terbaru]',
+  'Bareng teman sebelum konser [LaLaLa Fest] ♥'
+]
+  tersimpan: { jumlah: 2, ukuran: '1080×720', jpeg: true, tanggal: '2026-11-03' }
+  hanya file bukan gambar: Pilih file gambar (JPG, PNG, atau WebP)
+2 album: Album berhasil dibuat | [
+  'Malam Puisi · 0 foto · Pengikut',
+  'LaLaLa Fest 2026 · 14 foto · Pribadi'
+]
+  nama kembar: Nama album sudah dipakai
+  pindah album: Dipindahkan ke album Malam Puisi
+  favorit: Ditambahkan ke Favorit
+  bagikan: Foto dibagikan ke pengikut
+  hapus ke Sampah: Foto dipindahkan ke Sampah
+3 setelah reload, Foto: [
+  'Gate dibuka [Malam Puisi] ♥',
+  'Teman baru [Upload terbaru]',
+  'Bareng teman sebelum konser [LaLaLa Fest]',
+  'Menunggu gate dibuka [Hindia Live 2025]',
+  'Foto bersama komunitas [Coffee Fest] ♥'
+]
+  Album: [
+  'Malam Puisi · 1 foto · Pengikut',
+  'LaLaLa Fest 2026 · 14 foto · Pribadi'
+]
+  Favorit: [
+  'Gate dibuka [Malam Puisi] ♥',
+  'Foto bersama komunitas [Coffee Fest] ♥'
+]
+  Dibagikan: [ 'Teman baru [Upload terbaru]' ]
+  Arsip: [ 'Panggung utama [LaLaLa Fest]', 'Coffee corner [Coffee Fest]' ]
+  Sampah: [ 'Circle pertama [Hindia Live 2025]' ]
+4 tombol di Sampah: [ 'Pulihkan', 'Hapus permanen' ]
+  pulihkan: Foto dipulihkan | Sampah: []
+  bilah pilihan Arsip: [ 'Keluarkan dari Arsip', 'Hapus', '×' ]
+  bilah pilihan Sampah: [ 'Pulihkan', 'Hapus permanen', '×' ]
+  konfirmasi: Hapus foto permanen? | Foto akan dihapus dari Foto Saya dan tidak bisa dipulihkan. | Batal | Hapus permanen
+  hapus permanen: Foto dihapus permanen | Sampah: []
+  setelah reload, p2 hilang: true | p3 kembali: true
+  unggahan dihapus permanen, penyimpanan berkurang: true | sisa unggahan: [ 'Gate dibuka' ]
+5 penyimpanan penuh: Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi. | jumlah foto tetap: true
+6 English, Sampah kosong: ▧ | No photos yet | Photos you delete appear here before they are deleted permanently.
+  pratinjau: Gate dibuka | 3 November 2026 · Malam Puisi | × | Album | Malam Puisi | ♥ Favorite | Share | Download | Archive | Delete
+errors []
