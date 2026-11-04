@@ -4,7 +4,7 @@ await p.route(/^https?:/,r=>r.abort());await p.goto(APP+'');
 await p.evaluate(()=>{localStorage.clear();localStorage.setItem('temmoo_onboarded','1');localStorage.setItem('temmoo_promoter_app_v1',JSON.stringify({status:'approved',org:'Mootiara Surabaya'}));const ev=(id,name,date,ds,status)=>({id,name,category:'Musik',date,dateShort:ds,time:'19.00',venue:'Balai Pemuda, Surabaya',description:'x',ticketUrl:'https://x.id',capacity:1200,status,submittedAt:'',reviewNote:'',publishedIndex:null,announcements:[]});
 localStorage.setItem('temmoo_promoter_v1',JSON.stringify({organization:'Mootiara Surabaya',verified:true,activeEventId:'a',events:[ev('a','Surabaya Creative Week','18 Oktober 2026','18 OKT','published'),ev('b','Jazz di Taman','5 Desember 2026','5 DES','published'),ev('c','Lari Pagi Komunitas','','','draft')]}))});
 await p.reload();await p.waitForTimeout(400);const W=ms=>p.waitForTimeout(ms||250);
-await p.evaluate(()=>openFlow(64));await W();console.log('menu:',await p.$$eval('.promoter-nav button',x=>x.map(b=>b.textContent.trim())));
+await p.evaluate(()=>openFlow(64));await W();console.log('menu:',await p.$$eval('.promoter-nav button',x=>x.filter(b=>b.offsetParent).map(b=>b.innerText.trim())));
 await p.click('.promoter-nav [data-go="72"]');await W();console.log('Tim ->',await p.$eval('.promoter-main h1',x=>x.textContent),'| anggota:',await p.$$eval('.team-row .team-who b',x=>x.map(b=>b.textContent)));
 // undang Dina sebagai Editor, akses Jazz saja
 await p.click('[data-team-invite-toggle]');await W();await p.fill('[data-team-invite] [name=email]','dina@mootiara.id');await p.fill('[data-team-invite] [name=name]','Dina Pratama');
@@ -19,7 +19,7 @@ for(const id of await p.$$eval('[data-team-accept]',x=>x.map(b=>b.dataset.teamAc
 console.log('setelah diterima:',await p.$$eval('.team-row small',x=>x.map(s=>s.textContent)));await p.screenshot({path:'team-page.png',fullPage:false});
 // Lihat sebagai Dina (Editor, akses Jazz)
 await p.click('.team-row:has-text("Dina") [data-team-act]');await W();
-console.log('DINA ringkasan:',await p.$$eval('.pe-row .pe-main b',x=>x.map(b=>b.textContent)),'| menu',await p.$$eval('.promoter-nav button',x=>x.map(b=>b.textContent.trim())),'| banner',await p.$eval('.team-acting',x=>x.textContent.slice(0,60)));
+console.log('DINA ringkasan:',await p.$$eval('.pe-row .pe-main b',x=>x.map(b=>b.textContent)),'| menu',await p.$$eval('.promoter-nav button',x=>x.filter(b=>b.offsetParent).map(b=>b.innerText.trim())),'| banner',await p.$eval('.team-acting',x=>x.textContent.slice(0,60)));
 await p.click('.pe-row [data-pe-open]');await W();console.log('  dashboard Jazz: tombol kirim tinjau?',await p.locator('[data-submit-event]').count(),'| pengumuman?',await p.locator('[data-ins-announce]').count());
 await p.evaluate(()=>{promoterState.activeEventId='a';openFlow(71)});await W();console.log('  paksa buka event tanpa akses ->',await p.evaluate(()=>promoterState.event.name));
 await p.evaluate(()=>openFlow(64));await W();await p.click('[data-pe-new]');await W();console.log('  Dina buat event -> form, tombol ajukan?',await p.locator('[data-promoter-event-form] button[value=submit]').count(),'| catatan',await p.$eval('.team-note',x=>x.textContent));

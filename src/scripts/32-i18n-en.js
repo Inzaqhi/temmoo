@@ -427,6 +427,7 @@ window.I18N_EN={
     'Pilih file gambar (JPG, PNG, atau WebP)':'Choose an image file (JPG, PNG, or WebP)','Foto tidak bisa dibaca':'The photo could not be read','Penyimpanan perangkat penuh. Hapus beberapa foto lalu coba lagi.':'Device storage is full. Delete some photos and try again.',
     'Nama album sudah dipakai':'That album name is already taken','Album':'Album',
     'Akun privat aktif. Pengikut baru perlu persetujuanmu.':'Private account on. New followers need your approval.','Akun publik. Semua orang bisa mengikutimu.':'Public account. Anyone can follow you.','Autentikasi dua langkah aktif':'Two-step authentication on','Autentikasi dua langkah nonaktif':'Two-step authentication off',
+    'Antrean event':'Event queue','Kalender':'Calendar','Menu lainnya':'More menu','Admin Console':'Admin Console',
     'Opsi lainnya':'More options','Repost':'Repost','Bulan':'Month','Tahun':'Year','Filter status':'Filter status',
   }
 };

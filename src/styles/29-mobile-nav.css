@@ -1,0 +1,27 @@
+/* Menu Promotor Studio & Admin Console. Layar lebar: menu samping biasa (ikon & label pendek disembunyikan). */
+.promoter-nav .nav-short,.admin-nav .nav-short,.promoter-nav>button>svg,.admin-nav>button>svg,.nav-more{display:none}
+
+/* HP: bilah bawah 4 kolom tetap — 3 menu utama + Lainnya. Tidak ada yang tersembunyi di luar layar. */
+@media(max-width:760px){
+  .promoter-nav,.admin-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;height:auto!important;min-height:62px;padding:5px 6px calc(5px + env(safe-area-inset-bottom))!important;overflow:visible!important;background:var(--card);box-shadow:0 -6px 18px rgba(30,20,60,.06)}
+  .promoter-nav>.nav-overflow,.admin-nav>.nav-overflow,.promoter-nav .nav-full,.admin-nav .nav-full{display:none!important}
+  .promoter-nav>button,.admin-nav>button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:52px;margin:0!important;padding:5px 2px!important;border-radius:12px;box-shadow:none!important;font-size:11px;font-weight:700;line-height:1.15;text-align:center}
+  .promoter-nav>button>svg,.admin-nav>button>svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .promoter-nav>button>svg circle[r="1.6"],.admin-nav>button>svg circle[r="1.6"]{fill:currentColor;stroke:none}
+  .promoter-nav .nav-short,.admin-nav .nav-short{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .promoter-nav>button.active,.admin-nav>button.active{background:var(--soft);color:var(--indigo,var(--violet))}
+  .nav-more{display:flex}
+}
+
+/* Lembar "Lainnya" */
+.app-dialog.nav-sheet{width:min(420px,100%);padding:6px 6px 10px}
+.nav-sheet>header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px}
+.nav-sheet>header b{font-size:15px}
+.nav-sheet>header button{width:36px;height:36px;border:0;border-radius:50%;background:var(--soft);color:var(--text);font-size:20px;cursor:pointer}
+.nav-sheet-list{display:grid;gap:2px}
+.nav-sheet-list button{display:flex;align-items:center;min-height:48px;padding:0 14px;border:0;border-radius:12px;background:none;color:var(--text);font:inherit;font-weight:700;text-align:left;cursor:pointer}
+.nav-sheet-list button:hover{background:var(--soft)}
+.nav-sheet-list button.active{background:var(--soft);color:var(--indigo,var(--violet))}
+.nav-sheet-list button.active::after{content:"✓";margin-left:auto}
+.nav-sheet-list button.is-exit{margin-top:6px;border-top:1px solid var(--line);border-radius:0 0 12px 12px;color:#c23a48}
+.nav-sheet button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}

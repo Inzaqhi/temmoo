@@ -58,6 +58,7 @@ Urutan file penting. Banyak skrip membungkus atau menimpa fungsi dari skrip sebe
 | `scripts/32-i18n-en.js` | Kamus Bahasa Indonesia → English (teks persis, pola angka `#`, aturan untuk teks bernama) |
 | `scripts/33-i18n.js` | Mesin bahasa: menerjemahkan teks antarmuka yang tampil, pengaturan bahasa di Pusat Akun |
 | `scripts/34-a11y.js` | Aksesibilitas: kartu & baris yang bisa diklik bisa difokus keyboard (Enter/Spasi), nama untuk tombol ikon, label untuk isian. Gaya fokus di `styles/28-a11y.css` |
+| `scripts/35-mobile-nav.js` | Menu Promotor Studio & Admin Console di HP: bilah bawah 3 menu utama + Lainnya (lembar bawah). Gaya di `styles/29-mobile-nav.css` |
 | `styles/15-theme.css` | Tema terang indigo–coral (menimpa tema gelap di `02-base.css`) |
 
 ## Cara kerja

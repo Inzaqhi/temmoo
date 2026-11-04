@@ -1,0 +1,49 @@
+1 Studio layar 64: {
+  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Lainnya' ],
+  'di bawah layar': true,
+  'bisa digeser': false
+}
+1 Studio layar 71: {
+  tombol: [ 'Ringkasan*', 'Buat event', 'Tim', 'Lainnya' ],
+  'di bawah layar': true,
+  'bisa digeser': false
+}
+1 Studio layar 72: {
+  tombol: [ 'Ringkasan', 'Buat event', 'Tim*', 'Lainnya' ],
+  'di bawah layar': true,
+  'bisa digeser': false
+}
+  Lainnya: [ 'Kembali ke akun' ] | fokus: Kembali ke akun
+  Kembali ke akun -> Pusat Akun | lembar tertutup: true
+  ketuk Tim -> [ 'Ringkasan', 'Buat event', 'Tim*', 'Lainnya' ]
+2 Admin: {
+  tombol: [ 'Ringkasan*', 'Antrean event', 'Kalender', 'Lainnya' ],
+  'di bawah layar': true,
+  'bisa digeser': false
+}
+  ketuk Kalender -> Kalender kurasi | [ 'Ringkasan', 'Antrean event', 'Kalender*', 'Lainnya' ]
+  Lainnya: [ 'Verified', 'Moderasi', 'Pengguna', 'Audit log', 'Keluar admin' ]
+  Audit log -> Audit log | [ 'Ringkasan', 'Antrean event', 'Kalender', 'Audit log*' ] | nama tombol Lainnya: Lainnya · Audit log
+  Lainnya (halaman aktif ditandai): [ 'Verified', 'Moderasi', 'Pengguna', 'Audit log*', 'Keluar admin' ]
+  Esc menutup lembar: true | fokus kembali ke: true
+3 desktop Admin: [
+  'Ringkasan',
+  'Verified',
+  'Moderasi',
+  'Pengguna',
+  'Event & Promotor',
+  'Kalender kurasi',
+  'Audit log',
+  'Keluar admin'
+] | ikon tampil: 0
+  desktop Studio: [
+  'Ringkasan',
+  '＋ Buat event',
+  'Tim',
+  'Pratinjau publik',
+  'Kembali ke akun'
+]
+4 English Studio: [ 'Overview*', 'Create event', 'Team', 'More' ]
+  English Admin: [ 'Overview', 'Event queue', 'Calendar', 'Audit log*' ]
+  More: Admin Console | × | Verified | Moderation | Users | Audit log | Exit admin
+errors []
