@@ -4,6 +4,8 @@ Temmoo adalah aplikasi web untuk menemukan event dan teman yang satu frekuensi. 
 
 > **Status:** prototipe front-end. Semua data disimpan di `localStorage` browser. Lawan bicara, panggilan, dan keputusan admin masih disimulasikan karena belum ada backend.
 
+
+> Rencana memindahkan prototipe ini ke aplikasi sungguhan (Next.js + Supabase, 1 developer + AI): [`docs/rancangan-migrasi.md`](docs/rancangan-migrasi.md).
 ## Fitur
 
 - **Feed:** postingan, like, balasan thread, dan posting dengan media, emoji, lokasi, serta polling
